@@ -1,9 +1,9 @@
-(ns com.example.mock-server
+(ns com.submerged-structure.mock-server
   "A mock remote for Fulcro that talks to the in-browser Pathom parser
    
    Inspired heavily by https://github.com/fulcrologic/fulcro-developer-guide/blob/master/src/book/book/pathom.cljs"
   (:require
-   [com.example.pathom :as pathom]
+   [com.submerged-structure.pathom :as pathom]
    [com.fulcrologic.fulcro.algorithms.tx-processing :as txn]    
    [com.fulcrologic.fulcro.networking.mock-server-remote :refer [mock-http-server]]))
 

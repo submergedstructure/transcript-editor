@@ -1,6 +1,6 @@
-(ns com.example.ui
+(ns com.submerged-structure.ui
   (:require 
-    [com.example.mutations :as mut]
+    [com.submerged-structure.mutations :as mut]
     [com.fulcrologic.fulcro.algorithms.merge :as merge]
     [com.fulcrologic.fulcro.algorithms.tempid :as tempid]
     [com.fulcrologic.fulcro.algorithms.data-targeting :as targeting]
@@ -32,4 +32,4 @@
   ;; Pathom 2: will get back from server {:sequence [{..}, ..]} - i.e. a *vector*
   ;; even though the resolver returns a lazy seq
   ;; Pathom 3: returns a list: {:sequence ({..}, ..)}
-  (df/load! com.example.app/app :sequence (rc/nc [:tst/id :tst/val])))
+  (df/load! com.submerged-structure.app/app :sequence (rc/nc [:tst/id :tst/val])))

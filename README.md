@@ -13,7 +13,7 @@ Until 2023-09 (last sha 624d546e7), we used Pathom 2.
 Fulcro Inspect's Index Explorer is not compatible with Pathom 3. You need to use a standalone Pathom Viz ([see my article for details](https://blog.jakubholy.net/2023/pathom-viz-for-fulcro-pathom3/).). What you need to do then is to 
 
 1. [download Pathom Viz app](https://github.com/wilkerlucio/pathom-viz/releases)
-2. Make `com.example.pathom/enable-pathom-viz` true
+2. Make `com.submerged-structure.pathom/enable-pathom-viz` true
 3. Reload your app and connect P. Viz to it
 
 P. Viz support is off by default because otherwise it [logs tons of errors](https://clojurians.slack.com/archives/C87NB2CFN/p1696016550457039) and warnings, until you connect it.

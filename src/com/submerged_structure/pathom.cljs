@@ -1,4 +1,4 @@
-(ns com.example.pathom
+(ns com.submerged-structure.pathom
   "The Pathom parser that is our (in-browser) backend.
    
    Add your resolvers and 'server-side' mutations here." 
@@ -42,7 +42,7 @@
   ;; a server-decided actual ID
   ;; NOTE: To match with the Fulcro-sent mutation, we
   ;; need to explicitly name it to use the same symbol
-  {::pco/op-name 'com.example.mutations/create-random-thing
+  {::pco/op-name 'com.submerged-structure.mutations/create-random-thing
    ;::pco/params [:tmpid] - derived from destructuring
    ::pco/output [:tempids]}
   (println "SERVER: Simulate creating a new thing with real DB id 123" tmpid)

@@ -1,4 +1,4 @@
-(ns com.example.mutations
+(ns com.submerged-structure.mutations
   "Client-side mutations.
    
    'Server-side' mutations could normally be also defined here, only with

@@ -1,6 +1,6 @@
-(ns com.example.app
+(ns com.submerged-structure.app
   (:require
-   [com.example.mock-server :as mock-server]
+   [com.submerged-structure.mock-server :as mock-server]
    [com.fulcrologic.fulcro.application :as app]
    [com.fulcrologic.fulcro.react.version18 :refer [with-react18]]
    [edn-query-language.core :as eql]))
