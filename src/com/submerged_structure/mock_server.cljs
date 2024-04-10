@@ -4,7 +4,7 @@
    Inspired heavily by https://github.com/fulcrologic/fulcro-developer-guide/blob/master/src/book/book/pathom.cljs"
   (:require
    [com.submerged-structure.pathom :as pathom]
-   [com.fulcrologic.fulcro.algorithms.tx-processing :as txn]    
+   [com.fulcrologic.fulcro.algorithms.tx-processing :as txn]
    [com.fulcrologic.fulcro.networking.mock-server-remote :refer [mock-http-server]]))
 
 (defn mock-remote

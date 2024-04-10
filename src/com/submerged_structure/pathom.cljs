@@ -23,21 +23,29 @@
    [com.wsscode.pathom3.interface.smart-map :as psm]
    [com.wsscode.pathom3.path :as p.path]
    [com.wsscode.pathom3.plugin :as p.plugin]
-   [promesa.core :as p]))
+   [promesa.core :as p]
+   [com.submerged-structure.mock-data :as mock-data]))
 
-(pco/defresolver i-fail 
+#_(pco/defresolver i-fail 
   [_ _]
   {::pco/input  []
    ::pco/output [:i-fail]}
   (throw (ex-info "Fake resolver error" {})))
 
-(pco/defresolver person
+(pco/defresolver transcript-data
+  [_ _]
+  {::pco/input  [:transcript/id]
+   ::pco/output [:label :segments]}
+  (js/console.log "MOCK SERVER: Simulate loading transcript data")
+  mock-data/transcript)
+
+#_(pco/defresolver person
   [_ {id :person/id}]
   {::pco/input  [:person/id]
    ::pco/output [:person/id :person/name]}
   {:person/id id, :person/name (str "Joe #" id)})
 
-(pco/defmutation create-random-thing [_env {:keys [tmpid] :as _params}]
+#_(pco/defmutation create-random-thing [_env {:keys [tmpid] :as _params}]
   ;; Fake generating a new server-side entity with
   ;; a server-decided actual ID
   ;; NOTE: To match with the Fulcro-sent mutation, we
@@ -50,7 +58,10 @@
 
 (def my-resolvers-and-mutations 
   "Add any resolvers you make to this list (and reload to re-create the parser)"
-  [create-random-thing i-fail person])
+  [#_create-random-thing 
+   #_i-fail
+   #_person
+   transcript-data])
 
 (def enable-pathom-viz false)
 
