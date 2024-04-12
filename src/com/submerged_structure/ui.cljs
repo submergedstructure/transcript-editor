@@ -5,22 +5,29 @@
    [com.fulcrologic.fulcro.algorithms.tempid :as tempid]
    [com.fulcrologic.fulcro.algorithms.data-targeting :as targeting]
    [com.fulcrologic.fulcro.algorithms.normalized-state :as norm]
+   [com.fulcrologic.fulcro.algorithms.denormalize :as fdn]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc transact!]]
    [com.fulcrologic.fulcro.raw.components :as rc]
    [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom :refer [button div form h1 h2 h3 input label li ol p ul]]
-   [com.submerged-structure.mock-data :as mock-data]
-   [com.submerged-structure.ui :as ui]))
+   [com.submerged-structure.mock-data :as mock-data]))
 
-(defsc Segment [this {:keys [start end text]}]
-  (li (str start " - " end ": " text)))
+(defsc Word [this {:keys [start end word]}]
+  (li (str start " - " end ": " word)))
 
-(def ui-segment (comp/factory Segment))
+(def ui-word (comp/factory Word {:keyfn :id}))
+
+
+(defsc Segment [this {:keys [start end text words]}]
+  (li (str start " - " end ": " text)
+      (ul
+       (map ui-word words))))
+
+(def ui-segment (comp/factory Segment {:keyfn :id}))
 
 (defsc Transcript [this {:keys [label segments]}]
   {#_#_:query [[df/marker-table :load-progress] :label :segments]}
   (div
-   (pr-str segments)
    (p "Hello from the ui/Transcript component!")
    (div
     (h1 label)
@@ -57,7 +64,7 @@
   mock-data/transcript
   (com.fulcrologic.fulcro.components/get-initial-state Root {})
   (com.fulcrologic.fulcro.application/current-state app.application/app)
-  (fdn/db->tree [{:friends [:list/label]}] (comp/get-initial-state app.ui/Root {}) {})
+  (fdn/db->tree [{:friends [:list/label]}] (comp/get-initial-state (app/root-class app.application/app) {}) {})
   (df/load! com.submerged-structure.app/app :transcript (rc/nc '[*]))
   (df/load! com.submerged-structure.app/app :transcript Transcript)
   ;; Load this => 

@@ -11,12 +11,9 @@
   "Called by shadow-cljs upon initialization, see shadow-cljs.edn"
   []
   (println "Initializing the app...")
-  #_(app/set-root! app ui/Root {#_#_:initialize-state? true})
+  (app/set-root! app ui/Root {#_#_:initialize-state? true})
   #_(dr/initialize! app) ; make ready, if you want to use dynamic routing...
-  (app/mount! app
-              (app/root-class app)
-              "app"
-              {:initialize-state? true}))
+  (app/mount! app (app/root-class app) "app"))
 
 (defn ^:export refresh 
   "Called by shadow-cljs upon hot code reload, see shadow-cljs.edn"
@@ -27,5 +24,5 @@
   #_(df/load! app :transcript ui/Transcript))
 
 (comment
-  
+  (com.fulcrologic.fulcro.components/get-initial-state com.submerged-structure.ui/Transcript)
   )
