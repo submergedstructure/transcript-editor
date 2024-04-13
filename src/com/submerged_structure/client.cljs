@@ -12,6 +12,7 @@
   []
   (println "Initializing the app...")
   (app/set-root! app ui/Root {#_#_:initialize-state? true})
+  (df/load! app :current-transcript ui/Root)
   #_(dr/initialize! app) ; make ready, if you want to use dynamic routing...
   (app/mount! app (app/root-class app) "app"))
 
@@ -21,8 +22,9 @@
   (println "Refreshing after a hot code reload...")
   #_(comp/refresh-dynamic-queries! app)
   (app/mount! app (app/root-class app) "app")
-  #_(df/load! app :transcript ui/Transcript))
+  (df/load! app :current-transcript ui/Root))
 
 (comment
-  (com.fulcrologic.fulcro.components/get-initial-state com.submerged-structure.ui/Transcript)
+  (app/current-state app)
+  (com.fulcrologic.fulcro.components/get-initial-state com.submerged-structure.ui/Root)
   )

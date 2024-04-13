@@ -26,42 +26,29 @@
    [promesa.core :as p]
    [com.submerged-structure.mock-data :as mock-data]))
 
-#_(pco/defresolver i-fail 
-  [_ _]
+
+
+(pco/defresolver current-transcript [_ _]
   {::pco/input  []
-   ::pco/output [:i-fail]}
-  (throw (ex-info "Fake resolver error" {})))
+   ::pco/output [{:current-transcript [:transcript/id]}]}
+  {:current-transcript {:transcript/id "2221f28c-0f2d-479b-b4a7-80924c80721c"}})
+
 
 (pco/defresolver transcript-data
-  [_ _]
+  [_ {:keys [transcript/id]}]
   {::pco/input  [:transcript/id]
-   ::pco/output [:label :segments]}
-  (js/console.log "MOCK SERVER: Simulate loading transcript data")
+   ::pco/output [:transcript/audio-filename :transcript/label :transcript/segments :transcript/id]}
+  (js/console.log "MOCK SERVER: Simulate loading transcript data" id)
   mock-data/transcript)
 
-#_(pco/defresolver person
-  [_ {id :person/id}]
-  {::pco/input  [:person/id]
-   ::pco/output [:person/id :person/name]}
-  {:person/id id, :person/name (str "Joe #" id)})
-
-#_(pco/defmutation create-random-thing [_env {:keys [tmpid] :as _params}]
-  ;; Fake generating a new server-side entity with
-  ;; a server-decided actual ID
-  ;; NOTE: To match with the Fulcro-sent mutation, we
-  ;; need to explicitly name it to use the same symbol
-  {::pco/op-name 'com.submerged-structure.mutations/create-random-thing
-   ;::pco/params [:tmpid] - derived from destructuring
-   ::pco/output [:tempids]}
-  (println "SERVER: Simulate creating a new thing with real DB id 123" tmpid)
-  {:tempids {tmpid 123}})
 
 (def my-resolvers-and-mutations 
   "Add any resolvers you make to this list (and reload to re-create the parser)"
   [#_create-random-thing 
    #_i-fail
    #_person
-   transcript-data])
+   transcript-data
+   current-transcript])
 
 (def enable-pathom-viz false)
 
