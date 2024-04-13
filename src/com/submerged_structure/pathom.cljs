@@ -31,7 +31,7 @@
 (pco/defresolver current-transcript [_ _]
   {::pco/input  []
    ::pco/output [{:root/current-transcript [:transcript/id]}]}
-  {:current-transcript {:transcript/id "2221f28c-0f2d-479b-b4a7-80924c80721c"}})
+  {:root/current-transcript {:transcript/id "2221f28c-0f2d-479b-b4a7-80924c80721c"}})
 
 
 (pco/defresolver transcript-data

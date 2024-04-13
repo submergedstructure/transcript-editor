@@ -12,7 +12,7 @@
   []
   (println "Initializing the app...")
   (app/set-root! app ui/Root {#_#_:initialize-state? true})
-  (df/load! app :current-transcript ui/Root)
+  (df/load! app :root/current-transcript ui/Root)
   #_(dr/initialize! app) ; make ready, if you want to use dynamic routing...
   (app/mount! app (app/root-class app) "app"))
 
@@ -22,7 +22,7 @@
   (println "Refreshing after a hot code reload...")
   #_(comp/refresh-dynamic-queries! app)
   (app/mount! app (app/root-class app) "app")
-  (df/load! app :current-transcript ui/Root))
+  (df/load! app :root/current-transcript ui/Root))
 
 (comment
   (app/force-root-render! app)
