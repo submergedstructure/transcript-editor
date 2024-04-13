@@ -41,19 +41,42 @@
 
 (def ui-transcript (comp/factory Transcript {:keyfn :transcript/id}))
 
-(defsc Root [this {:keys [:current-transcript]}]
-  {:query (fn [_] [{:current-transcript (comp/get-query Transcript)}])}
+(defsc Root [this {:keys [:root/current-transcript]}]
+  {:query (fn [_] [{:root/current-transcript (comp/get-query Transcript)}])}
   (div
    (p "Hello from the ui/Root component!")
    (ui-transcript current-transcript)))
 
 
 (comment
+  (comp/get-query Root)
+
+  (require '[clojure.walk :as w])
+  (w/postwalk
+   (fn [x]
+     (cond
+       (map-entry? x) x
+       (vector? x) (list
+                    (get-in (meta x)
+                            [:component :displayName]
+                            :NO-COMPONENT)
+                    (filterv map? x))
+
+       :default x))
+   (comp/get-query Root))
+  ;; => (:NO-COMPONENT
+  ;;     [#:root{:current-transcript
+  ;;             (:NO-COMPONENT [#:transcript{:segments (:NO-COMPONENT [#:segment{:words (:NO-COMPONENT [])}])}])}])
+
+
+
+
+
   (require 'clojure.spec.alpha 'edn-query-language.core)
   (clojure.spec.alpha/explain
    :edn-query-language.core/query
    (comp/get-query com.submerged-structure.ui/Root))
-  
+
   (comp/get-initial-state Transcript {})
   mock-data/transcript
   (comp/get-query com.submerged-structure.ui/Transcript)
@@ -66,4 +89,5 @@
   ;; Pathom 2: will get back from server {:sequence [{..}, ..]} - i.e. a *vector*
   ;; even though the resolver returns a lazy seq
   ;; Pathom 3: returns a list: {:sequence ({..}, ..)}
-  (df/load! com.submerged-structure.app/app :sequence (rc/nc [:tst/id :tst/val])))
+  (df/load! com.submerged-structure.app/app :sequence (rc/nc [:tst/id :tst/val]))
+  )

@@ -25,6 +25,7 @@
   (df/load! app :current-transcript ui/Root))
 
 (comment
+  (app/force-root-render! app)
   (app/current-state app)
   (com.fulcrologic.fulcro.components/get-initial-state com.submerged-structure.ui/Root)
   )
