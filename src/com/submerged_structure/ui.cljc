@@ -9,7 +9,8 @@
             [com.submerged-structure.mock-data :as mock-data]))
 
 (defsc Word [this {:keys [word/start word/end word/word]}]
-  {:ident :word/id
+  {:initial-state {}
+   :ident :word/id
    :query [:word/id :word/start :word/end :word/word]}
   (li "Word componet "(str start " - " end ": " word)))
 
@@ -17,7 +18,8 @@
 
 
 (defsc Segment [this {:keys [segment/start segment/end segment/text segment/words]}]
-  {:ident :segment/id
+  {:initial-state {}
+   :ident :segment/id
    :query [:segment/id :segment/start :segment/end :segment/text {:segment/words (comp/get-query Word)}]}
   (li "Sgement component" (str start " - " end ": " text)
       (ul
@@ -27,6 +29,7 @@
 
 (defsc Transcript [this {:keys [transcript/id transcript/audio-filename transcript/label transcript/segments]}]
   {:ident :transcript/id
+   :initial-state {}
    :query [:transcript/id :transcript/label
            :transcript/audio-filename
            {:transcript/segments (comp/get-query Segment)}]}
