@@ -11,7 +11,7 @@
 (defsc Word [this {:keys [word/start word/end word/word]}]
   {:ident :word/id
    :query [:word/id :word/start :word/end :word/word]}
-  (li (str start " - " end ": " word)))
+  (li "Word componet "(str start " - " end ": " word)))
 
 (def ui-word (comp/factory Word {:keyfn :word/id}))
 
@@ -19,7 +19,7 @@
 (defsc Segment [this {:keys [segment/start segment/end segment/text segment/words]}]
   {:ident :segment/id
    :query [:segment/id :segment/start :segment/end :segment/text {:segment/words (comp/get-query Word)}]}
-  (li (str start " - " end ": " text)
+  (li "Sgement component" (str start " - " end ": " text)
       (ul
        (map ui-word words))))
 
