@@ -2,6 +2,7 @@
   (:require #?(:clj [com.fulcrologic.fulcro.dom-server :as dom  :refer [div h1 li p ul]]
       :cljs [com.fulcrologic.fulcro.dom :as dom  :refer [div h1 li p ul]])
             [com.fulcrologic.fulcro.algorithms.normalize :as fn]
+            [com.fulcrologic.fulcro.algorithms.denormalize :as fdn]
             [com.fulcrologic.fulcro.application :as app]
             [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
             [com.fulcrologic.fulcro.data-fetch :as df]
@@ -53,6 +54,17 @@
 
 (comment
   (comp/get-query Root)
+  ;; => [#:root{:current-transcript
+  ;;            [:transcript/id
+  ;;             :transcript/label
+  ;;             :transcript/audio-filename
+  ;;             #:transcript{:segments
+  ;;                          [:segment/id
+  ;;                           :segment/start
+  ;;                           :segment/end
+  ;;                           :segment/text
+  ;;                           #:segment{:words [:word/id :word/start :word/end :word/word]}]}]}]
+
 
   (require '[clojure.walk :as w])
   (w/postwalk
@@ -70,6 +82,8 @@
   ;; => (:NO-COMPONENT
   ;;     [#:root{:current-transcript
   ;;             (:NO-COMPONENT [#:transcript{:segments (:NO-COMPONENT [#:segment{:words (:NO-COMPONENT [])}])}])}])
+
+
 
 
 
