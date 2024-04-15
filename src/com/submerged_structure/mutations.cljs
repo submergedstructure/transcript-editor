@@ -11,3 +11,4 @@
   (action [{:keys [state] :as env}]
           (swap! state assoc-in [:new-thing tmpid] {:id tmpid, :txt "A new thing!"}))
   (remote [_] true))
+

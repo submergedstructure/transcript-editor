@@ -1,46 +1,75 @@
 (ns com.submerged-structure.ui
-  (:require #?(:clj [com.fulcrologic.fulcro.dom-server :as dom  :refer [div h1 li p ul]]
-      :cljs [com.fulcrologic.fulcro.dom :as dom  :refer [div h1 li p ul]])
+  (:require [com.fulcrologic.fulcro.dom :as dom  :refer [div h1 li p ul span]]
             [com.fulcrologic.fulcro.algorithms.normalize :as fn]
             [com.fulcrologic.fulcro.algorithms.denormalize :as fdn]
             [com.fulcrologic.fulcro.application :as app]
             [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
             [com.fulcrologic.fulcro.data-fetch :as df]
             [com.fulcrologic.fulcro.raw.components :as rc]
-            [com.submerged-structure.mock-data :as mock-data]))
+            [com.submerged-structure.mock-data :as mock-data]
+            [com.fulcrologic.fulcro.algorithms.react-interop :as interop]
+            ["@wavesurfer/react" :default WavesurferPlayer]
+            ["wavesurfer.js/dist/plugins/minimap.esm.js" :default Minimap]))
 
 (defsc Word [this {:keys [word/start word/end word/word]}]
-  {:initial-state {}
-   :ident :word/id
+  {:ident :word/id
    :query [:word/id :word/start :word/end :word/word]}
-  (li "Word componet "(str start " - " end ": " word)))
+  (span word))
 
 (def ui-word (comp/factory Word {:keyfn :word/id}))
 
 
 (defsc Segment [this {:keys [segment/start segment/end segment/text segment/words]}]
-  {:initial-state {}
-   :ident :segment/id
+  {:ident :segment/id
    :query [:segment/id :segment/start :segment/end :segment/text {:segment/words (comp/get-query Word)}]}
-  (li "Sgement component" (str start " - " end ": " text)
-      (ul
-       (map ui-word words))))
+  (p (interleave (map ui-word words) (repeat " ")))) ;; space between words is language dependent may need to change to support eg. Asian languages.
 
 (def ui-segment (comp/factory Segment {:keyfn :segment/id}))
 
-(defsc Transcript [this {:keys [transcript/id transcript/audio-filename transcript/label transcript/segments]}]
+(defonce wavesurfer (atom {:player nil
+                           :playing? false}))
+                           
+
+(def ui-wavesurfer (interop/react-factory WavesurferPlayer))
+
+(defsc Transcript [this {:keys [transcript/audio-filename transcript/label transcript/segments]}]
   {:ident :transcript/id
-   :initial-state {}
-   :query [:transcript/id :transcript/label
+   :query [:transcript/id
+           :transcript/label
            :transcript/audio-filename
            {:transcript/segments (comp/get-query Segment)}]}
   (div
-   (p "Hello from the ui/Transcript component!")
    (div
     (h1 label)
-    (p audio-filename)
-    (p (str id))
-    (ul
+    (div
+     (ui-wavesurfer 
+      {:url (str "audio_and_transcript/" audio-filename ".mp3")
+       :height 100
+       :minPxPerSec 100,
+       :waveColor "violet"
+       :onReady (fn [player] (swap! wavesurfer assoc :player player))
+       :onTimeupdate (fn [player] (js/console.log "Time ready" (.getCurrentTime player)))
+       :hideScrollbar true,
+       :autoCenter false,
+
+       :plugins [(.create Minimap
+                          {:height 20,
+                           :waveColor "#ddd",
+                           :progressColor "#999"})]})
+     (dom/button {:onClick
+                  (fn [_]
+                    (let [player (:player @wavesurfer)
+                          playing? (:playing? @wavesurfer)]
+                      (when player
+                        (if playing?
+                          (do
+                            (.pause player)
+                            (swap! wavesurfer assoc :playing? false))
+                          (do
+                            (.play player)
+                            (swap! wavesurfer assoc :playing? true))))))}
+                 (if (:playing? @wavesurfer) "Pause" "Play")))
+    (div :#transcript
      (map ui-segment segments)))))
 
 (def ui-transcript (comp/factory Transcript {:keyfn :transcript/id}))
@@ -48,7 +77,6 @@
 (defsc Root [this {:keys [:root/current-transcript]}]
   {:query (fn [_] [{:root/current-transcript (comp/get-query Transcript)}])}
   (div
-   (p "Hello from the ui/Root component!")
    (ui-transcript current-transcript)))
 
 
@@ -106,5 +134,5 @@
   ;; Pathom 2: will get back from server {:sequence [{..}, ..]} - i.e. a *vector*
   ;; even though the resolver returns a lazy seq
   ;; Pathom 3: returns a list: {:sequence ({..}, ..)}
-  (df/load! com.submerged-structure.app/app :sequence (rc/nc [:tst/id :tst/val]))
-  )
+  (df/load! com.submerged-structure.app/app :sequence (rc/nc [:tst/id :tst/val])))
+  

@@ -8,7 +8,6 @@
             [com.fulcrologic.fulcro.mutations :as m]
             [com.fulcrologic.fulcro.algorithms.normalize :as fn]
             [com.fulcrologic.fulcro.components :as comp]
-            [com.submerged-structure.ui :as ui]
             [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]))
 
 ;; Code to be run in the clj repl to convert the transcript data returned by my 
@@ -87,6 +86,3 @@
   (transcript-data)
   )
 
-
-(comment
-  (fn/tree->db  ui/Root (comp/get-initial-state ui/Root) true))
