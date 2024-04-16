@@ -37,7 +37,7 @@
 (pco/defresolver transcript-data
   [_ {:keys [transcript/id]}]
   {::pco/input  [:transcript/id]
-   ::pco/output [:transcript/audio-filename :transcript/label :transcript/segments :transcript/id]}
+   ::pco/output [:transcript/audio-filename :transcript/label :transcript/segments :transcript/id :transcript/current-time]}
   (js/console.log "MOCK SERVER: Simulate loading transcript data" id)
   mock-data/transcript)
 

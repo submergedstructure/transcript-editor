@@ -70,7 +70,8 @@
                      (get "segments"))]
   (-> {"audio-filename" filename
        "label" "Real Polish Hint 1"
-       "segments" segments}
+       "segments" segments
+       "current-time" 0}
       add-ids
       (add-ns-and-keywordize-keys-in-m "transcript"))))
 

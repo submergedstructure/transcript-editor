@@ -12,7 +12,8 @@
                        :devtools   {:preloads   [shadow.remote.runtime.cljs.browser ; Shadow Inspect tab support
                                                  holyjak.fulcro-troubleshooting ; optional, to find mistakes faster
                                                  com.fulcrologic.fulcro.inspect.preload
-                                                 com.fulcrologic.fulcro.inspect.dom-picker-preload]
+                                                 com.fulcrologic.fulcro.inspect.dom-picker-preload
+                                                 holyjak.fulcro-troubleshooting]
                                     :after-load com.submerged-structure.client/refresh}}
             #_#_
             :workspaces {:target     nubank.workspaces.shadow-cljs.target

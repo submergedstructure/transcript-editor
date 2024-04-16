@@ -12,3 +12,7 @@
           (swap! state assoc-in [:new-thing tmpid] {:id tmpid, :txt "A new thing!"}))
   (remote [_] true))
 
+(defmutation update-transcript-current-time [{:keys [transcript/id current-time]}]
+  (action [{:keys [state] :as env}]
+          (swap! state assoc-in [:transcript/id id :transcript/current-time] current-time))
+  (remote [_] false))

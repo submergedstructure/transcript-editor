@@ -2,19 +2,21 @@
  :deps
  {org.clojure/clojure {:mvn/version "1.12.0-alpha5"},
   com.fulcrologic/fulcro {:mvn/version "3.7.3"},
-  com.wsscode/pathom3     {:mvn/version "2023.08.22-alpha"},
+  com.wsscode/pathom3 {:mvn/version "2023.08.22-alpha"},
   holyjak/fulcro-troubleshooting
-  {;:git/tag "latest", ; run `clojure -X:deps git-resolve-tags` to insert the correct :sha
-   :git/sha "b3648778862b5f0cb792134f459092e59ec2d663",
+  {:git/sha "b3648778862b5f0cb792134f459092e59ec2d663",
    :git/url "https://github.com/holyjak/fulcro-troubleshooting"}},
  :aliases
  {:dev
-  {:extra-paths ["dev"]
+  {:extra-paths ["dev"],
    :extra-deps
    {thheller/shadow-cljs {:mvn/version "2.25.7"},
     binaryage/devtools {:mvn/version "1.0.7"},
-    ;cider/cider-nrepl {:mvn/version "0.38.1"},
-    cider/cider-nrepl {:mvn/version "0.28.5"}, ; as of 2024/02, Calva seems to want this version
-    cider/piggieback {:mvn/version "0.5.3"}
-    com.wsscode/pathom-viz-connector {:mvn/version "2022.02.14"}
+    holyjak/fulcro-troubleshooting
+    {:git/tag "latest",
+     :git/sha "b364877",
+     :git/url "https://github.com/holyjak/fulcro-troubleshooting"},
+    cider/cider-nrepl {:mvn/version "0.28.5"},
+    cider/piggieback {:mvn/version "0.5.3"},
+    com.wsscode/pathom-viz-connector {:mvn/version "2022.02.14"},
     cheshire/cheshire {:mvn/version "5.13.0"}}}}}

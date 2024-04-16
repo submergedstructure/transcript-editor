@@ -25,5 +25,17 @@
                                              status-code
                                              error-text
                                              body
-                                             (:com.wsscode.pathom3.connect.runner/attribute-errors body)))})
+                                             (:com.wsscode.pathom3.connect.runner/attribute-errors body)))
+                                  :render-middleware
+                                   (when goog.DEBUG js/holyjak.fulcro_troubleshooting.troubleshooting_render_middleware)})
                  (with-react18)))
+
+
+(comment 
+  (-> (app/current-state app)
+   :transcript/id
+   (get "2221f28c-0f2d-479b-b4a7-80924c80721c")
+   :transcript/current-time)
+  (assoc-in (app/current-state app) [:transcript/id "2221f28c-0f2d-479b-b4a7-80924c80721c" :transcript/current-time] 20)
+  
+  )
