@@ -24,13 +24,12 @@
    [com.wsscode.pathom3.path :as p.path]
    [com.wsscode.pathom3.plugin :as p.plugin]
    [promesa.core :as p]
-   [com.submerged-structure.mock-data :as mock-data]))
-
+   [com.submerged-structure.mock-data :as mock-data]
+   [com.submerged-structure.mutations :as mutations]))
 
 
 (pco/defresolver current-transcript [_ _]
-  {::pco/input  []
-   ::pco/output [{:root/current-transcript [:transcript/id]}]}
+  {::pco/output [{:root/current-transcript [:transcript/id]}]}
   {:root/current-transcript {:transcript/id "2221f28c-0f2d-479b-b4a7-80924c80721c"}})
 
 
@@ -41,6 +40,14 @@
   (js/console.log "MOCK SERVER: Simulate loading transcript data" id)
   mock-data/transcript)
 
+#_(def ui-player-state-atom
+  (atom {:ui-player/doing :loading}))
+
+#_(pco/defresolver ui-player-doing
+  [_ _]
+  ::pco/output [:ui-player/doing]
+  {:ui-player/doing (:ui-player/doing @ui-player-state-atom)})
+
 
 (def my-resolvers-and-mutations 
   "Add any resolvers you make to this list (and reload to re-create the parser)"
@@ -48,7 +55,10 @@
    #_i-fail
    #_person
    transcript-data
-   current-transcript])
+   current-transcript
+   
+
+   #_ui-player-doing])
 
 (def enable-pathom-viz false)
 
@@ -79,6 +89,7 @@
       ch)))
 
 (comment
+  
   (p.eql/process env '[{:i-fail [*]}])
 
   (p.eql/process

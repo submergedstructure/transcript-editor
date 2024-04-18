@@ -20,22 +20,26 @@
 (def ui-word (comp/factory Word {:keyfn :word/id}))
 
 
-(defsc Segment [this {:keys [segment/start segment/end segment/text segment/words]}]
+(defsc Segment [this {:keys [segment/words]}]
   {:ident :segment/id
-   :query [:segment/id :segment/start :segment/end :segment/text {:segment/words (comp/get-query Word)}]}
+   :query [:segment/id {:segment/words (comp/get-query Word)}]}
   (p (interleave (map ui-word words) (repeat " ")))) ;; space between words is language dependent may need to change to support eg. Asian languages.
 
 (def ui-segment (comp/factory Segment {:keyfn :segment/id}))
-
-(defonce wavesurfer (atom {:player nil
-                           :playing? false}))
                            
-
 (def ui-wavesurfer (interop/react-factory WavesurferPlayer))
 
-(defsc Transcript [this {:keys [transcript/id transcript/audio-filename transcript/label transcript/segments transcript/current-time]}]
-  {:ident :transcript/id
-   :query [:transcript/id
+(defonce wavesurfer (atom {:player nil}))
+
+(defsc Transcript [this {:keys [transcript/id 
+                                transcript/label
+                                transcript/segments
+                                transcript/current-time
+                                transcript/audio-filename
+                                ui-player/doing]}]
+   {:ident :transcript/id
+    :query [[:ui-player/doing '_]
+           :transcript/id
            :transcript/label
            :transcript/audio-filename
            :transcript/current-time
@@ -48,30 +52,31 @@
       :height 100
       :minPxPerSec 50,
       :waveColor "violet"
-      :onReady (fn [player] (swap! wavesurfer assoc :player player))
-      :onTimeupdate (fn [player] (let [current-time (.getCurrentTime player)]
-                                   (comp/transact! this (api/update-transcript-current-time {:transcript/id id :transcript/current-time current-time}))
-                                   #_(js/console.log "Time ready" current-time)))
+      :onReady (fn [player]
+                 (swap! wavesurfer assoc :player player)
+                 (comp/transact! this [(api/update-ui-player-doing {:ui-player/doing :paused})]))
+      #_#_:onTimeupdate (fn [player] (let [current-time (.getCurrentTime player)]
+                                   (comp/transact! this [(api/update-transcript-current-time {:transcript/id id :transcript/current-time current-time})])))
       :hideScrollbar true,
       :autoCenter false,
+
+      :onPause (fn [_] (comp/transact! this [(api/update-ui-player-doing {:ui-player/doing :paused})]))
+
+      :onPlay (fn [_] (comp/transact! this [(api/update-ui-player-doing {:ui-player/doing :playing})]))
 
       :plugins [(.create Minimap
                          {:height 20,
                           :waveColor "#ddd",
                           :progressColor "#999"})]})
-    (dom/button {:onClick
-                 (fn [_]
-                   (let [player (:player @wavesurfer)
-                         playing? (:playing? @wavesurfer)]
-                     (when player
-                       (if playing?
-                         (do
-                           (.pause player)
-                           (swap! wavesurfer assoc :playing? false))
-                         (do
-                           (.play player)
-                           (swap! wavesurfer assoc :playing? true))))))}
-                (if (:playing? @wavesurfer) "Pause" "Play"))
+    (if (= doing :loading)
+      (div "Loading...")
+      (dom/button {:onClick
+                   (fn [_]
+                     (if (= doing :playing)
+                       (.pause (:player @wavesurfer))
+                       (.play (:player @wavesurfer))))}
+
+                  (if (= doing :playing) "Play" "Pause")))
     (div current-time)
     (div :#transcript
          (map ui-segment segments)))))
@@ -85,6 +90,10 @@
 
 
 (comment
+  (.pause (:player @wavesurfer))
+  (.play (:player @wavesurfer))
+  
+  (comp/get-query Transcript)
   
   (comp/get-query Root)
   ;; => [#:root{:current-transcript

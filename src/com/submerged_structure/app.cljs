@@ -3,7 +3,8 @@
    [com.submerged-structure.mock-server :as mock-server]
    [com.fulcrologic.fulcro.application :as app]
    [com.fulcrologic.fulcro.react.version18 :refer [with-react18]]
-   [edn-query-language.core :as eql]))
+   [edn-query-language.core :as eql]
+   [com.fulcrologic.fulcro.components :as comp]))
 
 (defn global-eql-transform
   [ast]
@@ -34,8 +35,10 @@
 (comment 
   (-> (app/current-state app)
    :transcript/id
-   (get "2221f28c-0f2d-479b-b4a7-80924c80721c")
-   :transcript/current-time)
+   (get "2221f28c-0f2d-479b-b4a7-80924c80721c"))
+  ;; => nil
+
   (assoc-in (app/current-state app) [:transcript/id "2221f28c-0f2d-479b-b4a7-80924c80721c" :transcript/current-time] 20)
+  (comp/transact! app ['(com.submerged-structure.mutations/update-transcript-current-time {:transcript/id "2221f28c-0f2d-479b-b4a7-80924c80721c" :current-time 5})])
   
   )
