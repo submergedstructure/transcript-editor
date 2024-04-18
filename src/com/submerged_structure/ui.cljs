@@ -31,15 +31,14 @@
 
 (defonce wavesurfer (atom {:player nil}))
 
-(defsc Transcript [this {:keys [transcript/id 
+(defsc Transcript [this {:keys [transcript/id
                                 transcript/label
                                 transcript/segments
                                 transcript/current-time
-                                transcript/audio-filename
-                                ui-player/doing]}]
-   {:ident :transcript/id
-    :query [[:ui-player/doing '_]
-           :transcript/id
+                                transcript/audio-filename]}]
+   {:initial-state {}
+    :ident :transcript/id
+    :query [:transcript/id
            :transcript/label
            :transcript/audio-filename
            :transcript/current-time
@@ -53,30 +52,28 @@
       :minPxPerSec 50,
       :waveColor "violet"
       :onReady (fn [player]
+                 (js/console.log "Wavesurfer ready" player)
                  (swap! wavesurfer assoc :player player)
-                 (comp/transact! this [(api/update-ui-player-doing {:ui-player/doing :paused})]))
-      #_#_:onTimeupdate (fn [player] (let [current-time (.getCurrentTime player)]
+                 #_(comp/transact! this [(api/update-ui-player-doing {:ui-player/doing :paused})]))
+      :onTimeupdate (fn [player] (let [current-time (.getCurrentTime player)]
                                    (comp/transact! this [(api/update-transcript-current-time {:transcript/id id :transcript/current-time current-time})])))
       :hideScrollbar true,
       :autoCenter false,
 
-      :onPause (fn [_] (comp/transact! this [(api/update-ui-player-doing {:ui-player/doing :paused})]))
+      #_#_:onPause (fn [_] (comp/transact! this [(api/update-ui-player-doing {:ui-player/doing :paused})]))
 
-      :onPlay (fn [_] (comp/transact! this [(api/update-ui-player-doing {:ui-player/doing :playing})]))
+      #_#_:onPlay (fn [_] (comp/transact! this [(api/update-ui-player-doing {:ui-player/doing :playing})]))
 
       :plugins [(.create Minimap
                          {:height 20,
                           :waveColor "#ddd",
                           :progressColor "#999"})]})
-    (if (= doing :loading)
-      (div "Loading...")
-      (dom/button {:onClick
-                   (fn [_]
-                     (if (= doing :playing)
-                       (.pause (:player @wavesurfer))
-                       (.play (:player @wavesurfer))))}
-
-                  (if (= doing :playing) "Play" "Pause")))
+    (dom/button {:onClick
+                 (fn [_] (.play (:player @wavesurfer)))}
+                "Play")
+    (dom/button {:onClick
+                 (fn [_] (.pause (:player @wavesurfer)))}
+                "Pause")
     (div current-time)
     (div :#transcript
          (map ui-segment segments)))))
@@ -84,7 +81,8 @@
 (def ui-transcript (comp/factory Transcript {:keyfn :transcript/id}))
 
 (defsc Root [this {:keys [:root/current-transcript]}]
-  {:query (fn [_] [{:root/current-transcript (comp/get-query Transcript)}])}
+  {:initial-state (fn [_] {:root/current-transcript (comp/get-initial-state Transcript {})})
+   :query (fn [_] [{:root/current-transcript (comp/get-query Transcript)}])}
   (div
    (ui-transcript current-transcript)))
 

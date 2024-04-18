@@ -8,7 +8,7 @@
    [com.fulcrologic.fulcro.mutations :refer [defmutation]]
    #_[com.wsscode.pathom3.connect.operation :as pco]))
 
-(defmutation update-transcript-current-time [{:keys [transcript/id current-time]}]
+(defmutation update-transcript-current-time [{:keys [transcript/id transcript/current-time]}]
   (action [{:keys [state]}]
           (swap! state assoc-in [:transcript/id id :transcript/current-time] current-time))
   (remote [_] false))
