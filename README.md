@@ -26,6 +26,11 @@ P. Viz support is off by default because otherwise it [logs tons of errors](http
 
 You will run shadow-cljs, which will watch, compile, and update the sources and also run a HTTP server to serve the application.
 
+## GitHub pages automatic deployment
+
+A GitHub workflows action in .github/workflows/main.yml automatically deploys the code to github pages in order. If you clone this repo you just need to go to the settings page of your github repository and select the "Pages" subpage and make sure the Build and Deployment source is set to "Github Actions".
+
+
 ## Usage
 
 ### Alternative 1: run locally
