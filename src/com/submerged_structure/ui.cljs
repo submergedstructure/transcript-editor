@@ -8,9 +8,10 @@
             [com.fulcrologic.fulcro.raw.components :as rc]
             [com.submerged-structure.mock-data :as mock-data]
             [com.fulcrologic.fulcro.algorithms.react-interop :as interop]
-            ["@wavesurfer/react" :default WavesurferPlayer]
+            ["@wavesurfer/react" :refer [useWavesurfer Wavesurfer]]
             ["wavesurfer.js/dist/plugins/minimap.esm.js" :default Minimap]
-            [com.submerged-structure.mutations :as api]))
+            [com.submerged-structure.mutations :as api]
+            [com.fulcrologic.fulcro.react.hooks :as hooks]))
 
 (defsc Word [this {:keys [word/start word/end word/word]}]
   {:ident :word/id
@@ -26,26 +27,61 @@
   (p (interleave (map ui-word words) (repeat " ")))) ;; space between words is language dependent may need to change to support eg. Asian languages.
 
 (def ui-segment (comp/factory Segment {:keyfn :segment/id}))
-                           
-(def ui-wavesurfer (interop/react-factory WavesurferPlayer))
 
-(defonce wavesurfer (atom {:player nil}))
+
 
 (defsc Transcript [this {:keys [transcript/id
                                 transcript/label
                                 transcript/segments
                                 transcript/current-time
                                 transcript/audio-filename]}]
-   {:initial-state {}
-    :ident :transcript/id
-    :query [:transcript/id
+  {:use-hooks? true
+   :initial-state {}
+   :ident :transcript/id
+   :query [:transcript/id
            :transcript/label
            :transcript/audio-filename
            :transcript/current-time
-           {:transcript/segments (comp/get-query Segment)}]}
+           {:transcript/segments (comp/get-query Segment)}]
+   #_#_:componentDidMount (fn [this]
+                        (useWavesurfer
+                         {:container (js/document.getElementById "wavesurfer-container")
+                          :url (str "audio_and_transcript/" "realpolish-hint1" ".mp3")
+                          :waveColor "violet"
+                          :height 100
+                          :minPxPerSec 50,
+                          :plugins [(.create Minimap
+                                             {:height 20,
+                                              :waveColor "#ddd",
+                                              :progressColor "#999"})]}))}
   (div
-   (h1 label)
-   (div
+   (h1 label)  
+   (let [container-ref (hooks/use-ref)
+         {:keys [^Wavesrufer wavesurfer ready? playing? current-time]}
+         (useWavesurfer
+          {:container container-ref
+           :url (str "audio_and_transcript/" audio-filename ".mp3")
+           :waveColor "violet"
+           :height 100
+           :minPxPerSec 50,
+           :plugins [(.create Minimap
+                              {:height 20,
+                               :waveColor "#ddd",
+                               :progressColor "#999"})]})
+         #_#_play-pause (fn [] (when wavesurfer (.playPause wavesurfer)))]
+    
+   
+     (div {:ref container-ref} "Wavesurfer container")
+     (dom/div
+      (dom/button #_{:on-click play-pause}
+                  (if playing? "Pause" "Play"))
+      )
+     
+     (div "current-time:" current-time)
+     (div "ready?:" ready?)
+     (div :#transcript
+          (map ui-segment segments)))
+   #_(div
     (ui-wavesurfer
      {:url (str "audio_and_transcript/" audio-filename ".mp3")
       :height 100
@@ -74,9 +110,7 @@
     (dom/button {:onClick
                  (fn [_] (.pause (:player @wavesurfer)))}
                 "Pause")
-    (div current-time)
-    (div :#transcript
-         (map ui-segment segments)))))
+    )))
 
 (def ui-transcript (comp/factory Transcript {:keyfn :transcript/id}))
 
@@ -90,9 +124,9 @@
 (comment
   (.pause (:player @wavesurfer))
   (.play (:player @wavesurfer))
-  
+
   (comp/get-query Transcript)
-  
+
   (comp/get-query Root)
   ;; => [#:root{:current-transcript
   ;;            [:transcript/id
