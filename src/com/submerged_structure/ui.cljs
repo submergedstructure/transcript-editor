@@ -36,90 +36,41 @@
                                 transcript/current-time
                                 transcript/audio-filename]}]
   {:use-hooks? true
-   :initial-state {}
    :ident :transcript/id
    :query [:transcript/id
            :transcript/label
            :transcript/audio-filename
            :transcript/current-time
-           {:transcript/segments (comp/get-query Segment)}]
-   #_#_:componentDidMount (fn [this]
-                        (useWavesurfer
-                         {:container (js/document.getElementById "wavesurfer-container")
-                          :url (str "audio_and_transcript/" "realpolish-hint1" ".mp3")
-                          :waveColor "violet"
-                          :height 100
-                          :minPxPerSec 50,
-                          :plugins [(.create Minimap
-                                             {:height 20,
-                                              :waveColor "#ddd",
-                                              :progressColor "#999"})]}))}
+           {:transcript/segments (comp/get-query Segment)}]}
   (div
-   (h1 label)  
-   (let [container-ref
-         ;;called every time ref changes
-         (hooks/use-callback
-           (fn [node]
-             (js/console.log "container-ref before when" node)
-             (when node
-               ;;only reached when ref is not nil
-               (js/console.log "container-ref after when" node)
-               (let [{:keys [^Wavesrufer wavesurfer ready? playing? current-time]}
-                     (useWavesurfer
-                      {:container node
-                       :url (str "audio_and_transcript/" audio-filename ".mp3")
-                       :waveColor "violet"
-                       :height 100
-                       :minPxPerSec 50,
-                       :plugins [(.create Minimap
-                                          {:height 20,
-                                           :waveColor "#ddd",
-                                           :progressColor "#999"})]})
-                     #_#_play-pause (fn [] (when wavesurfer (.playPause wavesurfer)))]))))]
-    (div {:ref container-ref} "Wavesurfer container"))
-    (dom/div
-     (dom/button #_{:on-click play-pause}
-      #_(if playing? "Pause" "Play") "Play/Pause"))
-    
-    (div "current-time:" current-time)
-    #_(div "ready?:" ready?)
-    (div :#transcript
-         (map ui-segment segments))
-    #_(div
-       (ui-wavesurfer
-        {:url (str "audio_and_transcript/" audio-filename ".mp3")
-         :height 100
-         :minPxPerSec 50,
-         :waveColor "violet"
-         :onReady (fn [player]
-                    (js/console.log "Wavesurfer ready" player)
-                    (swap! wavesurfer assoc :player player)
-                    #_(comp/transact! this [(api/update-ui-player-doing {:ui-player/doing :paused})]))
-         :onTimeupdate (fn [player] (let [current-time (.getCurrentTime player)]
-                                      (comp/transact! this [(api/update-transcript-current-time {:transcript/id id :transcript/current-time current-time})])))
-         :hideScrollbar true,
-         :autoCenter false,
+   (h1 label)
+   (let [^:js container-ref (hooks/use-ref nil)
+         {:keys [^Wavesurfer wavesurfer ready? playing? current-time]}
+         (useWavesurfer
+          {:container container-ref
+           :url (str "audio_and_transcript/" audio-filename ".mp3")
+           :waveColor "violet"
+           :height 100
+           :minPxPerSec 50,
+           :plugins [(.create Minimap
+                              {:height 20,
+                               :waveColor "#ddd",
+                               :progressColor "#999"})]})
+         #_#_play-pause (fn [] (when wavesurfer (.playPause wavesurfer)))]
+     (div {:ref container-ref} "Wavesurfer container")
+     (dom/div
+      (dom/button #_{:on-click play-pause}
+       #_(if playing? "Pause" "Play") "Play/Pause"))
 
-         #_#_:onPause (fn [_] (comp/transact! this [(api/update-ui-player-doing {:ui-player/doing :paused})]))
-
-         #_#_:onPlay (fn [_] (comp/transact! this [(api/update-ui-player-doing {:ui-player/doing :playing})]))
-
-         :plugins [(.create Minimap
-                            {:height 20,
-                             :waveColor "#ddd",
-                             :progressColor "#999"})]})
-       (dom/button {:onClick
-                    (fn [_] (.play (:player @wavesurfer)))}
-                   "Play")
-       (dom/button {:onClick
-                    (fn [_] (.pause (:player @wavesurfer)))}
-                   "Pause"))))
+     (div "current-time:" current-time)
+     #_ (div "ready?:" ready?))
+   (div :#transcript
+        (map ui-segment segments))))
 
 (def ui-transcript (comp/factory Transcript {:keyfn :transcript/id}))
 
 (defsc Root [this {:keys [:root/current-transcript]}]
-  {:initial-state (fn [_] {:root/current-transcript (comp/get-initial-state Transcript {})})
-   :query (fn [_] [{:root/current-transcript (comp/get-query Transcript)}])}
+  {:query [{:root/current-transcript (comp/get-query Transcript)}]}
   (div
    (ui-transcript current-transcript)))
 
