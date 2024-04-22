@@ -42,30 +42,36 @@
            :transcript/audio-filename
            :transcript/current-time
            {:transcript/segments (comp/get-query Segment)}]}
-  (div
-   (h1 label)
-   (let [^:js container-ref (hooks/use-ref nil)
-         {:keys [^Wavesurfer wavesurfer ready? playing? current-time]}
-         (useWavesurfer
-          {:container container-ref
-           :url (str "audio_and_transcript/" audio-filename ".mp3")
-           :waveColor "violet"
-           :height 100
-           :minPxPerSec 50,
-           :plugins [(.create Minimap
-                              {:height 20,
-                               :waveColor "#ddd",
-                               :progressColor "#999"})]})
-         #_#_play-pause (fn [] (when wavesurfer (.playPause wavesurfer)))]
+  (let [^:js container-ref (hooks/use-ref nil)
+        mm-plugin (.create Minimap
+                           #js {:height 20,
+                                :waveColor "#ddd",
+                                :progressColor "#999"})
+        ws (useWavesurfer
+            #js {:container container-ref
+                 :url (str "audio_and_transcript/" audio-filename ".mp3")
+                 :waveColor "violet"
+                 :height 100
+                 :minPxPerSec 50,
+                 #_#_:plugins [mm-plugin]})
+        wavesurfer (.-wavesurfer ws)
+        is-ready (.-isReady ws)
+        is-playing (.-isPlaying ws)
+        current-time (.-currentTime ws)
+        play-pause (fn []
+                     (js/console.log "play-pause" wavesurfer is-ready is-playing current-time)
+                     (when wavesurfer (.playPause wavesurfer)))]
+    (div
+     (js/console.log "initiated?" wavesurfer is-ready is-playing current-time)
+     (h1 label)
      (div {:ref container-ref} "Wavesurfer container")
      (dom/div
-      (dom/button #_{:on-click play-pause}
-       #_(if playing? "Pause" "Play") "Play/Pause"))
+      (dom/button {:onClick play-pause} (if is-playing "Pause" "Play")))
 
      (div "current-time:" current-time)
-     #_ (div "ready?:" ready?))
-   (div :#transcript
-        (map ui-segment segments))))
+     (div "ready?:" is-ready)
+     (div :#transcript
+          (map ui-segment segments)))))
 
 (def ui-transcript (comp/factory Transcript {:keyfn :transcript/id}))
 
