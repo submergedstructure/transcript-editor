@@ -69,7 +69,7 @@
                      (get "output")
                      (get "segments"))]
   (-> {"audio-filename" filename
-       "label" "Real Polish Hint 1"
+       "label" "Piotr's \"Real Polish\" podcast - Hint 1"
        "segments" segments
        "current-time" 0}
       add-ids
