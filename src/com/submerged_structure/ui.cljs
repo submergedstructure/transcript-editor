@@ -31,55 +31,72 @@
 
 (defonce wavesurfer (atom {:player nil}))
 
-(defsc Transcript [this {:keys [transcript/id 
-                                transcript/label
-                                transcript/segments
-                                transcript/current-time
-                                transcript/audio-filename
-                                ui-player/doing]}]
-   {:ident :transcript/id
-    :query [[:ui-player/doing '_]
-           :transcript/id
-           :transcript/label
+(defsc WavesurferComponent [this {:transcript/keys [id audio-filename segments]}]
+  {:ident :transcript/id
+   :query [:transcript/id
            :transcript/audio-filename
-           :transcript/current-time
-           {:transcript/segments (comp/get-query Segment)}]}
-  (div
-   (h1 label)
-   (div
-    (ui-wavesurfer
-     {:url (str "audio_and_transcript/" audio-filename ".mp3")
-      :height 100
-      :minPxPerSec 50,
-      :waveColor "violet"
-      :onReady (fn [player]
-                 (swap! wavesurfer assoc :player player)
-                 (comp/transact! this [(api/update-ui-player-doing {:ui-player/doing :paused})]))
-      #_#_:onTimeupdate (fn [player] (let [current-time (.getCurrentTime player)]
-                                   (comp/transact! this [(api/update-transcript-current-time {:transcript/id id :transcript/current-time current-time})])))
-      :hideScrollbar true,
-      :autoCenter false,
+           {:transcript/segments (comp/get-query Segment)} ]
+   }
+  (ui-wavesurfer
+   {:url (str "audio_and_transcript/" audio-filename ".mp3")
+    :height 100
+    :minPxPerSec 50,
+    :waveColor "violet"
+    :normalize? true,
+    :interact? true,
 
-      :onPause (fn [_] (comp/transact! this [(api/update-ui-player-doing {:ui-player/doing :paused})]))
+    :backend 'MediaElement'
 
-      :onPlay (fn [_] (comp/transact! this [(api/update-ui-player-doing {:ui-player/doing :playing})]))
+    :onReady (fn [player]
+               (js/console.log "onReady" player)
+               (swap! wavesurfer assoc :player player)
+               (comp/transact! this [(api/update-ui-player-doing {:transcript/id id :ui-player/doing :paused})]))
+    #_#_:onTimeupdate (fn [player] (let [current-time (.getCurrentTime player)
+                                         current-word (current-word segments current-time)]
+                                     (comp/transact! this [(api/update-transcript-current-word {:transcript/id id :transcript/current-word current-word})])))
+    :hideScrollbar true,
+    :autoCenter false,
 
-      :plugins [(.create Minimap
-                         {:height 20,
-                          :waveColor "#ddd",
-                          :progressColor "#999"})]})
-    (if (= doing :loading)
-      (div "Loading...")
-      (dom/button {:onClick
-                   (fn [_]
-                     (if (= doing :playing)
-                       (.pause (:player @wavesurfer))
-                       (.play (:player @wavesurfer))))}
+    :onPause (fn [_]
+               (js/console.log "onPause")
+               (comp/transact! this [(api/update-ui-player-doing {:transcript/id id :ui-player/doing :paused})]))
 
-                  (if (= doing :playing) "Play" "Pause")))
-    (div current-time)
-    (div :#transcript
-         (map ui-segment segments)))))
+    :onPlay (fn [_] (comp/transact! this [(api/update-ui-player-doing {:transcript/id id :ui-player/doing :playing})]))
+
+    :plugins [(.create Minimap
+                       {:height 20,
+                        :normalize? true,
+                        :waveColor "#ddd",
+                        :progressColor "#999"})]}))
+  
+  (def ui-wavesurfer-component (comp/factory WavesurferComponent {:keyfn :transcript/id}))
+
+  (defsc Transcript [this {:transcript/keys [label
+                                             segments]
+                           :ui-player/keys  [doing]
+                           :>/keys        [player]}]
+    {:ident :transcript/id
+     :query [:transcript/id
+             :transcript/label
+             :ui-player/doing
+             {:transcript/segments (comp/get-query Segment)}
+             {:>/player (comp/get-query WavesurferComponent)}]}
+    (div
+     (h1 label)
+     (div
+      (ui-wavesurfer-component player)
+      (if (= doing :loading)
+        (div "Loading...")
+        (dom/button {:onClick
+                     (fn [_]
+                       (js/console.log "clicked" doing)
+                       (if (= doing :playing)
+                          (.pause (:player @wavesurfer))
+                          (.play (:player @wavesurfer))))}
+
+                    (if (= doing :playing) "Pause" "Play")))
+      (div :#transcript
+           (map ui-segment segments)))))
 
 (def ui-transcript (comp/factory Transcript {:keyfn :transcript/id}))
 
@@ -92,21 +109,10 @@
 (comment
   (.pause (:player @wavesurfer))
   (.play (:player @wavesurfer))
-  
-  (comp/get-query Transcript)
-  
-  (comp/get-query Root)
-  ;; => [#:root{:current-transcript
-  ;;            [:transcript/id
-  ;;             :transcript/label
-  ;;             :transcript/audio-filename
-  ;;             #:transcript{:segments
-  ;;                          [:segment/id
-  ;;                           :segment/start
-  ;;                           :segment/end
-  ;;                           :segment/text
-  ;;                           #:segment{:words [:word/id :word/start :word/end :word/word]}]}]}]
 
+  (comp/get-query Root)
+
+  (comp/get-initial-state Root {})
 
   (require '[clojure.walk :as w])
   (w/postwalk
@@ -125,10 +131,18 @@
   ;;     [#:root{:current-transcript
   ;;             (:NO-COMPONENT [#:transcript{:segments (:NO-COMPONENT [#:segment{:words (:NO-COMPONENT [])}])}])}])
 
+  (defn list-all-properties [obj]
+    (let [props (atom #{})]
+      (loop [proto obj]
+        (when proto
+          (do
+            (.forEach (js/Object.getOwnPropertyNames proto)
+                      (fn [prop] (swap! props conj prop)))
+            (recur (.-prototype (js/Object.getPrototypeOf proto))))))
+      @props))
 
-
-
-
+  (list-all-properties (-.media (:player @wavesurfer)))
+  
 
 
   (require 'clojure.spec.alpha 'edn-query-language.core)
@@ -148,5 +162,6 @@
   ;; Pathom 2: will get back from server {:sequence [{..}, ..]} - i.e. a *vector*
   ;; even though the resolver returns a lazy seq
   ;; Pathom 3: returns a list: {:sequence ({..}, ..)}
-  (df/load! com.submerged-structure.app/app :sequence (rc/nc [:tst/id :tst/val])))
+  (df/load! com.submerged-structure.app/app :sequence (rc/nc [:tst/id :tst/val]))
+  )
   

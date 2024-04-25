@@ -24,6 +24,8 @@
   #_(comp/refresh-dynamic-queries! app)
   (df/load! app :root/current-transcript ui/Transcript)
   (app/mount! app (app/root-class app) "app")
+  
+  
   )
 
 (comment

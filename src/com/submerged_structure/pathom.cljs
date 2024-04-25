@@ -40,14 +40,6 @@
   (js/console.log "MOCK SERVER: Simulate loading transcript data" id)
   mock-data/transcript)
 
-#_(def ui-player-state-atom
-  (atom {:ui-player/doing :loading}))
-
-#_(pco/defresolver ui-player-doing
-  [_ _]
-  ::pco/output [:ui-player/doing]
-  {:ui-player/doing (:ui-player/doing @ui-player-state-atom)})
-
 
 (def my-resolvers-and-mutations 
   "Add any resolvers you make to this list (and reload to re-create the parser)"
@@ -55,10 +47,7 @@
    #_i-fail
    #_person
    transcript-data
-   current-transcript
-   
-
-   #_ui-player-doing])
+   current-transcript])
 
 (def enable-pathom-viz false)
 

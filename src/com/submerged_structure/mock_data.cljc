@@ -2,7 +2,7 @@
 
 (def transcript
   #:transcript{:audio-filename "realpolish-hint1",
-             :label "Real Polish Hint 1",
+             :label "Piotr's \"Real Polish\" podcast - Hint 1",
              :segments
              [#:segment{:end 2.311,
                         :start 0.449,
