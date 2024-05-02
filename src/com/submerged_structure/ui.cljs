@@ -99,8 +99,8 @@
            {:>/player (comp/get-query WavesurferComponent)}]}
   (div
    (h1 label)
-   (div :.player
-    (ui-wavesurfer-component player)
+   (div :.player_and_transcript 
+        (ui-wavesurfer-component player)
     (if (= doing :loading)
       (div "Loading...")
       (dom/button {:onClick
@@ -110,8 +110,10 @@
                        (.pause (:player @wavesurfer))
                        (.play (:player @wavesurfer))))}
 
-                  (if (= doing :playing) "Pause" "Play"))))
-    (div :#transcript
+                       (if (= doing :playing)
+                         (dom/i :.pause.icon)
+                         (dom/i :.play.icon)))))
+        (div :#transcript
          (map ui-segment segments))))
 
 (def ui-transcript (comp/factory Transcript {:keyfn :transcript/id}))

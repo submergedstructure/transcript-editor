@@ -1,9 +1,9 @@
-.active {
+div#transcript span.active {
     text-decoration: underline;
     background-color: lightgrey;
 }
 
-.player {
+.player_and_transcript {
     position: relative;
     position: -webkit-sticky;
     /* For Safari */
@@ -14,3 +14,9 @@
     background-color: white;
 
 }
+
+div#transcript {
+    position: relative;
+    overflow: auto;
+    height: calc(100vh - 171.5px); /* 100% height - height player */
+  } 
