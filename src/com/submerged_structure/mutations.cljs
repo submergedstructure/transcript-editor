@@ -17,6 +17,16 @@
                                 state state)]
     (mapcat :segment/words (:transcript/segments (:root/current-transcript word-tree)))))
 
+(defn all-segments-from-state-unsorted
+  [state]
+  (let [segment-tree (fdn/db->tree [#:root{:current-transcript
+                                        [:transcript/id
+                                         #:transcript{:segments
+                                                      [:segment/id :segment/start :segment/end]}]}]
+                                state state)]
+    (:transcript/segments (:root/current-transcript segment-tree))))
+
+
 (defn words-from-state
   [state]
   (sort-by :word/start (filter #(and (:word/start %) (:word/end %)) (all-words-from-state-unsorted state))))
@@ -60,7 +70,7 @@
 (defmutation update-transcript-current-time
   "Sets the currently active word, if there is one, and also sets the start and end time of the time period that the word or pause covers."
   
-  [{:transcript/keys [id current-time] }]
+  [{:transcript/keys [id current-time] :ui-period/keys [update-no]}]
   (action [{:keys [state]}]
           (let [current-period (find-current-period @state current-time id)
                 last-current-word-id (get-in @state [:transcript/id id :transcript/current-word 1])]
@@ -68,6 +78,7 @@
               (swap! state assoc-in [:transcript/id id :ui-period/start] (:word/start current-period))
               (swap! state assoc-in [:transcript/id id :ui-period/end] (:word/end current-period))
               (swap! state assoc-in [:transcript/id id :transcript/current-word] [:word/id (:word/id current-period)])
+              (swap! state assoc-in [:transcript/id id :ui-period/update-no-from-fulcro] update-no)
               ;; deactivate last word
               (when last-current-word-id
                 (swap! state assoc-in [:word/id last-current-word-id :word/active] false))
