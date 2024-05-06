@@ -17,7 +17,7 @@
  (defsc Word [this {:keys [word/word word/active]}]
    {:ident :word/id
     :query [:word/id :word/word :word/start :word/end :word/active]}
-   (span (when active {:class "active"}) word))
+   (span (when active {:className "active"}) word))
 
  (def ui-word (comp/factory Word {:keyfn :word/id}))
 
@@ -29,7 +29,7 @@
 
  (def ui-segment (comp/factory Segment {:keyfn :segment/id}))
 
- (def ui-wavesurfer (interop/react-factory WavesurferPlayer))
+ (def ui-wavesurfer-player (interop/react-factory WavesurferPlayer))
 
  (defonce player-local (atom {:player nil
                            ;; :period-update-no is the number of the last update that has been sent to fulcro for the time period,
@@ -39,15 +39,16 @@
                               :period-update-no 0}))
 
 
- (defsc WavesurferComponent [this {:transcript/keys [id audio-filename]} {:keys [onTimeupdate]}]
+ (defsc PlayerComponent [this {:transcript/keys [id audio-filename]}]
    {:ident :transcript/id
     :query [:transcript/id
             :transcript/audio-filename]
     :shouldComponentUpdate
-    (fn [this next-props _]
-      (js/setTimeout (js/console.log "shouldComponentUpdate" "(:transcript/id)" (:transcript/id next-props) "(:transcript/id (comp/props this))" (:transcript/id (comp/props this))) 0)
+    (fn [this next-props next-state]
+      (js/setTimeout (js/console.log "shouldComponentUpdate" this next-props next-state) 0)
       (not= (:transcript/id next-props) (:transcript/id (comp/props this))))}
-   (ui-wavesurfer
+   (js/console.log "PlayerComponent" (comp/get-computed this :onTimeupdate) id audio-filename)
+   (ui-wavesurfer-player
     {:url (str "audio_and_transcript/" audio-filename ".mp3")
      :height 100
      :minPxPerSec 50,
@@ -62,9 +63,8 @@
                 (swap! player-local assoc :player player)
                 (comp/transact! this [(api/update-ui-player-doing {:transcript/id id :ui-player/doing :paused})
                                       (api/update-transcript-duration {:transcript/id id :transcript/duration (.getDuration player)})
-                                      (api/update-transcript-current-time {:transcript/id id :transcript/current-time 0.0
-                                                                           :ui-period/update-no (:period-update-no (swap! @player-local update-in :period-update-no inc))})]))
-     :onTimeupdate ^js onTimeupdate
+                                      (api/update-transcript-current-time {:transcript/id id :transcript/current-time (.getCurrentTime player)})]))
+     :onTimeupdate (comp/get-computed this :onTimeupdate)
      :hideScrollbar true,
      :autoCenter false,
 
@@ -82,17 +82,18 @@
                          :waveColor "#ddd",
                          :progressColor "#999"})]}))
 
- (def ui-wavesurfer-component (comp/factory WavesurferComponent {:keyfn :transcript/id}))
+ (def ui-player (comp/computed-factory PlayerComponent {:keyfn :transcript/id}))
 
  (defn update-current-word [this id t]
    (comp/transact! this [(api/update-transcript-current-time {:transcript/id id :transcript/current-time t})])
-   (js/setTimeout (fn [] (.scrollIntoView (js/document.querySelector ".active") #js {:block "center" :behavior "smooth"})) 0))
+   #_(js/console.log "update-current-word" this id t)
+   #_(js/setTimeout (fn [] (.scrollIntoView (js/document.querySelector ".active") #js {:block "center" :behavior "smooth"})) 0))
  
  (defn update-current-word-debounced [this id start end]
    (when-let [player (:player @player-local)]
      (let [t (.getCurrentTime player)]
        (if (some nil? [start end]);check if either start or end are nil
-         ((gf/debounce update-current-word 200) this id t)
+         ((gf/rateLimit update-current-word 1000) this id t)
          (when-not (<= start t end)
            (js/setTimeout (js/console.log "current period update" t start end) 0)
            (update-current-word this id t))))))
@@ -111,14 +112,14 @@
            :ui-period/start
            :ui-period/end
            {:transcript/segments (comp/get-query Segment)}
-           {:>/player (comp/get-query WavesurferComponent)}]}
-  (let [onTimeupdate (fn [args] 
-                       (js/console.log "onTimeupdate" args this id start end)
-                       #_(update-current-word-debounced this id start end))]
+           {:>/player (comp/get-query PlayerComponent)}]}
+  (let [onTimeupdate (fn [& args] 
+                       #_(js/setTimeout (js/console.log "onTimeupdate" args this id start end) 0)
+                       (update-current-word-debounced this id start end))]
     (div
-     (h1 label)
+     (h1 {:onClick onTimeupdate} label)
      (div :.player_and_transcript_and_transcript
-          (ui-wavesurfer-component player (comp/computed player {:onTimeupdate onTimeupdate}))
+          (ui-player player {:onTimeupdate onTimeupdate})
           (dom/div
            (if (= doing :loading)
              (div "Loading...")

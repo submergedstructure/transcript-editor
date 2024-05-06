@@ -53,7 +53,8 @@
     c-w ; in a word
     (if-let [previous-word (find-last-word-ended state t)]
       (if-let [next-word (find-first-word-not-ended state t)]
-        #:word{:word nil ;; pause between words
+        #:word{:id nil
+               :word nil ;; pause between words
                :start (:word/end previous-word)
                :end (:word/start next-word)}
         (let [duration (get-in state [:transcript/id id :transcript/duration])]
@@ -70,15 +71,15 @@
 (defmutation update-transcript-current-time
   "Sets the currently active word, if there is one, and also sets the start and end time of the time period that the word or pause covers."
   
-  [{:transcript/keys [id current-time] :ui-period/keys [update-no]}]
+  [{:transcript/keys [id current-time]}]
   (action [{:keys [state]}]
           (let [current-period (find-current-period @state current-time id)
                 last-current-word-id (get-in @state [:transcript/id id :transcript/current-word 1])]
             (do 
+              (js/setTimeout #(js/console.log "update-transcript-current-time" current-time current-period) 0)
               (swap! state assoc-in [:transcript/id id :ui-period/start] (:word/start current-period))
               (swap! state assoc-in [:transcript/id id :ui-period/end] (:word/end current-period))
               (swap! state assoc-in [:transcript/id id :transcript/current-word] [:word/id (:word/id current-period)])
-              (swap! state assoc-in [:transcript/id id :ui-period/update-no-from-fulcro] update-no)
               ;; deactivate last word
               (when last-current-word-id
                 (swap! state assoc-in [:word/id last-current-word-id :word/active] false))
