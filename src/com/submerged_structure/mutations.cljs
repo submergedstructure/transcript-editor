@@ -76,7 +76,7 @@
           (let [current-period (find-current-period @state current-time id)
                 last-current-word-id (get-in @state [:transcript/id id :transcript/current-word 1])]
             (do 
-              (js/setTimeout #(js/console.log "update-transcript-current-time" current-time current-period) 0)
+              (js/console.log "update-transcript-current-time" current-time current-period)
               (swap! state assoc-in [:transcript/id id :ui-period/start] (:word/start current-period))
               (swap! state assoc-in [:transcript/id id :ui-period/end] (:word/end current-period))
               (swap! state assoc-in [:transcript/id id :transcript/current-word] [:word/id (:word/id current-period)])
