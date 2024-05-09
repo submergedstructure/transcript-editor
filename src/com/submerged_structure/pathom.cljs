@@ -38,7 +38,27 @@
   {::pco/input  [:transcript/id]
    ::pco/output [:transcript/audio-filename :transcript/label :transcript/segments :transcript/id :transcript/current-time]}
   (js/console.log "MOCK SERVER: Simulate loading transcript data" id)
-  mock-data/transcript)
+  (assoc mock-data/transcript :transcript/segments (mapv #(select-keys % [:segment/id]) (get mock-data/transcript :transcript/segments))) )
+
+(defn segment-data-from-tree [id]
+  (first (filter #(= (:segment/id %) id) (get mock-data/transcript :transcript/segments))))
+
+(pco/defresolver segment-data
+  [_ {:keys [segment/id]}]
+  {::pco/input [:segment/id]
+   ::pco/output [:segment/words :segment/id]}
+  (assoc (segment-data-from-tree id) :segment/words (mapv #(select-keys % [:word/id]) (get (segment-data-from-tree id) :segment/words))))
+
+(defn word-data-from-tree [word-id]
+  (first (filter #(= (:word/id %) word-id) (mapcat :segment/words (get mock-data/transcript :transcript/segments)))))
+
+(pco/defresolver word-data
+  [_ {:keys [:word/id]}]
+  {::pco/input [:word/id]
+   ::pco/output [:word/start :word/end :word/id :word/word :word/score]}
+  {::pco/input [:segment/id :word/id]
+   ::pco/output [:word/start :word/end :word/id :word/word :word/score]}
+  (word-data-from-tree id))
 
 
 (def my-resolvers-and-mutations 
@@ -47,6 +67,8 @@
    #_i-fail
    #_person
    transcript-data
+   segment-data
+   word-data
    current-transcript])
 
 (def enable-pathom-viz false)
@@ -78,6 +100,8 @@
       ch)))
 
 (comment
+  (transcript-data nil {:transcript/id "2221f28c-0f2d-479b-b4a7-80924c80721c"})
+  (segment-data nil {:segment/id "9a0b9cfe-6f5f-4e5a-bf65-cbecfca00ba6"})
   
   (p.eql/process env '[{:i-fail [*]}])
 

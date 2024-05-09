@@ -12,7 +12,7 @@
   "Called by shadow-cljs upon initialization, see shadow-cljs.edn"
   []
   (println "Initializing the app...")
-  ;(app/set-root! app ui/Root {#_#_:initialize-state? true})
+  (app/set-root! app ui/Root {:initialize-state? true})
   (df/load! app :root/current-transcript ui/Transcript)
   #_(dr/initialize! app) ; make ready, if you want to use dynamic routing...
   (app/mount! app ui/Root "app"))

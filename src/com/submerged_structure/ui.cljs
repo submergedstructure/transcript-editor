@@ -12,18 +12,37 @@
             ["wavesurfer.js/dist/plugins/minimap.esm.js" :default Minimap]
             [com.submerged-structure.mutations :as api]
             [com.submerged-structure.app :as ss]
-            [goog.functions :as gf]))
+            [goog.functions :as gf]
+            [com.submerged-structure.confidence-to-color :as c-to-c]))
 
-(defsc Word [this {:keys [word/word word/active]}]
+
+(defonce player-local (atom {:player nil}))
+
+
+(defsc Word [this {:word/keys [word active score start]}]
   {:ident :word/id
-   :query [:word/id :word/word :word/start :word/end :word/active]}
-  (span (when active {:className "active"}) word))
+   :initial-state {:word/active false}
+   :query [:word/id :word/word :word/start :word/end :word/active :word/score]}
+  
+  (let 
+   [[color background-color] (c-to-c/confidence-to-color score)]
+   (span {:data-c score
+          :className (when active "active")
+          :onClick (fn [_] (let [^js player (:player @player-local)]
+                             (when player
+                               (.setTime player start)
+                               (.play player))))
+          :style {:color color
+                  :background-color background-color}}
+   
+         word)))
 
 (def ui-word (comp/factory Word {:keyfn :word/id}))
 
 
 (defsc Segment [this {:keys [segment/words]}]
   {:ident :segment/id
+   :initial-state (fn [_] {:segment/words (comp/get-initial-state Word {})})
    :query [:segment/id {:segment/words (comp/get-query Word)}]}
   (p (interleave (map ui-word words) (repeat " ")))) ;; space between words is language dependent may need to change to support eg. Asian languages.
 
@@ -31,22 +50,19 @@
 
 (def ui-wavesurfer-player (interop/react-factory WavesurferPlayer))
 
-(defonce player-local (atom {:player nil
-                           ;; :period-update-no is the number of the last update that has been sent to fulcro for the time period,
-                           ;; so that we can be sure that the ui-period/start and end have been updated before we check them to see if current-time has again
-                           ;; moved out of the window of this period. Necessary as the onTimeupdate event can overwhelm fulcro with updates but we want it to update as fast
-                           ;; as possible.
-                             :period-update-no 0}))
-
 
 (defsc PlayerComponent [this {:transcript/keys [id audio-filename]}]
   {:ident :transcript/id
+   :initial-state {}
    :query [:transcript/id
-           :transcript/audio-filename]
+           :transcript/audio-filename
+           :ui-period/end
+           :ui-period/start]
    :shouldComponentUpdate
    (fn [this next-props next-state]
      (js/setTimeout (js/console.log "shouldComponentUpdate" this next-props next-state) 0)
-     (not= (:transcript/id next-props) (:transcript/id (comp/props this))))}
+     (not= (select-keys next-props [:transcript/id])
+           (select-keys (comp/props this) [:transcript/id])))}
   (js/console.log "PlayerComponent" (comp/get-computed this :onTimeupdate) id audio-filename)
   (ui-wavesurfer-player
    {:url (str "audio_and_transcript/" audio-filename ".mp3")
@@ -85,19 +101,24 @@
 (def ui-player (comp/computed-factory PlayerComponent {:keyfn :transcript/id}))
 
 (defn update-current-word [this id t]
-  (comp/transact! this [(api/update-transcript-current-time {:transcript/id id :transcript/current-time t})])
-  #_(js/console.log "update-current-word" this id t)
+  (comp/transact!! this [(api/update-transcript-current-time {:transcript/id id :transcript/current-time t})])
+  (js/console.log "update-current-word" this id t)
   #_(js/setTimeout (fn [] (.scrollIntoView (js/document.querySelector ".active") #js {:block "center" :behavior "smooth"})) 0))
 
-(def update-current-word-rate-limited (gf/rateLimit update-current-word (/ 1000 7))) ; 7 frames per second
+(def update-current-word-once-per-frame
+  "called when we don't have a start or end time for the current period."
+  (gf/rateLimit update-current-word (/ 1000 10))) ; 10 frames per second
 
-(defn update-current-word-debounced [this id start end]
+(defn update-current-word-throttled [this id]
   (when-let [player (:player @player-local)]
-    (let [t (.getCurrentTime player)]
+    (let [t (.getCurrentTime player)
+          props (comp/props this)
+          start (:ui-period/start props)
+          end (:ui-period/end props)]
       (if (some nil? [start end]);check if either start or end are nil
-        (update-current-word-rate-limited this id t)
+        (update-current-word-once-per-frame this id t)
         (when-not (<= start t end)
-          (js/console.log "current period update" t start end)
+          (js/console.log "throttled according to time period " t start end)
           (update-current-word this id t))))))
 
 
@@ -108,6 +129,10 @@
                          :ui-player/keys  [doing]
                          :>/keys        [player]}]
   {:ident :transcript/id
+   :initial-state (fn [_] {:ui-period/start 0
+                           :ui-period/end nil
+                           :transcript/segments (comp/get-initial-state Segment {})
+                           :>/player (comp/get-initial-state PlayerComponent {})})
    :query [:transcript/id
            :transcript/label
            :ui-player/doing
@@ -115,9 +140,8 @@
            :ui-period/end
            {:transcript/segments (comp/get-query Segment)}
            {:>/player (comp/get-query PlayerComponent)}]}
-  (let [onTimeupdate (fn [& args]
-                       #_(js/setTimeout (js/console.log "onTimeupdate" args this id start end) 0)
-                       (update-current-word-debounced this id start end))]
+  (let [onTimeupdate (fn [& _]
+                       (update-current-word-throttled this id))]
     (div
      (h1 {:onClick onTimeupdate} label)
      (div :.player_and_transcript_and_transcript
@@ -126,7 +150,7 @@
            (if (= doing :loading)
              (div "Loading...")
              (dom/button :.ui.icon.button
-                         {:tabindex 0
+                         {:tabIndex 0
                           :onClick
                           (fn [_]
                             (js/console.log "clicked" doing)
@@ -137,13 +161,27 @@
                          (if (= doing :playing)
                            (dom/i :.pause.icon)
                            (dom/i :.play.icon))))))
+     (div :#confidence-key "Confidence of each word: "
+          
+            (for [[c c-txt] [[1.0 "Very high"]
+                             [0.8 "High"]
+                             [0.6 "Medium to High"]
+                             [0.5 "Medium"]
+                             [0.3 "Low"]
+                             [0.1 "Very low"]]]
+              (let
+               [[color background-color] (c-to-c/confidence-to-color c)]
+                (span {:style {:color color
+                               :background-color background-color}}
+                      "\"" c-txt "\" "))) )
      (div :#transcript
           (map ui-segment segments)))))
 
 (def ui-transcript (comp/factory Transcript {:keyfn :transcript/id}))
 
 (defsc Root [this {:keys [:root/current-transcript]}]
-  {:query (fn [_] [{:root/current-transcript (comp/get-query Transcript)}])}
+  {:initial-state (fn [_] {:root/current-transcript (comp/get-initial-state Transcript {})})
+   :query [{:root/current-transcript (comp/get-query Transcript)}]}
   (div
    (ui-transcript current-transcript)))
 
@@ -159,6 +197,8 @@
   (comp/get-computed Transcript)
 
   (comp/get-initial-state Root {})
+
+  (->(comp/get-query Root) :root/current-transcript  vals first meta)
 
   (require '[clojure.walk :as w])
   (w/postwalk

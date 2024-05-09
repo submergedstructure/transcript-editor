@@ -67,12 +67,7 @@
                      slurp
                      (cheshire/parse-string false)
                      (get "output")
-                     (get "segments")
-                     (#(mapv (fn [s]
-                              (assoc s "words"
-                                     (mapv (fn [w] (assoc w "active" false))
-                                           (get s "words"))))
-                            %)))]
+                     (get "segments"))]
   (-> {"audio-filename" filename
        "label" "\"Real Polish\" podcast - Hint 1"
        "segments" segments}
