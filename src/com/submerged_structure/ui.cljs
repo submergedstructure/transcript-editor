@@ -65,7 +65,7 @@
            (select-keys (comp/props this) [:transcript/id])))}
   (js/console.log "PlayerComponent" (comp/get-computed this :onTimeupdate) id audio-filename)
   (ui-wavesurfer-player
-   {:url (str "audio_and_transcript/" audio-filename ".mp3")
+   {:url audio-filename
     :height 100
     :minPxPerSec 50,
     :waveColor "violet"
@@ -161,19 +161,14 @@
                          (if (= doing :playing)
                            (dom/i :.pause.icon)
                            (dom/i :.play.icon))))))
-     (div :#confidence-key "Confidence of each word: "
+     (div :#confidence-key "Confidence of each word (1.0 = very high 0.0 = none): "
           
-            (for [[c c-txt] [[1.0 "Very high"]
-                             [0.8 "High"]
-                             [0.6 "Medium to High"]
-                             [0.5 "Medium"]
-                             [0.3 "Low"]
-                             [0.1 "Very low"]]]
+            (for [c (map #(js/Number.parseFloat (.toFixed % 2)) (range 1.0 -0.05 -0.05))]
               (let
                [[color background-color] (c-to-c/confidence-to-color c)]
                 (span {:style {:color color
                                :background-color background-color}}
-                      "\"" c-txt "\" "))) )
+                      "\"" c "\"  "))))
      (div :#transcript
           (map ui-segment segments)))))
 

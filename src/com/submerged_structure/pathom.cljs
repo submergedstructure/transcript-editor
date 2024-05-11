@@ -1,7 +1,7 @@
 (ns com.submerged-structure.pathom
   "The Pathom parser that is our (in-browser) backend.
    
-   Add your resolvers and 'server-side' mutations here." 
+   Add your resolvers and 'server-side' mutations here."
   {:clj-kondo/config '{:linters {:unused-namespace {:level :off}}}}
   (:require
    [cljs.core.async :as async]
@@ -30,7 +30,7 @@
 
 (pco/defresolver current-transcript [_ _]
   {::pco/output [{:root/current-transcript [:transcript/id]}]}
-  {:root/current-transcript {:transcript/id "2221f28c-0f2d-479b-b4a7-80924c80721c"}})
+  {:root/current-transcript {:transcript/id (nth (keys mock-data/transcripts) 1)}})
 
 
 (pco/defresolver transcript-data
@@ -38,32 +38,48 @@
   {::pco/input  [:transcript/id]
    ::pco/output [:transcript/audio-filename :transcript/label :transcript/segments :transcript/id :transcript/current-time]}
   (js/console.log "MOCK SERVER: Simulate loading transcript data" id)
-  (assoc mock-data/transcript :transcript/segments (mapv #(select-keys % [:segment/id]) (get mock-data/transcript :transcript/segments))) )
+  (get (assoc-in mock-data/transcripts [id :transcript/segments] (mapv #(select-keys % [:segment/id]) (get-in mock-data/transcripts [id :transcript/segments]))) id))
 
-(defn segment-data-from-tree [id]
-  (first (filter #(= (:segment/id %) id) (get mock-data/transcript :transcript/segments))))
+(defn segment-data-from-tree [segment-id]
+  (->> (vals mock-data/transcripts);all transcripts
+       (mapcat :transcript/segments);all segemnts from all transcripts
+       (filter #(= (:segment/id %) segment-id))
+       first ;specific segment
+       (#(assoc % :segment/words (mapv (fn [word] (select-keys word [:word/id])) (get % :segment/words))))))
+
+  #_(first (filter #(= (:segment/id %) id) (mapcat :transcript/segments (vals mock-data/transcript))))
+
+(comment (segment-data-from-tree "4a1a191f-7586-47d2-bfbb-f21722ed8bb1"))
+
 
 (pco/defresolver segment-data
   [_ {:keys [segment/id]}]
   {::pco/input [:segment/id]
    ::pco/output [:segment/words :segment/id]}
-  (assoc (segment-data-from-tree id) :segment/words (mapv #(select-keys % [:word/id]) (get (segment-data-from-tree id) :segment/words))))
+  (segment-data-from-tree id))
 
 (defn word-data-from-tree [word-id]
-  (first (filter #(= (:word/id %) word-id) (mapcat :segment/words (get mock-data/transcript :transcript/segments)))))
+  (->> mock-data/transcripts
+       vals
+       (mapcat :transcript/segments)
+       (mapcat :segment/words)
+       (filter #(= (:word/id %) word-id))
+       first))
+
+(comment (word-data-from-tree "1b966e29-e96a-4af7-a601-7a71d6fa89f4"))
 
 (pco/defresolver word-data
   [_ {:keys [:word/id]}]
   {::pco/input [:word/id]
    ::pco/output [:word/start :word/end :word/id :word/word :word/score]}
-  {::pco/input [:segment/id :word/id]
+  {::pco/input [:word/id]
    ::pco/output [:word/start :word/end :word/id :word/word :word/score]}
   (word-data-from-tree id))
 
 
-(def my-resolvers-and-mutations 
+(def my-resolvers-and-mutations
   "Add any resolvers you make to this list (and reload to re-create the parser)"
-  [#_create-random-thing 
+  [#_create-random-thing
    #_i-fail
    #_person
    transcript-data
@@ -94,7 +110,7 @@
   (fn [eql]
     (let [ch (async/promise-chan)]
       (-> (p.a.eql/process env eql)
-          (p/then #(do 
+          (p/then #(do
                      (println "PARSER:" eql "->" %)
                      (async/go (async/>! ch %)))))
       ch)))
@@ -102,23 +118,22 @@
 (comment
   (transcript-data nil {:transcript/id "2221f28c-0f2d-479b-b4a7-80924c80721c"})
   (segment-data nil {:segment/id "9a0b9cfe-6f5f-4e5a-bf65-cbecfca00ba6"})
-  
+
   (p.eql/process env '[{:i-fail [*]}])
 
   (p.eql/process
-    (pci/register
-      (pco/resolver 'error
-        {::pco/output [:error]}
-        (fn [_ _]
-          (throw (ex-info "Deu ruim." {})))))
-    [:error])
+   (pci/register
+    (pco/resolver 'error
+                  {::pco/output [:error]}
+                  (fn [_ _]
+                    (throw (ex-info "Deu ruim." {})))))
+   [:error])
 
   (p.eql/process
-    (-> {:com.wsscode.pathom3.error/lenient-mode? true}
-        (pci/register
-          (pco/resolver 'error
-            {::pco/output [:error]}
-            (fn [_ _]
-              (throw (ex-info "Deu ruim." {}))))))
-    [:error ::pcr/attribute-errors ::pcr/mutation-error]) 
-,)
+   (-> {:com.wsscode.pathom3.error/lenient-mode? true}
+       (pci/register
+        (pco/resolver 'error
+                      {::pco/output [:error]}
+                      (fn [_ _]
+                        (throw (ex-info "Deu ruim." {}))))))
+   [:error ::pcr/attribute-errors ::pcr/mutation-error]))

@@ -19,10 +19,6 @@
 
 (def filepath "resources/public/audio_and_transcript/")
 
-(def filename "realpolish-hint1")
-
-(def full-filepath-without-extension (str filepath filename))
-
 
 
 (defn add-id [m]
@@ -62,27 +58,48 @@
   ;; => [#:segment{:a 1, :b 2} #:segment{:c 3, :d 4}]
 )
 
-(defn transcript-data []
+(defn transcript-data [label full-filepath-without-extension]
   (let [segments (-> (str full-filepath-without-extension ".json")
                      slurp
                      (cheshire/parse-string false)
                      (get "output")
                      (get "segments"))]
-  (-> {"audio-filename" filename
-       "label" "\"Real Polish\" podcast - Hint 1"
+  (-> {"audio-filename" (str (subs full-filepath-without-extension (count "resources/public")) ".mp3")
+       "label" label
        "segments" segments}
       add-ids
       (add-ns-and-keywordize-keys-in-m "transcript"))))
 
+
+(defn find-mp3-files-at-path [path]
+  (->> (java.io.File. path)
+       (.listFiles)
+       (filter #(.isFile %))
+       (filter #(re-matches #".*\.mp3" (.getName %)))
+       (map #(.getName %))
+       (map #(vector 
+              %
+              (str path (subs % 0 (- (count %) 4)))))))
+
+
+
 (defn write-mock-data-cljs-file []
-  (-> (transcript-data)
+  (-> (for [[filename full-filepath-without-extension] (find-mp3-files-at-path filepath)
+            :let [t-d (transcript-data filename full-filepath-without-extension)]]
+        (vector (:transcript/id t-d) t-d))
+      (#(into {} %))
       pprint/pprint
       with-out-str
       (str/replace #"^" "  ")
-      (#(str "(ns com.submerged-structure.mock-data)\n\n(def transcript\n" % ")\n"))
+      (#(str "(ns com.submerged-structure.mock-data)\n\n(def transcripts\n" % ")\n"))
       (#(spit "src/com/submerged_structure/mock_data.cljc" %))))
+
+
+(comment (find-mp3-files-at-path filepath))
+
+
 (comment 
   (write-mock-data-cljs-file)
-  (transcript-data)
+  
   )
 
