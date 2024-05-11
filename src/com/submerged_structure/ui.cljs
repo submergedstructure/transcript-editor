@@ -103,7 +103,7 @@
 (defn update-current-word [this id t]
   (comp/transact!! this [(api/update-transcript-current-time {:transcript/id id :transcript/current-time t})])
   (js/console.log "update-current-word" this id t)
-  #_(js/setTimeout (fn [] (.scrollIntoView (js/document.querySelector ".active") #js {:block "center" :behavior "smooth"})) 0))
+  (js/setTimeout (fn [] (.scrollIntoView (js/document.querySelector ".active") #js {:block "center" :behavior "smooth"})) 0))
 
 (def update-current-word-once-per-frame
   "called when we don't have a start or end time for the current period."
