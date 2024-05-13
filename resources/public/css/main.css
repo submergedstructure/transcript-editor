@@ -13,6 +13,11 @@ div#transcript span.active {
     padding-bottom: 0.5em;
 }
 
+#confidence-key span{
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+}
+
 .player_and_transcript {
     position: relative;
     position: -webkit-sticky;

@@ -15,9 +15,7 @@
             [goog.functions :as gf]
             [com.submerged-structure.confidence-to-color :as c-to-c]))
 
-
 (defonce player-local (atom {:player nil}))
-
 
 (defsc Word [this {:word/keys [word active score start]}]
   {:ident :word/id
@@ -25,16 +23,14 @@
    :query [:word/id :word/word :word/start :word/end :word/active :word/score]}
   
   (let 
-   [[color background-color] (c-to-c/confidence-to-color score)]
+   [color (c-to-c/confidence-to-color score)]
    (span {:data-c score
           :className (when active "active")
           :onClick (fn [_] (let [^js player (:player @player-local)]
                              (when player
                                (.setTime player start)
                                (.play player))))
-          :style {:color color
-                  :background-color background-color}}
-   
+          :style (c-to-c/confidence-to-style score)}
          word)))
 
 (def ui-word (comp/factory Word {:keyfn :word/id}))
@@ -161,14 +157,9 @@
                          (if (= doing :playing)
                            (dom/i :.pause.icon)
                            (dom/i :.play.icon))))))
-     (div :#confidence-key "Confidence of each word (1.0 = very high 0.0 = none): "
-          
-            (for [c (map #(js/Number.parseFloat (.toFixed % 2)) (range 1.0 -0.05 -0.05))]
-              (let
-               [[color background-color] (c-to-c/confidence-to-color c)]
-                (span {:style {:color color
-                               :background-color background-color}}
-                      "\"" c "\"  "))))
+     (div :#confidence-key "AI's confidence of each word (1.0 = very high 0.0 = none): "
+          (for [c (map #(js/Number.parseFloat (.toFixed % 2)) (range 1.0 -0.05 -0.05))] ; make sure that we get floats to 2 decimal places
+            (span {:style (c-to-c/confidence-to-style c)} (str c "  "))))
      (div :#transcript
           (map ui-segment segments)))))
 
