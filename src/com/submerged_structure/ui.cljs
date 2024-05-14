@@ -140,44 +140,71 @@
            {:transcript/segments (comp/get-query Segment)}
            {:>/player (comp/get-query PlayerComponent)}]}
   (let [onTimeupdate (fn [& _]
-                       (update-current-word-throttled this id))]
-    (div
+                       (update-current-word-throttled this id))
+        wave-surfer ^js (:player @player-local)]
+    (div :.ui.container
      (h1 {:onClick onTimeupdate} label)
      (div :.player_and_transcript_and_transcript
           (ui-player player {:onTimeupdate onTimeupdate})
           (dom/div :.ui.icon.buttons
-           (ui-button
-            {:icon true
-             :onClick
-             (fn [_]
-               (js/console.log "clicked" doing)
-               (if (= doing :playing)
-                 (.pause (:player @player-local))
-                 (.play (:player @player-local))))}
-           
-            (cond
-              (or (= doing :loading) (nil? (:player @player-local)))
-              (ui-icon {:name "loading spinner"})
-           
-              (= doing :playing)
-              (ui-icon {:name  i/pause-icon})
-           
-              :else
-              (ui-icon {:name i/play-icon})))))
-               
-     (div :#confidence-key "AI's confidence of each word (1.0 = very high 0.0 = none): "
-          (for [c (map #(js/Number.parseFloat (.toFixed % 2)) (range 1.0 -0.05 -0.05))] ; make sure that we get floats to 2 decimal places
-            (span {:style (c-to-c/confidence-to-style c)} (str c "  "))))
-     (div :#transcript
-          (map ui-segment segments)))))
+                   (ui-button
+                    {:icon true
+                     :data-title "Rewind 5 seconds"
+                     :data-tooltip "Or press the left arrow key."
+                     :data-position "bottom left"
+                     :onClick
+                     (fn [_]
+                       (js/console.log "clicked" doing)
+                       (when-let [player wave-surfer]
+                         (.skip player -5)))}
+                    (ui-icon {:name i/chevron-left-icon}))
+
+                   (ui-button
+                    {:icon true
+                     :data-title "Play/Pause"
+                     :data-tooltip "Or press the space bar."
+                     :data-position "bottom center"
+                     :onClick
+                     (fn [_]
+                       (js/console.log "clicked" doing)
+                       (if (= doing :playing)
+                         (.pause wave-surfer)
+                         (.play wave-surfer)))}
+
+                    (cond
+                      (or (= doing :loading) (nil? wave-surfer))
+                      (ui-icon {:name "loading spinner"})
+
+                      (= doing :playing)
+                      (ui-icon {:name  i/pause-icon})
+
+                      :else
+                      (ui-icon {:name i/play-icon})))
+
+                   (ui-button
+                    {:icon true
+                     :data-title "Fast forward 5 seconds"
+                     :data-tooltip "Or press the right arrow key."
+                     :data-position "bottom right"
+                     :onClick
+                     (fn [_]
+                       (js/console.log "clicked" doing)
+                       (when-let [player wave-surfer]
+                         (.skip player 5)))}
+                    (ui-icon {:name i/chevron-right-icon})))
+
+                   (div :.ui.container.text#confidence-key "AI's confidence of each word (1.0 = very high 0.0 = none): "
+                        (for [c (map #(js/Number.parseFloat (.toFixed % 2)) (range 1.0 -0.05 -0.05))] ; make sure that we get floats to 2 decimal places
+                          (span {:style (c-to-c/confidence-to-style c)} (str c "  "))))
+                   (div :#transcript
+                        (map ui-segment segments))))))
 
 (def ui-transcript (comp/factory Transcript {:keyfn :transcript/id}))
 
 (defsc Root [this {:keys [:root/current-transcript]}]
   {:initial-state (fn [_] {:root/current-transcript (comp/get-initial-state Transcript {})})
    :query [{:root/current-transcript (comp/get-query Transcript)}]}
-  (div
-   (ui-transcript current-transcript)))
+  (ui-transcript current-transcript))
 
 
 (comment
