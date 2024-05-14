@@ -1,13 +1,14 @@
 (ns com.submerged-structure.confidence-to-color
   (:require [goog.color :as color]))
 
+(def color-transitions [0.0 0.5 0.8 1.0]); expected to be in ascending order
+(def colors ["#8B0000" ; dark red
+             "#FFA500" ; orange
+             "#008000" ; green
+             "#000000"]) ; black
+
 (defn color-zones []
-  (let [color-transitions [0.0 0.5 0.8 1.0] ; expected to be in ascending order
-        colors ["#8B0000" ; dark red
-                "#FFA500" ; orange
-                "#008000" ; green
-                "#000000"] ; black
-        confidence-zones (partition 2 1 color-transitions)
+  (let [confidence-zones (partition 2 1 color-transitions)
         color-pairs (partition 2 1 colors)]
     (map (fn [[color-zone-low color-zone-high] [color-low color-high]]
            {:color-zone-low color-zone-low
