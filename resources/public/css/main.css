@@ -1,6 +1,6 @@
 
 
-div#transcript span.active {
+div.transcript span.active {
     text-decoration: underline !important;
     background-color: lightgrey !important;
 }
@@ -18,19 +18,8 @@ div#transcript span.active {
     margin-right: 0.5em;
 }
 
-.player_and_transcript {
-    position: relative;
-    position: -webkit-sticky;
-    /* For Safari */
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    /* Ensure it stays on top of other content */
-    background-color: white;
 
-}
-
-div#transcript {
+#key-and-transcript {
     position: relative;
     overflow: auto;
     height: calc(100vh - 171.5px); /* 100% height - height player */
