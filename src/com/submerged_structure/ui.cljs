@@ -13,7 +13,10 @@
             [com.submerged-structure.mutations :as api]
             [com.submerged-structure.app :as ss]
             [goog.functions :as gf]
-            [com.submerged-structure.confidence-to-color :as c-to-c]))
+            [com.submerged-structure.confidence-to-color :as c-to-c]
+            [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
+            [com.fulcrologic.semantic-ui.elements.icon.ui-icon :refer [ui-icon]]
+            [com.fulcrologic.semantic-ui.icons :as i]))
 
 (defonce player-local (atom {:player nil}))
 
@@ -142,21 +145,26 @@
      (h1 {:onClick onTimeupdate} label)
      (div :.player_and_transcript_and_transcript
           (ui-player player {:onTimeupdate onTimeupdate})
-          (dom/div
-           (if (= doing :loading)
-             (div "Loading...")
-             (dom/button :.ui.icon.button
-                         {:tabIndex 0
-                          :onClick
-                          (fn [_]
-                            (js/console.log "clicked" doing)
-                            (if (= doing :playing)
-                              (.pause (:player @player-local))
-                              (.play (:player @player-local))))}
-
-                         (if (= doing :playing)
-                           (dom/i :.pause.icon)
-                           (dom/i :.play.icon))))))
+          (dom/div :.ui.icon.buttons
+           (ui-button
+            {:icon true
+             :onClick
+             (fn [_]
+               (js/console.log "clicked" doing)
+               (if (= doing :playing)
+                 (.pause (:player @player-local))
+                 (.play (:player @player-local))))}
+           
+            (cond
+              (or (= doing :loading) (nil? (:player @player-local)))
+              (ui-icon {:name "loading spinner"})
+           
+              (= doing :playing)
+              (ui-icon {:name  i/pause-icon})
+           
+              :else
+              (ui-icon {:name i/play-icon})))))
+               
      (div :#confidence-key "AI's confidence of each word (1.0 = very high 0.0 = none): "
           (for [c (map #(js/Number.parseFloat (.toFixed % 2)) (range 1.0 -0.05 -0.05))] ; make sure that we get floats to 2 decimal places
             (span {:style (c-to-c/confidence-to-style c)} (str c "  "))))
