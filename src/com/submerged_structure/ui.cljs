@@ -166,8 +166,8 @@
                                  :onClick
                                  (fn [_]
                                    (js/console.log "clicked" doing)
-                                   (when-let [player wave-surfer]
-                                     (.skip player -5)))}
+                                   (when wave-surfer
+                                     (.skip wave-surfer -5)))}
                                 (ui-icon {:name i/chevron-left-icon}))
 
                                (ui-button
@@ -178,9 +178,10 @@
                                  :onClick
                                  (fn [_]
                                    (js/console.log "clicked" doing)
-                                   (if (= doing :playing)
-                                     (.pause wave-surfer)
-                                     (.play wave-surfer)))}
+                                   (when wave-surfer
+                                     (if (= doing :playing)
+                                       (.pause wave-surfer)
+                                       (.play wave-surfer))))}
 
                                 (cond
                                   (or (= doing :loading) (nil? wave-surfer))
