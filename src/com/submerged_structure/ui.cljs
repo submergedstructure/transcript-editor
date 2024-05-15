@@ -100,16 +100,31 @@
 
 (def ui-player (comp/computed-factory PlayerComponent {:keyfn :transcript/id}))
 
+(defn scroll-element-to-middle-of-visible-area-below-player
+  "Assuming player is a sticky at the top of the screen, scroll element 
+   to the vertical center of the screen below the player."
+  [element transcript-id]
+  (let [player-height (.-clientHeight (js/document.querySelector (str "#player-" transcript-id)))
+        element-y-in-viewport (.-top (.. element (getBoundingClientRect)))
+        current-top-of-viewport (.. js/window -pageYOffset)
+        element-y-in-document (+ element-y-in-viewport current-top-of-viewport)
+        scroll-to (- element-y-in-document (/ (+ player-height js/window.innerHeight) 2))]
+    (js/window.scrollTo  (clj->js {:left 0
+                                   :top scroll-to
+                                   :behavior "smooth"}))
+    (js/console.log "scrolling to" {:element element
+                                    :player-height player-height
+                                    :element-y-in-document element-y-in-document
+                                    :scroll-to scroll-to})))
+
 (defn update-current-word [this id t]
   (comp/transact!! this [(api/update-transcript-current-time {:transcript/id id :transcript/current-time t})])
   (js/console.log "update-current-word" this id t)
-  (when (js/document.querySelector ".active")
-    (js/setTimeout (fn []
-                     (let [playerHeight (.-clientHeight (js/document.querySelector (str "#player-" id)))
-                           activeWordHeight (.-clientHeight (js/document.querySelector ".active"))]
-                       (js/window.scrollTo 0 (- (+ playerHeight activeWordHeight) (/ (js/window.innerHeight) 2)))
-                       (js/console.log "scrolling to" (- (+ playerHeight activeWordHeight) (/ (js/window.innerHeight) 2)))))
-                   0)))
+  (js/setTimeout
+   (fn []
+     (when-let [active-word (js/document.querySelector ".active")]
+       (scroll-element-to-middle-of-visible-area-below-player active-word id)))
+   0))
 
 (def update-current-word-once-per-frame
   "called when we don't have a start or end time for the current period."
@@ -203,13 +218,13 @@
                                    (js/console.log "clicked" doing)
                                    (when-let [player wave-surfer]
                                      (.skip player 5)))}
-                                (ui-icon {:name i/chevron-right-icon})))
-                      (div
-                       (p :.ui.center.aligned.container "AI's confidence of each word: ")
-                       (p :.ui.justified.container#confidence-key
-                          (for [c (map #(js/Number.parseFloat (.toFixed % 2)) (range 1.0 -0.05 -0.05))] ; make sure that we get floats to 2 decimal places
-                            (span {:style (c-to-c/confidence-to-style c)} (str c "  "))))
-                       (p :.ui.center.aligned.container "(1.0 = very high 0.0 = none)")))})
+                                (ui-icon {:name i/chevron-right-icon}))))})
+         (div
+          (p :.ui.center.aligned.container "AI's confidence of each word: ")
+          (p :.ui.justified.container#confidence-key
+             (for [c (map #(js/Number.parseFloat (.toFixed % 2)) (range 1.0 -0.05 -0.05))] ; make sure that we get floats to 2 decimal places
+               (span {:style (c-to-c/confidence-to-style c)} (str c "  "))))
+          (p :.ui.center.aligned.container "(1.0 = very high 0.0 = none)"))
          (div :.transcript
               {:id (str "transcript-" id)}
               (map ui-segment segments)))))
