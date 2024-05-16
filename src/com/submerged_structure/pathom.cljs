@@ -30,7 +30,7 @@
 
 (pco/defresolver current-transcript [_ _]
   {::pco/output [{:root/current-transcript [:transcript/id]}]}
-  {:root/current-transcript {:transcript/id (nth (keys mock-data/transcripts) 1)}})
+  {:root/current-transcript {:transcript/id (nth (keys mock-data/transcripts) 2)}})
 
 
 (pco/defresolver transcript-data
