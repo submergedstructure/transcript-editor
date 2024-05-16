@@ -142,6 +142,13 @@
           (js/console.log "throttled according to time period " t start end)
           (update-current-word this id t))))))
 
+(defn confidence-key[]
+  (div
+   (p :.ui.center.aligned.container "AI's confidence of each word: ")
+   (p :.ui.justified.container#confidence-key
+      (for [c (map #(js/Number.parseFloat (.toFixed % 2)) (range 1.0 -0.05 -0.05))] ; make sure that we get floats to 2 decimal places
+        (span {:style (c-to-c/confidence-to-style c)} (str c "  "))))
+   (p :.ui.center.aligned.container "(1.0 = very high 0.0 = none)")))
 
 (defsc Transcript [this {:transcript/keys [id
                                            label
@@ -170,61 +177,57 @@
           {:id (str "player-" id)
            :context (.. js/document -body (querySelector (str "#transcript-" id)))
            :styleElement {:background-color "white"}
-           :children (div
-                      (ui-player player {:onTimeupdate onTimeupdate})
-                      (dom/div :.ui.icon.buttons
-                               (ui-button
-                                {:icon true
-                                 :data-title "Rewind 5 seconds"
-                                 :data-tooltip "Or press the left arrow key."
-                                 :data-position "bottom left"
-                                 :onClick
-                                 (fn [_]
-                                   (js/console.log "clicked" doing)
-                                   (when wave-surfer
-                                     (.skip wave-surfer -5)))}
-                                (ui-icon {:name i/chevron-left-icon}))
+           :children
+           (div
+            (ui-player player {:onTimeupdate onTimeupdate})
+            (dom/div :.ui.icon.buttons
+                     (ui-button
+                      {:icon true
+                       :data-title "Rewind 5 seconds"
+                       :data-content "Or press the left arrow key."
+                       :data-position "bottom left"
+                       :onClick
+                       (fn [_]
+                         (js/console.log "clicked" doing)
+                         (when wave-surfer
+                           (.skip wave-surfer -5)))}
+                      (ui-icon {:name i/chevron-left-icon}))
 
-                               (ui-button
-                                {:icon true
-                                 :data-title "Play/Pause"
-                                 :data-tooltip "Or press the space bar."
-                                 :data-position "bottom center"
-                                 :onClick
-                                 (fn [_]
-                                   (js/console.log "clicked" doing)
-                                   (when wave-surfer
-                                     (if (= doing :playing)
-                                       (.pause wave-surfer)
-                                       (.play wave-surfer))))}
+                     (ui-button
+                      {:icon true
+                       :data-title "Play/Pause"
+                       :data-content "Or press the space bar."
+                       :data-position "bottom center"
+                       :onClick
+                       (fn [_]
+                         (js/console.log "clicked" doing)
+                         (when wave-surfer
+                           (if (= doing :playing)
+                             (.pause wave-surfer)
+                             (.play wave-surfer))))}
 
-                                (cond
-                                  (or (= doing :loading) (nil? wave-surfer))
-                                  (ui-icon {:name "loading spinner"})
+                      (cond
+                        (or (= doing :loading) (nil? wave-surfer))
+                        (ui-icon {:name "loading spinner"})
 
-                                  (= doing :playing)
-                                  (ui-icon {:name  i/pause-icon})
+                        (= doing :playing)
+                        (ui-icon {:name  i/pause-icon})
 
-                                  :else
-                                  (ui-icon {:name i/play-icon})))
+                        :else
+                        (ui-icon {:name i/play-icon})))
 
-                               (ui-button
-                                {:icon true
-                                 :data-title "Fast forward 5 seconds"
-                                 :data-tooltip "Or press the right arrow key."
-                                 :data-position "bottom right"
-                                 :onClick
-                                 (fn [_]
-                                   (js/console.log "clicked" doing)
-                                   (when-let [player wave-surfer]
-                                     (.skip player 5)))}
-                                (ui-icon {:name i/chevron-right-icon}))))})
-         (div
-          (p :.ui.center.aligned.container "AI's confidence of each word: ")
-          (p :.ui.justified.container#confidence-key
-             (for [c (map #(js/Number.parseFloat (.toFixed % 2)) (range 1.0 -0.05 -0.05))] ; make sure that we get floats to 2 decimal places
-               (span {:style (c-to-c/confidence-to-style c)} (str c "  "))))
-          (p :.ui.center.aligned.container "(1.0 = very high 0.0 = none)"))
+                     (ui-button
+                      {:icon true
+                       :data-title "Fast forward 5 seconds"
+                       :data-content "Or press the right arrow key."
+                       :data-position "bottom right"
+                       :onClick
+                       (fn [_]
+                         (js/console.log "clicked" doing)
+                         (when-let [player wave-surfer]
+                           (.skip player 5)))}
+                      (ui-icon {:name i/chevron-right-icon}))))})
+         (confidence-key)
          (div :.transcript
               {:id (str "transcript-" id)}
               (map ui-segment segments)))))
