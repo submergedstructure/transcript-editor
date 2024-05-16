@@ -65,7 +65,7 @@
            (select-keys (comp/props this) [:transcript/id])))}
   (js/console.log "PlayerComponent" (comp/get-computed this :onTimeupdate) id audio-filename)
   (ui-wavesurfer-player
-   {:url audio-filename
+   {:url (js/encodeURI audio-filename)
     :height 100
     :minPxPerSec 50,
     :waveColor "violet"
@@ -80,6 +80,14 @@
                (comp/transact! this [(api/update-ui-player-doing {:transcript/id id :ui-player/doing :paused})
                                      (api/update-transcript-duration {:transcript/id id :transcript/duration (.getDuration player)})
                                      (api/update-transcript-current-time {:transcript/id id :transcript/current-time (.getCurrentTime player)})]))
+    
+    :onError (fn [^js error]
+                 (js/console.log "onError" error)
+                 #_(ui-modal-dimmer
+                 {:open true
+                  :header "Error"
+                  :content "An error occurred while playing the audio."
+                  :actions [{:key :ok :content "OK" :onClick (fn [_] (.close player))}]}))
     :onTimeupdate (comp/get-computed this :onTimeupdate)
     :hideScrollbar true,
     :autoCenter false,
