@@ -109,7 +109,9 @@
                         :waveColor "#ddd",
                         :progressColor "#999"})]}))
 
-(def ui-player (comp/computed-factory PlayerComponent {:keyfn :transcript/id}))
+(def ui-player
+  "Third param will be a computed function."
+  (comp/computed-factory PlayerComponent {:keyfn :transcript/id}))
 
 (defn scroll-element-to-middle-of-visible-area-below-player
   "Assuming player is a sticky at the top of the screen, scroll element 
@@ -194,6 +196,48 @@
                        " of "
                        (time-float-to-string duration duration))})}))
 
+(defn ui-player-controls [^js wave-surfer doing duration]
+  (if (or (= doing :loading) (nil? wave-surfer))
+    (ui-icon {:name "loading spinner"})
+    (dom/div
+     (ui-button-group
+      nil
+      (ui-popup
+       {:size "tiny"
+        :position "bottom center"
+        :trigger
+        (ui-button
+         {:icon true
+          :onClick
+          (fn [_]
+            (js/console.log "clicked" doing)
+            (when wave-surfer
+              (.skip wave-surfer -5)))}
+         (ui-icon {:name i/chevron-left-icon}))}
+       (ui-popup-header {:content "Rewind 5 seconds."})
+       (ui-popup-content {:content "Or press the left arrow key."}))
+      (ui-popup
+       {:size "tiny"
+        :position "bottom center"
+        :trigger #_(ui-button {:icon i/play-icon})
+        (ui-play-button wave-surfer doing duration)}
+       (ui-popup-header {:content "Play/Pause"})
+       (ui-popup-content {:content "Or press the space bar."}))
+      (ui-popup
+       {:size "tiny"
+        :position "bottom center"
+        :trigger
+        (ui-button
+         {:icon true
+          :onClick
+          (fn [_]
+            (js/console.log "clicked" doing)
+            (when-let [player wave-surfer]
+              (.skip player 5)))}
+         (ui-icon {:name i/chevron-right-icon}))}
+       (ui-popup-header {:content "Fast forward 5 seconds."})
+       (ui-popup-content {:content "Or press the right arrow key."}))))))
+
 (defn transcript-on-timeupdate [this id duration]
   (fn [ws]
     (let [current-time (.getCurrentTime ws)
@@ -234,46 +278,7 @@
             (ui-player
              player
              {:onTimeupdate (transcript-on-timeupdate this id duration)})
-            (if (or (= doing :loading) (nil? wave-surfer))
-              (ui-icon {:name "loading spinner"})
-              (dom/div
-               (ui-button-group
-                nil
-                (ui-popup
-                 {:size "tiny"
-                  :position "bottom center"
-                  :trigger
-                  (ui-button
-                   {:icon true
-                    :onClick
-                    (fn [_]
-                      (js/console.log "clicked" doing)
-                      (when wave-surfer
-                        (.skip wave-surfer -5)))}
-                   (ui-icon {:name i/chevron-left-icon}))}
-                 (ui-popup-header {:content "Rewind 5 seconds."})
-                 (ui-popup-content {:content "Or press the left arrow key."})) 
-                (ui-popup
-                 {:size "tiny"
-                  :position "bottom center"
-                  :trigger #_(ui-button {:icon i/play-icon})
-                  (ui-play-button wave-surfer doing duration)}
-                 (ui-popup-header {:content "Play/Pause"})
-                 (ui-popup-content {:content "Or press the space bar."}))
-                (ui-popup
-                 {:size "tiny"
-                  :position "bottom center"
-                  :trigger
-                  (ui-button
-                   {:icon true
-                    :onClick
-                    (fn [_]
-                      (js/console.log "clicked" doing)
-                      (when-let [player wave-surfer]
-                        (.skip player 5)))}
-                   (ui-icon {:name i/chevron-right-icon}))}
-                 (ui-popup-header {:content "Fast forward 5 seconds."})
-                 (ui-popup-content {:content "Or press the right arrow key."}))))))})
+            (ui-player-controls wave-surfer doing duration))})
          (confidence-key)
          (div :.transcript
               {:id (str "transcript-" id)}
