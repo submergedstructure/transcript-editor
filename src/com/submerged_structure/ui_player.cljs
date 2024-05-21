@@ -3,7 +3,19 @@
             [com.submerged-structure.mutations :as api]
             [com.fulcrologic.fulcro.algorithms.react-interop :as interop]
             ["@wavesurfer/react" :default WavesurferPlayer]
-            ["wavesurfer.js/dist/plugins/minimap.esm.js" :default Minimap]))
+            ["wavesurfer.js/dist/plugins/minimap.esm.js" :default Minimap]
+
+            [com.fulcrologic.fulcro.dom :as dom]
+            [com.fulcrologic.semantic-ui.elements.button.ui-button-group :refer [ui-button-group]]
+            [com.fulcrologic.semantic-ui.modules.popup.ui-popup :refer [ui-popup]]
+            [com.fulcrologic.semantic-ui.modules.popup.ui-popup-content :refer [ui-popup-content]]
+            [com.fulcrologic.semantic-ui.modules.popup.ui-popup-header :refer [ui-popup-header]]
+            [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
+            [com.fulcrologic.semantic-ui.elements.icon.ui-icon :refer [ui-icon]]
+            [com.fulcrologic.semantic-ui.icons :as i]
+            [com.fulcrologic.semantic-ui.elements.label.ui-label :refer [ui-label]]
+            
+            [goog.string :as gstring]))
 
 (defonce player-local (atom {:player nil}))
 
@@ -15,8 +27,25 @@
 
 (defn player-height [transcript-id] (.-clientHeight (js/document.querySelector (str "#player-" transcript-id))))
 
+(defn on-word-click [_ start]
+  (let [player (get-player)]
+    (when player
+      (.setTime player start)
+      (.play player))))
 
 (def ui-wavesurfer-player (interop/react-factory WavesurferPlayer))
+
+(defn time-float-to-string [t duration]
+  (let [max-t-minutes-length (count (str (quot duration 60)))
+        t-2dp (.toFixed t 2)]
+    (str  (gstring/padNumber (quot t-2dp 60) max-t-minutes-length 0)
+          ":" (gstring/padNumber (mod t-2dp 60) 2 1))))
+
+(defn player-on-timeupdate [^js ws]
+    (let [current-time (.getCurrentTime ws)
+          player-time-el (js/document.querySelector "span#player-time")]
+      (set! (.-textContent player-time-el) (time-float-to-string current-time (.getDuration ws)))))
+
 
 (defsc PlayerComponent [this {:transcript/keys [id audio-filename]}]
   {:ident :transcript/id
@@ -76,3 +105,73 @@
 (def ui-player
   "Third param will be a computed function."
   (comp/computed-factory PlayerComponent {:keyfn :transcript/id}))
+
+(defn ui-play-button [wave-surfer doing duration]
+  (ui-button
+   {:icon (ui-icon
+           {:name
+            (cond
+              (or (= doing :loading) (nil? wave-surfer))
+              i/spinner-icon
+
+              (= doing :playing)
+              i/pause-icon
+
+              :else
+              i/play-icon)})
+    :onClick
+    (fn [_]
+      (js/console.log "clicked" doing)
+      (when wave-surfer
+        (if (= doing :playing)
+          (.pause wave-surfer)
+          (.play wave-surfer))))
+    :labelPosition "left"
+    :label (ui-label
+            {:pointing "right"
+             :content (dom/span
+                       (dom/span :#player-time (time-float-to-string 0 duration))
+                       " of "
+                       (time-float-to-string duration duration))})}))
+
+(defn ui-player-controls [^js wave-surfer doing duration]
+  (if (or (= doing :loading) (nil? wave-surfer))
+    (ui-icon {:name "loading spinner"})
+    (dom/div
+     (ui-button-group
+      nil
+      (ui-popup
+       {:size "tiny"
+        :position "bottom center"
+        :trigger
+        (ui-button
+         {:icon true
+          :onClick
+          (fn [_]
+            (js/console.log "clicked" doing)
+            (when wave-surfer
+              (.skip wave-surfer -5)))}
+         (ui-icon {:name i/chevron-left-icon}))}
+       (ui-popup-header {:content "Rewind 5 seconds."})
+       (ui-popup-content {:content "Or press the left arrow key."}))
+      (ui-popup
+       {:size "tiny"
+        :position "bottom center"
+        :trigger #_(ui-button {:icon i/play-icon})
+        (ui-play-button wave-surfer doing duration)}
+       (ui-popup-header {:content "Play/Pause"})
+       (ui-popup-content {:content "Or press the space bar."}))
+      (ui-popup
+       {:size "tiny"
+        :position "bottom center"
+        :trigger
+        (ui-button
+         {:icon true
+          :onClick
+          (fn [_]
+            (js/console.log "clicked" doing)
+            (when-let [player wave-surfer]
+              (.skip player 5)))}
+         (ui-icon {:name i/chevron-right-icon}))}
+       (ui-popup-header {:content "Fast forward 5 seconds."})
+       (ui-popup-content {:content "Or press the right arrow key."}))))))

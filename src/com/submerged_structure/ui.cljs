@@ -11,16 +11,7 @@
             [com.submerged-structure.app :as ss]
             [goog.functions :as gf]
             [com.submerged-structure.confidence-to-color :as c-to-c]
-            [com.fulcrologic.semantic-ui.elements.button.ui-button-group :refer [ui-button-group]]
-            [com.fulcrologic.semantic-ui.elements.label.ui-label :refer [ui-label]]
-            [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
-            [com.fulcrologic.semantic-ui.elements.icon.ui-icon :refer [ui-icon]]
-            [com.fulcrologic.semantic-ui.icons :as i]
             [com.fulcrologic.semantic-ui.modules.sticky.ui-sticky :refer [ui-sticky]]
-            [goog.string :as gstring]
-            [com.fulcrologic.semantic-ui.modules.popup.ui-popup :refer [ui-popup]]
-            [com.fulcrologic.semantic-ui.modules.popup.ui-popup-content :refer [ui-popup-content]]
-            [com.fulcrologic.semantic-ui.modules.popup.ui-popup-header :refer [ui-popup-header]]
             #_[com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
             [com.submerged-structure.ui-player :as ui-player]))
 
@@ -32,10 +23,7 @@
    :query [:word/id :word/word :word/start :word/end :word/active :word/score]}
   (span {:data-c score
          :className (when active "active")
-         :onClick (fn [_] (let [player (ui-player/get-player)]
-                            (when player
-                              (.setTime player start)
-                              (.play player))))
+         :onClick (fn [ws] (ui-player/on-word-click ws start))
          :style (c-to-c/confidence-to-style score)}
         word))
 
@@ -93,89 +81,11 @@
         (span {:style (c-to-c/confidence-to-style c)} (str c "  "))))
    (p :.ui.center.aligned.container "(1.0 = very high 0.0 = none)")))
 
-(defn time-float-to-string [t duration]
-  (let [max-t-minutes-length (count (str (quot duration 60)))
-        t-2dp (.toFixed t 2)]
-    (str  (gstring/padNumber (quot t-2dp 60) max-t-minutes-length 0)
-          ":" (gstring/padNumber (mod t-2dp 60) 2 1))))
-
-(defn ui-play-button [wave-surfer doing duration]
-  (ui-button
-   {:icon (ui-icon
-           {:name
-            (cond
-              (or (= doing :loading) (nil? wave-surfer))
-              i/spinner-icon
-
-              (= doing :playing)
-              i/pause-icon
-
-              :else
-              i/play-icon)})
-    :onClick
-    (fn [_]
-      (js/console.log "clicked" doing)
-      (when wave-surfer
-        (if (= doing :playing)
-          (.pause wave-surfer)
-          (.play wave-surfer))))
-    :labelPosition "left"
-    :label (ui-label
-            {:pointing "right"
-             :content (dom/span
-                       (dom/span :#player-time (time-float-to-string 0 duration))
-                       " of "
-                       (time-float-to-string duration duration))})}))
-
-(defn ui-player-controls [^js wave-surfer doing duration]
-  (if (or (= doing :loading) (nil? wave-surfer))
-    (ui-icon {:name "loading spinner"})
-    (dom/div
-     (ui-button-group
-      nil
-      (ui-popup
-       {:size "tiny"
-        :position "bottom center"
-        :trigger
-        (ui-button
-         {:icon true
-          :onClick
-          (fn [_]
-            (js/console.log "clicked" doing)
-            (when wave-surfer
-              (.skip wave-surfer -5)))}
-         (ui-icon {:name i/chevron-left-icon}))}
-       (ui-popup-header {:content "Rewind 5 seconds."})
-       (ui-popup-content {:content "Or press the left arrow key."}))
-      (ui-popup
-       {:size "tiny"
-        :position "bottom center"
-        :trigger #_(ui-button {:icon i/play-icon})
-        (ui-play-button wave-surfer doing duration)}
-       (ui-popup-header {:content "Play/Pause"})
-       (ui-popup-content {:content "Or press the space bar."}))
-      (ui-popup
-       {:size "tiny"
-        :position "bottom center"
-        :trigger
-        (ui-button
-         {:icon true
-          :onClick
-          (fn [_]
-            (js/console.log "clicked" doing)
-            (when-let [player wave-surfer]
-              (.skip player 5)))}
-         (ui-icon {:name i/chevron-right-icon}))}
-       (ui-popup-header {:content "Fast forward 5 seconds."})
-       (ui-popup-content {:content "Or press the right arrow key."}))))))
-
 (defn transcript-on-timeupdate [this id]
   (fn [^js ws]
-    (let [current-time (.getCurrentTime ws)
-          player-time-el (js/document.querySelector "span#player-time")]
+    (let [current-time (.getCurrentTime ws)]
       (update-current-word-throttled current-time this id)
-      (set! (.-textContent player-time-el) (time-float-to-string current-time (.getDuration ws))))))
-
+      (ui-player/player-on-timeupdate ws))))
 
 (defsc Transcript [this {:transcript/keys [id
                                            label
@@ -208,7 +118,7 @@
           (ui-player/ui-player
            player
            {:onTimeupdate (transcript-on-timeupdate this id)})
-          (ui-player-controls (ui-player/get-player) doing duration))})
+          (ui-player/ui-player-controls (ui-player/get-player) doing duration))})
        (confidence-key)
        (div :.transcript
             {:id (str "transcript-" id)}
