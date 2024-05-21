@@ -124,11 +124,7 @@
         scroll-to (- element-y-in-document (/ (+ player-height js/window.innerHeight) 2))]
     (js/window.scrollTo  (clj->js {:left 0
                                    :top scroll-to
-                                   :behavior "smooth"}))
-    (js/console.log "scrolling to" {:element element
-                                    :player-height player-height
-                                    :element-y-in-document element-y-in-document
-                                    :scroll-to scroll-to})))
+                                   :behavior "smooth"}))))
 
 (defn update-current-word [t this id]
   (comp/transact!! this [(api/update-transcript-current-time {:transcript/id id :transcript/current-time t})])
@@ -164,7 +160,6 @@
 (defn time-float-to-string [t duration]
   (let [max-t-minutes-length (count (str (quot duration 60)))
         t-2dp (.toFixed t 2)]
-    (js/console.log "current-time-to-string" t duration "->" t-2dp max-t-minutes-length)
     (str  (gstring/padNumber (quot t-2dp 60) max-t-minutes-length 0)
           ":" (gstring/padNumber (mod t-2dp 60) 2 1))))
 
@@ -238,12 +233,12 @@
        (ui-popup-header {:content "Fast forward 5 seconds."})
        (ui-popup-content {:content "Or press the right arrow key."}))))))
 
-(defn transcript-on-timeupdate [this id duration]
-  (fn [ws]
+(defn transcript-on-timeupdate [this id]
+  (fn [^js ws]
     (let [current-time (.getCurrentTime ws)
           player-time-el (js/document.querySelector "span#player-time")]
       (update-current-word-throttled current-time this id)
-      (set! (.-textContent player-time-el) (time-float-to-string current-time duration)))))
+      (set! (.-textContent player-time-el) (time-float-to-string current-time (.getDuration ws))))))
 
 
 (defsc Transcript [this {:transcript/keys [id
@@ -277,7 +272,7 @@
            (div
             (ui-player
              player
-             {:onTimeupdate (transcript-on-timeupdate this id duration)})
+             {:onTimeupdate (transcript-on-timeupdate this id)})
             (ui-player-controls wave-surfer doing duration))})
          (confidence-key)
          (div :.transcript
