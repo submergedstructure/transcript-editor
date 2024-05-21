@@ -7,9 +7,6 @@
             [com.fulcrologic.fulcro.data-fetch :as df]
             [com.fulcrologic.fulcro.raw.components :as rc]
             [com.submerged-structure.mock-data :as mock-data]
-            [com.fulcrologic.fulcro.algorithms.react-interop :as interop]
-            ["@wavesurfer/react" :default WavesurferPlayer]
-            ["wavesurfer.js/dist/plugins/minimap.esm.js" :default Minimap]
             [com.submerged-structure.mutations :as api]
             [com.submerged-structure.app :as ss]
             [goog.functions :as gf]
@@ -24,9 +21,10 @@
             [com.fulcrologic.semantic-ui.modules.popup.ui-popup :refer [ui-popup]]
             [com.fulcrologic.semantic-ui.modules.popup.ui-popup-content :refer [ui-popup-content]]
             [com.fulcrologic.semantic-ui.modules.popup.ui-popup-header :refer [ui-popup-header]]
-            #_[com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]))
+            #_[com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
+            [com.submerged-structure.ui-player :as ui-player]))
 
-(defonce player-local (atom {:player nil}))
+
 
 (defsc Word [this {:word/keys [word active score start]}]
   {:ident :word/id
@@ -34,7 +32,7 @@
    :query [:word/id :word/word :word/start :word/end :word/active :word/score]}
   (span {:data-c score
          :className (when active "active")
-         :onClick (fn [_] (let [^js player (:player @player-local)]
+         :onClick (fn [_] (let [player (ui-player/get-player)]
                             (when player
                               (.setTime player start)
                               (.play player))))
@@ -52,76 +50,14 @@
 
 (def ui-segment (comp/factory Segment {:keyfn :segment/id}))
 
-(def ui-wavesurfer-player (interop/react-factory WavesurferPlayer))
-
-(defsc PlayerComponent [this {:transcript/keys [id audio-filename]}]
-  {:ident :transcript/id
-   :initial-state {}
-   :query [:transcript/id
-           :transcript/audio-filename
-           :ui-period/end
-           :ui-period/start]
-   :shouldComponentUpdate
-   (fn [this next-props next-state]
-     (js/setTimeout (js/console.log "shouldComponentUpdate" this next-props next-state) 0)
-     (not= (select-keys next-props [:transcript/id])
-           (select-keys (comp/props this) [:transcript/id])))}
-  (js/console.log "PlayerComponent" (comp/get-computed this :onTimeupdate) id audio-filename)
-  (ui-wavesurfer-player
-   {:url (js/encodeURI audio-filename)
-    :height 100
-    :minPxPerSec 50,
-    :waveColor "violet"
-    :normalize? true,
-    :interact? true,
-
-    :backend 'MediaElement'
-
-    :onReady (fn [^js player]
-               (js/console.log "onReady" player)
-               (swap! player-local assoc :player player)
-               (comp/transact! this [(api/update-ui-player-doing {:transcript/id id :ui-player/doing :paused})
-                                     (api/update-transcript-duration {:transcript/id id :transcript/duration (.getDuration player)})
-                                     (api/update-transcript-current-time {:transcript/id id :transcript/current-time (.getCurrentTime player)})]))
-    
-    :onError (fn [^js error]
-                 (js/console.log "onError" error)
-                 #_(ui-modal-dimmer
-                 {:open true
-                  :header "Error"
-                  :content "An error occurred while playing the audio."
-                  :actions [{:key :ok :content "OK" :onClick (fn [_] (.close player))}]}))
-    :onTimeupdate (comp/get-computed this :onTimeupdate)
-    :hideScrollbar true,
-    :autoCenter false,
-
-    :onPause (fn [_]
-               (js/console.log "onPause")
-               (comp/transact! this [(api/update-ui-player-doing {:transcript/id id :ui-player/doing :paused})]))
-
-    :onPlay (fn [_]
-              (js/console.log "onPlay")
-              (comp/transact! this [(api/update-ui-player-doing {:transcript/id id :ui-player/doing :playing})]))
-
-    :plugins [(.create Minimap
-                       {:height 20,
-                        :normalize? true,
-                        :waveColor "#ddd",
-                        :progressColor "#999"})]}))
-
-(def ui-player
-  "Third param will be a computed function."
-  (comp/computed-factory PlayerComponent {:keyfn :transcript/id}))
-
 (defn scroll-element-to-middle-of-visible-area-below-player
   "Assuming player is a sticky at the top of the screen, scroll element 
    to the vertical center of the screen below the player."
   [element transcript-id]
-  (let [player-height (.-clientHeight (js/document.querySelector (str "#player-" transcript-id)))
-        element-y-in-viewport (.-top (.. element (getBoundingClientRect)))
+  (let [element-y-in-viewport (.-top (.. element (getBoundingClientRect)))
         current-top-of-viewport (.. js/window -pageYOffset)
         element-y-in-document (+ element-y-in-viewport current-top-of-viewport)
-        scroll-to (- element-y-in-document (/ (+ player-height js/window.innerHeight) 2))]
+        scroll-to (- element-y-in-document (/ (+ (ui-player/player-height transcript-id) js/window.innerHeight) 2))]
     (js/window.scrollTo  (clj->js {:left 0
                                    :top scroll-to
                                    :behavior "smooth"}))))
@@ -252,7 +188,7 @@
    :initial-state (fn [_] {:ui-period/start 0
                            :ui-period/end nil
                            :transcript/segments (comp/get-initial-state Segment {})
-                           :>/player (comp/get-initial-state PlayerComponent {})})
+                           :>/player (comp/get-initial-state ui-player/PlayerComponent {})})
    :query [:transcript/id
            :transcript/label
            :transcript/duration
@@ -260,24 +196,23 @@
            :ui-period/start
            :ui-period/end
            {:transcript/segments (comp/get-query Segment)}
-           {:>/player (comp/get-query PlayerComponent)}]}
-  (let [wave-surfer ^js (:player @player-local)]
-    (div :.ui.container
-         (h1 label)
-         (ui-sticky
-          {:id (str "player-" id)
-           :context (.. js/document -body (querySelector (str "#transcript-" id)))
-           :styleElement {:background-color "white"}
-           :children
-           (div
-            (ui-player
-             player
-             {:onTimeupdate (transcript-on-timeupdate this id)})
-            (ui-player-controls wave-surfer doing duration))})
-         (confidence-key)
-         (div :.transcript
-              {:id (str "transcript-" id)}
-              (map ui-segment segments)))))
+           {:>/player (comp/get-query ui-player/PlayerComponent)}]}
+  (div :.ui.container
+       (h1 label)
+       (ui-sticky
+        {:id (str "player-" id)
+         :context (.. js/document -body (querySelector (str "#transcript-" id)))
+         :styleElement {:background-color "white"}
+         :children
+         (div
+          (ui-player/ui-player
+           player
+           {:onTimeupdate (transcript-on-timeupdate this id)})
+          (ui-player-controls (ui-player/get-player) doing duration))})
+       (confidence-key)
+       (div :.transcript
+            {:id (str "transcript-" id)}
+            (map ui-segment segments))))
 
 (def ui-transcript (comp/factory Transcript {:keyfn :transcript/id}))
 
@@ -288,9 +223,9 @@
 
 
 (comment
-  (.pause (:player @player-local))
-  (.play (:player @player-local))
-  (.getDuration (:player @player-local))
+  (.pause (ui-player/get-player))
+  (.play (ui-player/get-player))
+  (.getDuration (ui-player/get-player))
 
 
   (comp/get-query Root)
@@ -328,7 +263,7 @@
             (recur (.-prototype (js/Object.getPrototypeOf proto))))))
       @props))
 
-  (list-all-properties (-.media (:player @player-local)))
+  (list-all-properties (-.media (ui-player/get-player)))
 
 
 
