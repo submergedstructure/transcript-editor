@@ -12,6 +12,8 @@
             [goog.functions :as gf]
             [com.submerged-structure.confidence-to-color :as c-to-c]
             [com.fulcrologic.semantic-ui.modules.sticky.ui-sticky :refer [ui-sticky]]
+            [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown :refer [ui-dropdown]]
+            [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-item :refer [ui-dropdown-item]]
             #_[com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
             [com.submerged-structure.ui-player :as ui-player]))
 
@@ -73,7 +75,7 @@
         (js/console.log "throttled according to time period " t start end)
         (update-current-word t this id)))))
 
-(defn confidence-key[]
+(defn confidence-key []
   (div
    (p :.ui.center.aligned.container "AI's confidence of each word: ")
    (p :.ui.justified.container#confidence-key
@@ -87,17 +89,54 @@
       (update-current-word-throttled current-time this id)
       (ui-player/player-on-timeupdate ws))))
 
+#_(defsc TranscriptSwitcherOption [this {:transcript/keys [id label]}]
+  {:ident :transcript/id
+   :query [:transcript/id :transcript/label]
+   :initial-state {:transcript/id nil
+                   :transcript/label ""}}
+  )
+
+#_(def ui-transcript-switcher-option (comp/computed-factory TranscriptSwitcherOption {:keyfn :transcript/id}))
+
+(declare Transcript)
+
+(defsc TranscriptSwitcher [this {:transcript-switcher/keys [all-transcripts]}]
+  {:query [{:transcript-switcher/all-transcripts [:transcript/id :transcript/label]}]
+   :ident :transcript-switcher/all-transcripts
+   :initial-state (fn [_] {:transcript-switcher/all-transcripts
+                           {:transcript/id nil
+                            :transcript/label ""}})}
+  (let [current-transcript (comp/get-computed this :current-transcript)]
+    (ui-dropdown
+     {:as "h2"
+      :basic true
+      :fluid true
+      :direction "left"
+      :upward false
+      :scrolling true
+      :options (mapv (fn [{:transcript/keys [id label]}] (ui-dropdown-item {:text label :value id :key id :active (= id (comp/get-computed this :current-transcript))})) all-transcripts)
+
+      :onChange (fn [_ev data]
+                  (js/console.log "TranscriptSwitcher onChange" data)
+                  (comp/transact! this [(api/update-current-transcript {:transcript/id (.-value data)})])
+                  #_(df/load! this :root/current-transcript Transcript))
+      :text (:transcript/label (first (filter #(= (:transcript/id %) current-transcript) all-transcripts)))})))
+
+(def ui-transcript-switcher (comp/computed-factory TranscriptSwitcher))
+
 (defsc Transcript [this {:transcript/keys [id
                                            label
                                            segments
                                            duration]
                          :ui-period/keys  [start end]
                          :ui-player/keys  [doing]
-                         :>/keys        [player]}]
+                         :>/keys          [player
+                                           transcript-switcher]}]
   {:ident :transcript/id
    :initial-state (fn [_] {:ui-period/start 0
                            :ui-period/end nil
                            :transcript/segments (comp/get-initial-state Segment {})
+                           :>/transcript-switcher (comp/get-initial-state TranscriptSwitcher {})
                            :>/player (comp/get-initial-state ui-player/PlayerComponent {})})
    :query [:transcript/id
            :transcript/label
@@ -106,13 +145,14 @@
            :ui-period/start
            :ui-period/end
            {:transcript/segments (comp/get-query Segment)}
+           {:>/transcript-switcher (comp/get-query TranscriptSwitcher)}
            {:>/player (comp/get-query ui-player/PlayerComponent)}]}
   (div :.ui.container
-       (h1 label)
+       (ui-transcript-switcher transcript-switcher {:current-transcript id})
        (ui-sticky
         {:id (str "player-" id)
          :context (.. js/document -body (querySelector (str "#transcript-" id)))
-         :styleElement {:background-color "white"}
+         :styleElement {:backgroundColor "white"}
          :children
          (div
           (ui-player/ui-player
@@ -126,10 +166,13 @@
 
 (def ui-transcript (comp/factory Transcript {:keyfn :transcript/id}))
 
+
 (defsc Root [this {:keys [:root/current-transcript]}]
-  {:initial-state (fn [_] {:root/current-transcript (comp/get-initial-state Transcript {})})
+  {:initial-state
+   (fn [_]
+     {:root/current-transcript (comp/get-initial-state Transcript {})})
    :query [{:root/current-transcript (comp/get-query Transcript)}]}
-  (ui-transcript current-transcript))
+  (dom/div (ui-transcript current-transcript)))
 
 
 (comment
@@ -140,11 +183,13 @@
 
   (comp/get-query Root)
 
-  (comp/get-computed Transcript)
+
+
+  (comp/get-computed TranscriptSwitcher :current-transcript)
 
   (comp/get-initial-state Root {})
 
-  (->(comp/get-query Root) :root/current-transcript  vals first meta)
+  (-> (comp/get-query Root) :root/current-transcript  vals first meta)
 
   (require '[clojure.walk :as w])
   (w/postwalk

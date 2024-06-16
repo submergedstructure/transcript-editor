@@ -28,6 +28,11 @@
    [com.submerged-structure.mutations :as mutations]))
 
 
+(pco/defresolver all-transcripts [_ _]
+  {::pco/output [{:transcript-switcher/all-transcripts [:transcript/id]}]}
+  {:transcript-switcher/all-transcripts (mapv #(into {} [[:transcript/id %]]) (keys mock-data/transcripts))})
+
+
 (pco/defresolver current-transcript [_ _]
   {::pco/output [{:root/current-transcript [:transcript/id]}]}
   {:root/current-transcript {:transcript/id (nth (keys mock-data/transcripts) 2)}})
@@ -85,7 +90,8 @@
    transcript-data
    segment-data
    word-data
-   current-transcript])
+   current-transcript
+   all-transcripts])
 
 (def enable-pathom-viz false)
 

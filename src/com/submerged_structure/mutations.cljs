@@ -98,3 +98,8 @@
           (swap! state assoc-in [:transcript/id id :transcript/duration] duration))
   (remote [_] false))
 
+(defmutation update-current-transcript [{:transcript/keys [id]}]
+  (action [{:keys [state]}]
+          (swap! state assoc-in [:root/current-transcript] [:transcript/id id]))
+  (remote [_] false))
+

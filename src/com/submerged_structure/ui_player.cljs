@@ -175,3 +175,5 @@
          (ui-icon {:name i/chevron-right-icon}))}
        (ui-popup-header {:content "Fast forward 5 seconds."})
        (ui-popup-content {:content "Or press the right arrow key."}))))))
+
+(comment (get-player))

@@ -14,6 +14,7 @@
   (println "Initializing the app...")
   (app/set-root! app ui/Root {:initialize-state? true})
   (df/load! app :root/current-transcript ui/Transcript)
+  #_(df/load! app :root/transcript-switcher ui/TranscriptSwitcher)
   #_(dr/initialize! app) ; make ready, if you want to use dynamic routing...
   (app/mount! app ui/Root "app"))
 
@@ -22,13 +23,15 @@
   []
   (println "Refreshing after a hot code reload...")
   #_(comp/refresh-dynamic-queries! app)
-  (df/load! app :root/current-transcript ui/Transcript)
-  (app/mount! app (app/root-class app) "app")
+  #_(df/load! app :root/current-transcript ui/Transcript)
+  #_(df/load! app :root/transcript-switcher ui/TranscriptSwitcher)
+  #_(app/mount! app (app/root-class app) "app")
   
   
   )
 
 (comment
+  (df/load! app :>/transcript-switcher ui/TranscriptSwitcher)
   (app/force-root-render! app)
   (app/current-state app)
   (com.fulcrologic.fulcro.components/get-initial-state com.submerged-structure.ui/Root)
