@@ -1,6 +1,5 @@
 (ns com.submerged-structure.ui-player
   (:require [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-            [com.submerged-structure.mutations :as api]
             [com.fulcrologic.fulcro.algorithms.react-interop :as interop]
             ["@wavesurfer/react" :default WavesurferPlayer]
             ["wavesurfer.js/dist/plugins/minimap.esm.js" :default Minimap]
@@ -36,6 +35,7 @@
 (def ui-wavesurfer-player (interop/react-factory WavesurferPlayer))
 
 (defn time-float-to-string [t duration]
+  (js/console.log "time-float-to-string" t duration)
   (let [max-t-minutes-length (count (str (quot duration 60)))
         t-2dp (.toFixed t 2)]
     (str  (gstring/padNumber (quot t-2dp 60) max-t-minutes-length 0)
@@ -73,9 +73,9 @@
     :onReady (fn [^js player]
                (js/console.log "onReady" player)
                (set-player! player)
-               (comp/transact! this [(api/update-ui-player-doing {:transcript/id id :ui-player/doing :paused})
-                                     (api/update-transcript-duration {:transcript/id id :transcript/duration (.getDuration player)})
-                                     (api/update-transcript-current-time {:transcript/id id :transcript/current-time (.getCurrentTime player)})]))
+               (comp/transact! this `[(com.submerged-structure.mutations/update-ui-player-doing {:transcript/id ~id :ui-player/doing :paused})
+                                     (com.submerged-structure.mutations/update-transcript-duration {:transcript/id ~id :transcript/duration ~(.getDuration player)})
+                                     (com.submerged-structure.mutations/update-transcript-current-time {:transcript/id ~id :transcript/current-time ~(.getCurrentTime player)})]))
 
     :onError (fn [^js error]
                (js/console.log "onError" error)
@@ -90,11 +90,11 @@
 
     :onPause (fn [_]
                (js/console.log "onPause")
-               (comp/transact! this [(api/update-ui-player-doing {:transcript/id id :ui-player/doing :paused})]))
+               (comp/transact! this `[(com.submerged-structure.mutations/update-ui-player-doing {:transcript/id ~id :ui-player/doing :paused})]))
 
     :onPlay (fn [_]
               (js/console.log "onPlay")
-              (comp/transact! this [(api/update-ui-player-doing {:transcript/id id :ui-player/doing :playing})]))
+              (comp/transact! this `[(com.submerged-structure.mutations/update-ui-player-doing {:transcript/id ~id :ui-player/doing :playing})]))
 
     :plugins [(.create Minimap
                        {:height 20,
@@ -106,12 +106,13 @@
   "Third param will be a computed function."
   (comp/computed-factory PlayerComponent {:keyfn :transcript/id}))
 
-(defn ui-play-button [wave-surfer doing duration]
+(defn ui-play-button [doing]
+  (js/console.log "ui-play-button" doing (get-player) (.getDuration (get-player)))
   (ui-button
    {:icon (ui-icon
            {:name
             (cond
-              (or (= doing :loading) (nil? wave-surfer))
+              (or (= doing :loading) (nil? (get-player)))
               i/spinner-icon
 
               (= doing :playing)
@@ -122,20 +123,20 @@
     :onClick
     (fn [_]
       (js/console.log "clicked" doing)
-      (when wave-surfer
+      (when (get-player)
         (if (= doing :playing)
-          (.pause wave-surfer)
-          (.play wave-surfer))))
+          (.pause (get-player))
+          (.play (get-player)))))
     :labelPosition "left"
     :label (ui-label
             {:pointing "right"
              :content (dom/span
-                       (dom/span :#player-time (time-float-to-string 0 duration))
+                       (dom/span :#player-time (time-float-to-string 0 (.getDuration (get-player))))
                        " of "
-                       (time-float-to-string duration duration))})}))
+                       (time-float-to-string (.getDuration (get-player)) (.getDuration (get-player))))})}))
 
-(defn ui-player-controls [^js wave-surfer doing duration]
-  (if (or (= doing :loading) (nil? wave-surfer))
+(defn ui-player-controls [doing]
+  (if (or (= doing :loading) (nil? (get-player)))
     (ui-icon {:name "loading spinner"})
     (dom/div
      (ui-button-group
@@ -149,16 +150,15 @@
           :onClick
           (fn [_]
             (js/console.log "clicked" doing)
-            (when wave-surfer
-              (.skip wave-surfer -5)))}
+            (when-let [player (get-player)]
+              (.skip player -5)))}
          (ui-icon {:name i/chevron-left-icon}))}
        (ui-popup-header {:content "Rewind 5 seconds."})
        (ui-popup-content {:content "Or press the left arrow key."}))
       (ui-popup
        {:size "tiny"
         :position "bottom center"
-        :trigger #_(ui-button {:icon i/play-icon})
-        (ui-play-button wave-surfer doing duration)}
+        :trigger (ui-play-button doing)}
        (ui-popup-header {:content "Play/Pause"})
        (ui-popup-content {:content "Or press the space bar."}))
       (ui-popup
@@ -170,7 +170,7 @@
           :onClick
           (fn [_]
             (js/console.log "clicked" doing)
-            (when-let [player wave-surfer]
+            (when-let [player (get-player)]
               (.skip player 5)))}
          (ui-icon {:name i/chevron-right-icon}))}
        (ui-popup-header {:content "Fast forward 5 seconds."})

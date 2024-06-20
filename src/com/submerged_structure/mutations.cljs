@@ -6,7 +6,9 @@
    define them in another ns, which we do in `...pathom`."
   (:require
    [com.fulcrologic.fulcro.mutations :refer [defmutation]]
-   [com.fulcrologic.fulcro.algorithms.denormalize :as fdn]))
+   [com.fulcrologic.fulcro.algorithms.denormalize :as fdn]
+   [com.fulcrologic.fulcro.data-fetch :as df]
+   [com.submerged-structure.ui :as ui]))
 
 (defn all-words-from-state-unsorted
   [state]
@@ -98,8 +100,14 @@
           (swap! state assoc-in [:transcript/id id :transcript/duration] duration))
   (remote [_] false))
 
-(defmutation update-current-transcript [{:transcript/keys [id]}]
-  (action [{:keys [state]}]
-          (swap! state assoc-in [:root/current-transcript] [:transcript/id id]))
+(defmutation load-transcript [{:transcript/keys [id]}] 
+    (action [{:keys [app state]}]
+      (when-let [current-transcript-ident (get state :root/current-transcript)]
+        (swap! state assoc-in (concat current-transcript-ident [:ui-player/doing]) :loading))
+      (if id
+        (let [next-transcript-ident [:transcript/id id]]
+          (swap! state assoc-in [:root/current-transcript] next-transcript-ident)
+          (df/load! app next-transcript-ident ui/Transcript))
+        (df/load! app :root/current-transcript ui/Transcript)))
   (remote [_] false))
 

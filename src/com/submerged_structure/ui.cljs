@@ -1,14 +1,9 @@
 (ns com.submerged-structure.ui
   (:require [com.fulcrologic.fulcro.dom :as dom  :refer [div h1 li p ul span i]]
             [com.fulcrologic.fulcro.algorithms.normalize :as fn]
-            [com.fulcrologic.fulcro.algorithms.denormalize :as fdn]
-            [com.fulcrologic.fulcro.application :as app]
+            
             [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-            [com.fulcrologic.fulcro.data-fetch :as df]
-            [com.fulcrologic.fulcro.raw.components :as rc]
             [com.submerged-structure.mock-data :as mock-data]
-            [com.submerged-structure.mutations :as api]
-            [com.submerged-structure.app :as ss]
             [goog.functions :as gf]
             [com.submerged-structure.confidence-to-color :as c-to-c]
             [com.fulcrologic.semantic-ui.modules.sticky.ui-sticky :refer [ui-sticky]]
@@ -53,7 +48,7 @@
                                    :behavior "smooth"}))))
 
 (defn update-current-word [t this id]
-  (comp/transact!! this [(api/update-transcript-current-time {:transcript/id id :transcript/current-time t})])
+  (comp/transact!! this `[(com.submerged-structure.mutations/update-transcript-current-time {:transcript/id ~id :transcript/current-time ~t})])
   (js/console.log "update-current-word" this id t)
   (js/setTimeout
    (fn []
@@ -118,8 +113,8 @@
 
       :onChange (fn [_ev data]
                   (js/console.log "TranscriptSwitcher onChange" data)
-                  (comp/transact! this [(api/update-current-transcript {:transcript/id (.-value data)})])
-                  #_(df/load! this :root/current-transcript Transcript))
+                  (comp/transact! this `[(com.submerged-structure.mutations/load-transcript {:transcript/id ~(.-value data)})])
+                  )
       :text (:transcript/label (first (filter #(= (:transcript/id %) current-transcript) all-transcripts)))})))
 
 (def ui-transcript-switcher (comp/computed-factory TranscriptSwitcher))
@@ -158,7 +153,7 @@
           (ui-player/ui-player
            player
            {:onTimeupdate (transcript-on-timeupdate this id)})
-          (ui-player/ui-player-controls (ui-player/get-player) doing duration))})
+          (ui-player/ui-player-controls doing))})
        (confidence-key)
        (div :.transcript
             {:id (str "transcript-" id)}
@@ -180,7 +175,7 @@
   (.play (ui-player/get-player))
   (.getDuration (ui-player/get-player))
 
-
+  (.getCurrentTime (ui-player/get-player))
   (comp/get-query Root)
 
 
@@ -231,35 +226,13 @@
   mock-data/transcript
   (comp/get-query com.submerged-structure.ui/Transcript)
   (com.fulcrologic.fulcro.components/get-initial-state Root {})
-  (app/current-state Root)
+  
   (fn/tree->db  Root (com.fulcrologic.fulcro.components/get-initial-state Root) true)
-  (df/load! com.submerged-structure.app/app :transcript (rc/nc '[*]))
-  (df/load! com.submerged-structure.app/app [:transcript/id "2221f28c-0f2d-479b-b4a7-80924c80721c"] Transcript)
-  ;; Load this => 
-  ;; Pathom 2: will get back from server {:sequence [{..}, ..]} - i.e. a *vector*
-  ;; even though the resolver returns a lazy seq
-  ;; Pathom 3: returns a list: {:sequence ({..}, ..)}
-  (df/load! com.submerged-structure.app/app :sequence (rc/nc [:tst/id :tst/val]))
+  
 
-
-  (require '[com.submerged-structure.app :as ss])
-  (api/words-from-state (app/current-state ss/app))
-  (fdn/db->tree [#:root{:current-transcript
-                        [:transcript/id
-                         #:transcript{:segments
-                                      [:segment/id #:segment{:words [:word/id :word/start :word/end]}]}]}]
-                (app/current-state ss/app) (app/current-state ss/app))
-
-  (get (app/current-state ss/app) :word/id)
-  (api/find-current-period (app/current-state ss/app) 27.91 "2221f28c-0f2d-479b-b4a7-80924c80721c")
-  (api/find-first-word-not-ended (app/current-state ss/app) 0.0)
-  (api/find-last-word-ended (app/current-state ss/app) 0.0)
-
-  (fdn/db->tree [#:root{:current-transcript
-                        [:transcript/id
-                         #:transcript{:segments
-                                      [:segment/id #:segment{:words [:word/id :word/start :word/end]}]}]}]
-                (app/current-state ss/app) (app/current-state ss/app)))
+  
+  (comp/transact! com.submerged-structure.app/app '[(api/update-current-transcript {:transcript/id "48658c6e-6508-48f3-b581-eccb13e18082"})])
+  )
   
 
 

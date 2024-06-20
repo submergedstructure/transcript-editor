@@ -13,19 +13,15 @@
   []
   (println "Initializing the app...")
   (app/set-root! app ui/Root {:initialize-state? true})
-  (df/load! app :root/current-transcript ui/Transcript)
-  #_(df/load! app :root/transcript-switcher ui/TranscriptSwitcher)
-  #_(dr/initialize! app) ; make ready, if you want to use dynamic routing...
-  (app/mount! app ui/Root "app"))
+  (comp/transact! app `[(com.submerged-structure.mutations/load-transcript {:transcript/id "71f28d76-ba2e-46da-be47-8d2162b20803"})])
+  (app/mount! app (app/root-class app) "app"))
 
 (defn ^:export refresh 
   "Called by shadow-cljs upon hot code reload, see shadow-cljs.edn"
   []
   (println "Refreshing after a hot code reload...")
-  #_(comp/refresh-dynamic-queries! app)
-  #_(df/load! app :root/current-transcript ui/Transcript)
-  #_(df/load! app :root/transcript-switcher ui/TranscriptSwitcher)
-  #_(app/mount! app (app/root-class app) "app")
+  (comp/transact! app `[(com.submerged-structure.mutations/load-transcript)])
+  (app/mount! app (app/root-class app) "app")
   
   
   )
