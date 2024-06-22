@@ -19,7 +19,7 @@
    :initial-state {:word/active false}
    :query [:word/id :word/word :word/start :word/end :word/active :word/score]}
   (span {:data-c score
-         :className (when active "active")
+         :classes [(when active "active") "word"]
          :onClick (fn [ws] (ui-player/on-word-click ws start))
          :style (c-to-c/confidence-to-style score)}
         word))
@@ -52,7 +52,7 @@
   (js/console.log "update-current-word" this id t)
   (js/setTimeout
    (fn []
-     (when-let [active-word (js/document.querySelector ".active")]
+     (when-let [active-word (js/document.querySelector ".word.active")]
        (scroll-element-to-middle-of-visible-area-below-player active-word id)))
    0))
 
