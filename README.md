@@ -1,12 +1,40 @@
-# A clone of minimalist-fulcro-template-backendless
+# Transcript Editor for editing AI generated
+
+I'm very much enjoying my exploration of [fulcro](https://github.com/fulcrologic/fulcro) thanks Tony Kay for all the work you have put into this interesting and powerful approach to web application development. I thought I would start documenting my progress here, it'll be fun and motivating to share the process, writing will help me to clarify my thinking and I expect I will get some helpful and much-needed feedback. As a starter project to learn the ropes, I am building a nice UI for a subtitle editing app, code is here. I am getting word-level time stamps from whisperx that I have set up as a web service. I want to:
+
+* visualise the audio waveform and the timestamps with https://wavesurfer.xyz/ 
+* be able to edit timestamps with their regions plugin which allows dragging of borders of the regions 
+* to edit the words themselves in an interactive transcript displayed below the waveform.
+
+This is a first step towards making a web application where a language learner can upload any audio file or link to a youtube video and get editable interactive transcripts useful for language learning with grammatical analysis provided by [spacy](https://spacy.io) I have a prototype of the interactive transcripts I want to achieve here coded in python: [prototype](https://submergedstructure.github.io/Polish%20Dialogues.html)
+
+@Jakub Holý (HolyJak) is going to be doing code review along the way and has been giving me some tips.
+
+I'm using Jakub's minimalist backendless fulcro starter to initially concentrate on the frontend and am also using his troubleshooting library.
+
+See the code running here: [automatic gihtub pages deploy](https://dev.submergedstructure.com/)
+
+## Todo
+
+* I need to check the code selecting the currently active word based on the current time reported by the player. Seems it some cases it is selecting the wrong word.
+* I need to make the timestamps editable.
+* I need to make the words themselves editable.
+* I'd like to add a button that toggles the scroll to current word as the current word changes, defaulting to on.
+* Ability to move forward and backward by segments or words as well as moving the audio forward / backward by 5 seconds.
+* Add keyboard shortcuts.
+* Add communication to a server to save edited transcripts.
+* Add download of trnanscripts in various formats.
+* Add a form to upload an audio file or link to an audio file or youtube video or similar and have the audio transcribed by whisperx through [my web service](https://github.com/submergedstructure/runpodWhisperx).
+  * Add ability to specify instructions for whisperx about transcription and control other parameters of whisperx.
+  * Add ability to rerun time stamping to generate new time stamps based on changed words in transcript.
+
+
+## Based on minimalist-fulcro-template-backendless
 
 A template for starting a new, frontend-only Fulcro application with in-browser Pathom. Intended for playing with and learning Fulcro, not for production apps, and therefore simpler than the official [fulcro-template](https://github.com/fulcrologic/fulcro-template). It is a good starting point for your learning projects that is hopefully simple enough for you to understand.
 
 For a template that has an actual backend, see [minimalist-fulcro-template](https://github.com/holyjak/minimalist-fulcro-template).
 
-## Note on Pathom 2
-
-Until 2023-09 (last sha 624d546e7), we used Pathom 2.
 
 ## Note on alternatives for Pathom 3 and Fulcro Inspect's Index Explorer
 
@@ -18,10 +46,6 @@ Fulcro Inspect's Index Explorer is not compatible with Pathom 3. You need to use
 
 P. Viz support is off by default because otherwise it [logs tons of errors](https://clojurians.slack.com/archives/C87NB2CFN/p1696016550457039) and warnings, until you connect it.
 
-## Creating a new application from the template
-
-[Download](https://github.com/holyjak/minimalist-fulcro-template-backendless/archive/refs/heads/main.zip) or clone this repository to your computer and start hacking away.
-
 ## Explanation
 
 You will run shadow-cljs, which will watch, compile, and update the sources and also run a HTTP server to serve the application.
@@ -29,6 +53,8 @@ You will run shadow-cljs, which will watch, compile, and update the sources and 
 ## GitHub pages automatic deployment
 
 A GitHub workflows action in .github/workflows/main.yml automatically deploys the code to github pages in order. If you clone this repo you just need to go to the settings page of your github repository and select the "Pages" subpage and make sure the Build and Deployment source is set to "Github Actions".
+
+My repo https://github.com/submergedstructure/transcript-editor deploys to https://dev.submergedstructure.com/
 
 
 ## Usage
