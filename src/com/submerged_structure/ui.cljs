@@ -99,8 +99,8 @@
   {:query [{:transcript-switcher/all-transcripts [:transcript/id :transcript/label]}]
    :ident :transcript-switcher/all-transcripts
    :initial-state (fn [_] {:transcript-switcher/all-transcripts
-                           {:transcript/id nil
-                            :transcript/label ""}})}
+                           [{:transcript/id nil
+                            :transcript/label ""}]})}
   (let [current-transcript (comp/get-computed this :current-transcript)]
     (ui-dropdown
      {:as "h2"
@@ -113,8 +113,7 @@
 
       :onChange (fn [_ev data]
                   (js/console.log "TranscriptSwitcher onChange" data)
-                  (comp/transact! this `[(com.submerged-structure.mutations/load-transcript {:transcript/id ~(.-value data)})])
-                  )
+                  (comp/transact! this `[(com.submerged-structure.mutations/load-transcript {:transcript/id ~(.-value data)})]))
       :text (:transcript/label (first (filter #(= (:transcript/id %) current-transcript) all-transcripts)))})))
 
 (def ui-transcript-switcher (comp/computed-factory TranscriptSwitcher))

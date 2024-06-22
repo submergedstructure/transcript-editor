@@ -35,7 +35,6 @@
 (def ui-wavesurfer-player (interop/react-factory WavesurferPlayer))
 
 (defn time-float-to-string [t duration]
-  (js/console.log "time-float-to-string" t duration)
   (let [max-t-minutes-length (count (str (quot duration 60)))
         t-2dp (.toFixed t 2)]
     (str  (gstring/padNumber (quot t-2dp 60) max-t-minutes-length 0)
