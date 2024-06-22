@@ -102,12 +102,12 @@
 
 (defmutation load-transcript [{:transcript/keys [id]}] 
     (action [{:keys [app state]}]
-      (when-let [current-transcript-ident (get state :root/current-transcript)]
-        (swap! state assoc-in (concat current-transcript-ident [:ui-player/doing]) :loading))
       (if id
         (let [next-transcript-ident [:transcript/id id]]
           (swap! state assoc-in [:root/current-transcript] next-transcript-ident)
-          (df/load! app next-transcript-ident ui/Transcript))
+          (df/load! app next-transcript-ident ui/Transcript)
+          (swap! state assoc-in (concat next-transcript-ident [:ui-player/doing]) :loading))
+        
         (df/load! app :root/current-transcript ui/Transcript)))
   (remote [_] false))
 
