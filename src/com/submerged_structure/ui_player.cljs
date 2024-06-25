@@ -134,7 +134,7 @@
                        " of "
                        (time-float-to-string (.getDuration (get-player)) (.getDuration (get-player))))})}))
 
-(defn ui-player-controls [doing]
+(defn ui-player-controls [transcript-comp id doing scroll-to-active]
   (if (or (= doing :loading) (nil? (get-player)))
     (ui-icon {:name "loading spinner"})
     (dom/div
@@ -173,6 +173,20 @@
               (.skip player 5)))}
          (ui-icon {:name i/chevron-right-icon}))}
        (ui-popup-header {:content "Fast forward 5 seconds."})
-       (ui-popup-content {:content "Or press the right arrow key."}))))))
+       (ui-popup-content {:content "Or press the right arrow key."})))
+       (ui-button-group
+        nil
+        (ui-popup
+         {:size "tiny"
+          :position "bottom center"
+          :trigger
+          (ui-button {:icon true
+                      :positive scroll-to-active
+                      :onClick (fn [& args]
+                                 (js/console.log "scroll to active clicked" args)
+                                 (comp/transact! transcript-comp `[(com.submerged-structure.mutations/toggle-transcript-scroll-to-active {:transcript/id ~id})]))}
+                     (ui-icon
+                      {:name i/crosshairs-icon}))}
+         (ui-popup-content {:content "Toggle the transcript scrolling to currently active word."}))))))
 
 (comment (get-player))

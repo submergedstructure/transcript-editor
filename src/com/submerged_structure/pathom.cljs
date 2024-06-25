@@ -41,9 +41,13 @@
 (pco/defresolver transcript-data
   [_ {:keys [transcript/id]}]
   {::pco/input  [:transcript/id]
-   ::pco/output [:transcript/audio-filename :transcript/label :transcript/segments :transcript/id :transcript/current-time]}
+   ::pco/output [:transcript/audio-filename :transcript/label :transcript/segments :transcript/id :ui-player/scroll-to-active :ui-player/doing]}
   (js/console.log "MOCK SERVER: Simulate loading transcript data" id)
-  (get (assoc-in mock-data/transcripts [id :transcript/segments] (mapv #(select-keys % [:segment/id]) (get-in mock-data/transcripts [id :transcript/segments]))) id))
+  (->
+   (get mock-data/transcripts id)
+   (assoc :transcript/segments (mapv #(select-keys % [:segment/id]) (get-in mock-data/transcripts [id :transcript/segments]))
+          :ui-player/scroll-to-active true
+          :ui-player/doing :loading)))
 
 (defn segment-data-from-tree [segment-id]
   (->> (vals mock-data/transcripts);all transcripts
@@ -79,7 +83,8 @@
    ::pco/output [:word/start :word/end :word/id :word/word :word/score]}
   {::pco/input [:word/id]
    ::pco/output [:word/start :word/end :word/id :word/word :word/score]}
-  (word-data-from-tree id))
+  (->(word-data-from-tree id)
+   (assoc :word/active false)))
 
 
 (def my-resolvers-and-mutations

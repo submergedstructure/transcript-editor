@@ -47,20 +47,21 @@
                                    :top scroll-to
                                    :behavior "smooth"}))))
 
-(defn update-current-word [t this id]
+(defn update-current-word [this t id]
   (comp/transact!! this `[(com.submerged-structure.mutations/update-transcript-current-time {:transcript/id ~id :transcript/current-time ~t})])
   (js/console.log "update-current-word" this id t)
   (js/setTimeout
    (fn []
-     (when-let [active-word (js/document.querySelector ".word.active")]
-       (scroll-element-to-middle-of-visible-area-below-player active-word id)))
+     (when (:ui-player/scroll-to-active (comp/props this)) 
+      (when-let [active-word (js/document.querySelector ".word.active")]
+       (scroll-element-to-middle-of-visible-area-below-player active-word id))))
    0))
 
 (def update-current-word-once-per-frame
   "called when we don't have a start or end time for the current period."
   (gf/rateLimit update-current-word (/ 1000 10))) ; 10 frames per second
 
-(defn update-current-word-throttled [t this id]
+(defn update-current-word-throttled [this t id]
   (let [props (comp/props this)
         start (:ui-period/start props)
         end (:ui-period/end props)]
@@ -68,7 +69,7 @@
       (update-current-word-once-per-frame this id t)
       (when-not (<= start t end)
         (js/console.log "throttled according to time period " t start end)
-        (update-current-word t this id)))))
+        (update-current-word this t id)))))
 
 (defn confidence-key []
   (div
@@ -81,7 +82,7 @@
 (defn transcript-on-timeupdate [this id]
   (fn [^js ws]
     (let [current-time (.getCurrentTime ws)]
-      (update-current-word-throttled current-time this id)
+      (update-current-word-throttled this current-time id)
       (ui-player/player-on-timeupdate ws))))
 
 #_(defsc TranscriptSwitcherOption [this {:transcript/keys [id label]}]
@@ -123,12 +124,14 @@
                                            segments
                                            duration]
                          :ui-period/keys  [start end]
-                         :ui-player/keys  [doing]
+                         :ui-player/keys  [doing scroll-to-active]
                          :>/keys          [player
                                            transcript-switcher]}]
   {:ident :transcript/id
    :initial-state (fn [_] {:ui-period/start 0
                            :ui-period/end nil
+                           :ui-player/doing :loading
+                           :ui-player/scroll-to-active true
                            :transcript/segments (comp/get-initial-state Segment {})
                            :>/transcript-switcher (comp/get-initial-state TranscriptSwitcher {})
                            :>/player (comp/get-initial-state ui-player/PlayerComponent {})})
@@ -136,6 +139,7 @@
            :transcript/label
            :transcript/duration
            :ui-player/doing
+           :ui-player/scroll-to-active
            :ui-period/start
            :ui-period/end
            {:transcript/segments (comp/get-query Segment)}
@@ -152,7 +156,7 @@
           (ui-player/ui-player
            player
            {:onTimeupdate (transcript-on-timeupdate this id)})
-          (ui-player/ui-player-controls doing))})
+          (ui-player/ui-player-controls this id doing scroll-to-active))})
        (confidence-key)
        (div :.transcript
             {:id (str "transcript-" id)}

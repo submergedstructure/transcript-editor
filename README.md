@@ -19,7 +19,6 @@ See the code running here: [automatic gihtub pages deploy](https://dev.submerged
 * I need to check the code selecting the currently active word based on the current time reported by the player. Seems it some cases it is selecting the wrong word.
 * I need to make the timestamps editable.
 * I need to make the words themselves editable.
-* I'd like to add a button that toggles the scroll to current word as the current word changes, defaulting to on.
 * Ability to move forward and backward by segments or words as well as moving the audio forward / backward by 5 seconds.
 * Add keyboard shortcuts.
 * Add communication to a server to save edited transcripts.
@@ -27,6 +26,11 @@ See the code running here: [automatic gihtub pages deploy](https://dev.submerged
 * Add a form to upload an audio file or link to an audio file or youtube video or similar and have the audio transcribed by whisperx through [my web service](https://github.com/submergedstructure/runpodWhisperx).
   * Add ability to specify instructions for whisperx about transcription and control other parameters of whisperx.
   * Add ability to rerun time stamping to generate new time stamps based on changed words in transcript.
+
+### Done
+
+* I'd like to add a button that toggles the scroll to current word as the current word changes, defaulting to on.
+
 
 
 ## Based on minimalist-fulcro-template-backendless

@@ -111,3 +111,8 @@
         (df/load! app :root/current-transcript ui/Transcript)))
   (remote [_] false))
 
+(defmutation toggle-transcript-scroll-to-active [{:keys [transcript/id]}]
+  (action [{:keys [state]}]
+          (swap! state update-in [:transcript/id id :ui-player/scroll-to-active] not))
+  (remote [_] false))
+
