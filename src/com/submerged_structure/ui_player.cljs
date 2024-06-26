@@ -66,16 +66,16 @@
     :waveColor "violet"
     :normalize? true,
     :interact? true,
-
+  
     :backend 'MediaElement'
-
+  
     :onReady (fn [^js player]
                (js/console.log "onReady" player)
                (set-player! player)
                (comp/transact! this `[(com.submerged-structure.mutations/update-ui-player-doing {:transcript/id ~id :ui-player/doing :paused})
-                                     (com.submerged-structure.mutations/update-transcript-duration {:transcript/id ~id :transcript/duration ~(.getDuration player)})
-                                     (com.submerged-structure.mutations/update-transcript-current-time {:transcript/id ~id :transcript/current-time ~(.getCurrentTime player)})]))
-
+                                      (com.submerged-structure.mutations/update-transcript-duration {:transcript/id ~id :transcript/duration ~(.getDuration player)})
+                                      (com.submerged-structure.mutations/update-transcript-current-time {:transcript/id ~id :transcript/current-time ~(.getCurrentTime player)})]))
+  
     :onError (fn [^js error]
                (js/console.log "onError" error)
                #_(ui-modal-dimmer
@@ -86,15 +86,15 @@
     :onTimeupdate (comp/get-computed this :onTimeupdate)
     :hideScrollbar true,
     :autoCenter false,
-
+  
     :onPause (fn [_]
                (js/console.log "onPause")
                (comp/transact! this `[(com.submerged-structure.mutations/update-ui-player-doing {:transcript/id ~id :ui-player/doing :paused})]))
-
+  
     :onPlay (fn [_]
               (js/console.log "onPlay")
               (comp/transact! this `[(com.submerged-structure.mutations/update-ui-player-doing {:transcript/id ~id :ui-player/doing :playing})]))
-
+  
     :plugins [(.create Minimap
                        {:height 20,
                         :normalize? true,
@@ -187,6 +187,6 @@
                                  (comp/transact! transcript-comp `[(com.submerged-structure.mutations/toggle-transcript-scroll-to-active {:transcript/id ~id})]))}
                      (ui-icon
                       {:name i/crosshairs-icon}))}
-         (ui-popup-content {:content "Toggle the transcript scrolling to currently active word."}))))))
+         (ui-popup-content {:content "Toggle the transcript automatically scrolling to current spoken word."}))))))
 
 (comment (get-player))
