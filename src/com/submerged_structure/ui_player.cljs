@@ -105,34 +105,22 @@
   "Third param will be a computed function."
   (comp/computed-factory PlayerComponent {:keyfn :transcript/id}))
 
-(defn ui-play-button [doing]
-  (js/console.log "ui-play-button" doing (get-player) (.getDuration (get-player)))
+
+(defn ui-popup-for-controls [header content trigger]
+  (ui-popup
+   {:size "tiny"
+    :position "bottom center"
+    :hideOnScroll true
+    :header header
+    :content content
+    :trigger trigger}))
+
+(defn ui-control-button [icon-name on-click & [options]]
   (ui-button
-   {:icon (ui-icon
-           {:name
-            (cond
-              (or (= doing :loading) (nil? (get-player)))
-              i/spinner-icon
-
-              (= doing :playing)
-              i/pause-icon
-
-              :else
-              i/play-icon)})
-    :onClick
-    (fn [_]
-      (js/console.log "clicked" doing)
-      (when (get-player)
-        (if (= doing :playing)
-          (.pause (get-player))
-          (.play (get-player)))))
-    :labelPosition "left"
-    :label (ui-label
-            {:pointing "right"
-             :content (dom/span
-                       (dom/span :#player-time (time-float-to-string 0 (.getDuration (get-player))))
-                       " of "
-                       (time-float-to-string (.getDuration (get-player)) (.getDuration (get-player))))})}))
+   (merge
+    {:icon icon-name
+     :onClick on-click}
+    options)))
 
 (defn ui-player-controls [transcript-comp id doing scroll-to-active]
   (if (or (= doing :loading) (nil? (get-player)))
@@ -140,53 +128,47 @@
     (dom/div
      (ui-button-group
       nil
-      (ui-popup
-       {:size "tiny"
-        :position "bottom center"
-        :trigger
-        (ui-button
-         {:icon true
-          :onClick
-          (fn [_]
-            (js/console.log "clicked" doing)
+      (ui-popup-for-controls
+       "Rewind 5 seconds."
+       "Or press the left arrow key."
+       (ui-control-button
+         i/chevron-left-icon
+         (fn [_]
+           (when-let [player (get-player)]
+             (.skip player -5)))))
+      (ui-popup-for-controls
+       "Play/Pause"
+       "Or press the space bar."
+       (ui-control-button
+        (if (= doing :playing) i/pause-icon i/play-icon)
+        (fn [_]
+          (when (get-player)
+            (if (= doing :playing) (.pause (get-player)) (.play (get-player)))))
+        {:labelPosition "left"
+         :label (ui-label
+                 {:pointing "right"
+                  :content (dom/span
+                            (dom/span :#player-time (time-float-to-string 0 (.getDuration (get-player))))
+                            " of "
+                            (time-float-to-string (.getDuration (get-player)) (.getDuration (get-player))))})}))
+      
+      (ui-popup-for-controls
+       "Fast forward 5 seconds."
+       "Or press the right arrow key."
+       (ui-control-button
+        i/chevron-right-icon
+        (fn [_]
             (when-let [player (get-player)]
-              (.skip player -5)))}
-         (ui-icon {:name i/chevron-left-icon}))}
-       (ui-popup-header {:content "Rewind 5 seconds."})
-       (ui-popup-content {:content "Or press the left arrow key."}))
-      (ui-popup
-       {:size "tiny"
-        :position "bottom center"
-        :trigger (ui-play-button doing)}
-       (ui-popup-header {:content "Play/Pause"})
-       (ui-popup-content {:content "Or press the space bar."}))
-      (ui-popup
-       {:size "tiny"
-        :position "bottom center"
-        :trigger
-        (ui-button
-         {:icon true
-          :onClick
-          (fn [_]
-            (js/console.log "clicked" doing)
-            (when-let [player (get-player)]
-              (.skip player 5)))}
-         (ui-icon {:name i/chevron-right-icon}))}
-       (ui-popup-header {:content "Fast forward 5 seconds."})
-       (ui-popup-content {:content "Or press the right arrow key."})))
+              (.skip player 5))))))
        (ui-button-group
         nil
-        (ui-popup
-         {:size "tiny"
-          :position "bottom center"
-          :trigger
-          (ui-button {:icon true
-                      :positive scroll-to-active
-                      :onClick (fn [& args]
-                                 (js/console.log "scroll to active clicked" args)
-                                 (comp/transact! transcript-comp `[(com.submerged-structure.mutations/toggle-transcript-scroll-to-active {:transcript/id ~id})]))}
-                     (ui-icon
-                      {:name i/crosshairs-icon}))}
-         (ui-popup-content {:content "Toggle the transcript automatically scrolling to current spoken word."}))))))
+        (ui-popup-for-controls
+         nil
+         "Toggle the transcript automatically scrolling to current spoken word."
+         (ui-control-button
+          i/crosshairs-icon
+          (fn [& _args]
+            (comp/transact! transcript-comp `[(com.submerged-structure.mutations/toggle-transcript-scroll-to-active {:transcript/id ~id})]))
+          {:positive scroll-to-active}))))))
 
 (comment (get-player))
