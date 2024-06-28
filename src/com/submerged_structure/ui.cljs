@@ -18,12 +18,22 @@
   {:ident :word/id
    :query [:word/id :word/prev :word/next  :word/start :word/end]})
 
+
+(defsc Segment-Link
+  "Used to for local db normalisation"
+  [this {:segment/keys [start end next prev]}]
+  {:ident :segment/id
+   :query [:segment/id :segment/prev :segment/next :segment/start :segment/end]})
+
+
+
 (defsc Word [this {:word/keys [word active score start]}]
   {:ident :word/id
    :initial-state {:word/active false}
    :query [:word/id
            {:word/prev (comp/get-query Word-Link)}
            {:word/next (comp/get-query Word-Link)}
+           {:word/segment (comp/get-query Segment-Link)}
            :word/word :word/start :word/end :word/active :word/score]}
   (span {:data-c score
          :classes [(when active "active") "word"]
@@ -32,12 +42,6 @@
         word))
 
 (def ui-word (comp/factory Word {:keyfn :word/id}))
-
-(defsc Segment-Link
-  "Used to for local db normalisation"
-  [this {:segment/keys [start end next prev]}]
-  {:ident :segment/id
-   :query [:segment/id :segment/prev :segment/next :segment/start :segment/end]})
 
 (defsc Segment [this {:segment/keys [words]}]
   {:ident :segment/id

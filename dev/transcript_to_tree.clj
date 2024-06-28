@@ -110,7 +110,16 @@
         "segments" segments}
        add-ids
        (add-ns-and-keywordize-keys-in-m "transcript")
-       (update :transcript/segments add-prev-and-next-to-transcript-segments-and-words-in-segments))))
+       (update :transcript/segments add-prev-and-next-to-transcript-segments-and-words-in-segments)
+       (update :transcript/segments (fn [segments]
+                                      (mapv
+                                       (fn [segment]
+                                         (update segment :segment/words
+                                                 (fn [words]
+                                                   (mapv
+                                                    (fn [word] (assoc word :word/segment (:segment/id segment)))
+                                                    words))))
+                                       segments))))))
 
 
 (comment
