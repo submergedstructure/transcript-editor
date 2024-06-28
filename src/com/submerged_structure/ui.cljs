@@ -105,23 +105,23 @@
       (update-current-word-throttled this current-time id)
       (ui-player/player-on-timeupdate ws))))
 
-#_(defsc TranscriptSwitcherOption [this {:transcript/keys [id label]}]
+(defsc TranscriptSwitcherOption
+  "db only, for normalisation"
+  [this {:transcript/keys [id label]}]
   {:ident :transcript/id
    :query [:transcript/id :transcript/label]
    :initial-state {:transcript/id nil
-                   :transcript/label ""}}
-  )
+                   :transcript/label ""}})
 
 #_(def ui-transcript-switcher-option (comp/computed-factory TranscriptSwitcherOption {:keyfn :transcript/id}))
 
 (declare Transcript)
 
 (defsc TranscriptSwitcher [this {:transcript-switcher/keys [all-transcripts]}]
-  {:query [{:transcript-switcher/all-transcripts [:transcript/id :transcript/label]}]
+  {:query [{:transcript-switcher/all-transcripts (comp/get-query TranscriptSwitcherOption)}]
    :ident :transcript-switcher/all-transcripts
    :initial-state (fn [_] {:transcript-switcher/all-transcripts
-                           [{:transcript/id nil
-                            :transcript/label ""}]})}
+                           (comp/get-initial-state TranscriptSwitcherOption {})})}
   (let [current-transcript (comp/get-computed this :current-transcript)]
     (ui-dropdown
      {:as "h2"
