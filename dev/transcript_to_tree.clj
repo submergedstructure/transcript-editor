@@ -43,10 +43,10 @@
 (comment 
   (add-ns-and-keywordize-keys-in-m {"a" "xa" "words" [{"a" 5}] "b" 2} "segment")
   ;; => #:segment{:a "xa", :words [#:word{:a 5}], :b 2}
-  (add-ns-and-keywordize-keys-in-m {"a" 1 "b" 2} "word")
+  (add-ns-and-keywordize-keys-in-m {"a" 1 "b" 2} "word"))
   ;; => #:word{:a 1, :b 2}
 
-  )
+  
 
 
 (defn add-ns-and-keywordize-keys-in-vec [v ns]
@@ -54,22 +54,70 @@
              (add-ns-and-keywordize-keys-in-m m ns))))
 
 (comment
-  (add-ns-and-keywordize-keys-in-vec [{"a" 1 "b" 2} {"c" 3 "d" 4}] "segment")
+  (add-ns-and-keywordize-keys-in-vec [{"a" 1 "b" 2} {"c" 3 "d" 4}] "segment"))
   ;; => [#:segment{:a 1, :b 2} #:segment{:c 3, :d 4}]
-)
+
+
+
+(defn add-prev-and-next [ns objs & [prev next]]
+  (loop [[obj & rest-objs] objs
+         last-obj-id prev
+         objs-with-prev []]
+    (if (nil? obj)
+      objs-with-prev
+      (recur rest-objs
+             ((keyword ns "id") obj)
+             (conj objs-with-prev
+                   (assoc
+                    obj
+                    (keyword ns "prev") last-obj-id
+                    (keyword ns "next") (if (empty? rest-objs)
+                                          next
+                                          ((keyword ns "id") (first rest-objs)))))))))
+
+(defn get-fn-word-id-in-segment [fn segment]
+  (-> segment
+      :segment/words
+      fn
+      :word/id))
+
+(defn add-prev-and-next-to-transcript-segments-and-words-in-segments [segments]
+  (->> segments
+      (add-prev-and-next "segment")
+      (map-indexed
+       (fn [idx segment]
+        (let [prev (if (zero? idx) nil (get-fn-word-id-in-segment last (nth segments (dec idx))))
+              next (if (= (dec (count segments)) idx) nil (get-fn-word-id-in-segment first (nth segments (inc idx))))]
+          (update
+           segment
+           :segment/words
+           (fn [words] (add-prev-and-next "word" words prev next))))))
+      (into [])))
 
 (defn transcript-data [label full-filepath-without-extension]
   (let [segments (-> (str full-filepath-without-extension ".json")
                      slurp
                      (cheshire/parse-string false)
                      (get "output")
-                     (get "segments"))]
-  (-> {"audio-filename" (str (subs full-filepath-without-extension (count "resources/public")) ".mp3")
-       "label" label
-       "segments" segments}
-      add-ids
-      (add-ns-and-keywordize-keys-in-m "transcript"))))
+                     (get "segments")
+                     ;Assuming segments and words are already sorted and remembering that some words have nil start time
+                     ;as no time stamp has been found though they are in the correct order.
+                     ;will not sort but this may need reviewing.
+                     #_(#(sort-by :start %))
+                     #_(#(mapv (fn [segment] (update segment :words (partial sort-by :start))) %)))]
+   (-> {"audio-filename" (str (subs full-filepath-without-extension (count "resources/public")) ".mp3")
+        "label" label
+        "segments" segments}
+       add-ids
+       (add-ns-and-keywordize-keys-in-m "transcript")
+       (update :transcript/segments add-prev-and-next-to-transcript-segments-and-words-in-segments))))
 
+
+(comment
+  (def t-d (apply transcript-data ["realpolish-hint1.mp3" "resources/public/audio_and_transcript/realpolish-hint1"]))
+  (add-prev-and-next (:transcript/segments t-d) "segment"))
+  
+  
 
 (defn find-mp3-files-at-path [path]
   (->> (java.io.File. path)
@@ -99,7 +147,7 @@
 
 
 (comment 
-  (write-mock-data-cljs-file)
+  (write-mock-data-cljs-file))
   
-  )
+  
 

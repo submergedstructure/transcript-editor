@@ -54,18 +54,33 @@
        (mapcat :transcript/segments);all segemnts from all transcripts
        (filter #(= (:segment/id %) segment-id))
        first ;specific segment
-       (#(assoc % :segment/words (mapv (fn [word] (select-keys word [:word/id])) (get % :segment/words))))))
+       (#(assoc
+          %
+          :segment/words (mapv (fn [word] (select-keys word [:word/id])) (get % :segment/words))))))
 
   #_(first (filter #(= (:segment/id %) id) (mapcat :transcript/segments (vals mock-data/transcript))))
 
 (comment (segment-data-from-tree "4a1a191f-7586-47d2-bfbb-f21722ed8bb1"))
+
+(defn make-link-idents-in-object [obj ns keys]
+  (let [nsed-keys (map (partial keyword ns) keys)
+        idents (map (fn [k] (hash-map (keyword ns "id") ((keyword ns k) obj))) keys)]
+    (apply assoc obj (interleave nsed-keys idents))))
+
+
+(comment
+
+  (make-link-idents-in-object {:segment/prev "1" :segment/next "2"} "segment" ["prev" "next"])
+  ;; => #:segment{:prev #:segment{:id "1"}, :next #:segment{:id "2"}}
+ )
 
 
 (pco/defresolver segment-data
   [_ {:keys [segment/id]}]
   {::pco/input [:segment/id]
    ::pco/output [:segment/words :segment/id]}
-  (segment-data-from-tree id))
+  (-> (segment-data-from-tree id)
+      (make-link-idents-in-object "segment" ["prev" "next"])))
 
 (defn word-data-from-tree [word-id]
   (->> mock-data/transcripts
@@ -73,14 +88,13 @@
        (mapcat :transcript/segments)
        (mapcat :segment/words)
        (filter #(= (:word/id %) word-id))
-       first))
+       first
+       (#(make-link-idents-in-object % "word" ["prev" "next"]))))
 
 (comment (word-data-from-tree "1b966e29-e96a-4af7-a601-7a71d6fa89f4"))
 
 (pco/defresolver word-data
   [_ {:keys [:word/id]}]
-  {::pco/input [:word/id]
-   ::pco/output [:word/start :word/end :word/id :word/word :word/score]}
   {::pco/input [:word/id]
    ::pco/output [:word/start :word/end :word/id :word/word :word/score]}
   (->(word-data-from-tree id)

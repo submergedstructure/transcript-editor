@@ -12,12 +12,19 @@
             #_[com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
             [com.submerged-structure.ui-player :as ui-player]))
 
-
+(defsc Word-Link
+  "Used to for local db normalisation"
+  [this {:word/keys [start end next prev]}]
+  {:ident :word/id
+   :query [:word/id :word/prev :word/next  :word/start :word/end]})
 
 (defsc Word [this {:word/keys [word active score start]}]
   {:ident :word/id
    :initial-state {:word/active false}
-   :query [:word/id :word/word :word/start :word/end :word/active :word/score]}
+   :query [:word/id
+           {:word/prev (comp/get-query Word-Link)}
+           {:word/next (comp/get-query Word-Link)}
+           :word/word :word/start :word/end :word/active :word/score]}
   (span {:data-c score
          :classes [(when active "active") "word"]
          :onClick (fn [ws] (ui-player/on-word-click ws start))
@@ -26,11 +33,24 @@
 
 (def ui-word (comp/factory Word {:keyfn :word/id}))
 
+(defsc Segment-Link
+  "Used to for local db normalisation"
+  [this {:segment/keys [start end next prev]}]
+  {:ident :segment/id
+   :query [:segment/id :segment/prev :segment/next :segment/start :segment/end]})
 
-(defsc Segment [this {:keys [segment/words]}]
+(defsc Segment [this {:segment/keys [words]}]
   {:ident :segment/id
    :initial-state (fn [_] {:segment/words (comp/get-initial-state Word {})})
-   :query [:segment/id {:segment/words (comp/get-query Word)}]}
+   :query [:segment/id
+           {:segment/prev (comp/get-query Segment-Link)}
+           {:segment/next (comp/get-query Segment-Link)}
+           :segment/start
+           :segment/end
+           {:segment/words (comp/get-query Word)}]}
+  {:ident :segment/id
+   :initial-state (fn [_] {:segment/words (comp/get-initial-state Word {})})
+   :query [:segment/id :segment/prev :segment/next :segment/start :segment/end {:segment/words (comp/get-query Word)}]}
   (p (interleave (map ui-word words) (repeat " ")))) ;; space between words is language dependent may need to change to support eg. Asian languages.
 
 (def ui-segment (comp/factory Segment {:keyfn :segment/id}))
