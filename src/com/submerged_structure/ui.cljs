@@ -19,14 +19,6 @@
    :query [:word/id :word/prev :word/next  :word/start :word/end]})
 
 
-(defsc SegmentLink
-  "Used to for local db normalisation"
-  [this {:segment/keys [start end next prev]}]
-  {:ident :segment/id
-   :query [:segment/id :segment/prev :segment/next :segment/start :segment/end]})
-
-
-
 (defsc Word [this {:word/keys [word active score start]}]
   {:ident :word/id
    :initial-state {:word/active false}
@@ -108,8 +100,6 @@
 
 #_(def ui-transcript-switcher-option (comp/computed-factory TranscriptSwitcherOption {:keyfn :transcript/id}))
 
-(declare Transcript)
-
 (defsc TranscriptSwitcher [this {:transcript-switcher/keys [all-transcripts]}]
   {:query [{:transcript-switcher/all-transcripts (comp/get-query TranscriptSwitcherOption)}]
    :ident :transcript-switcher/all-transcripts
@@ -133,13 +123,12 @@
 (def ui-transcript-switcher (comp/computed-factory TranscriptSwitcher))
 
 (defsc Transcript [this {:transcript/keys [id
-                                           current-word
                                            segments]
                          :ui-player/keys  [doing scroll-to-active]
                          :>/keys          [player
                                            transcript-switcher]}]
   {:ident :transcript/id
-   :initial-state (fn [_] {:transcript/current-word nil
+   :initial-state (fn [_] {:transcript/current-word [:word/id nil]
                            :ui-period/start 0
                            :ui-period/end nil
                            :ui-player/doing :loading
@@ -148,13 +137,13 @@
                            :>/transcript-switcher (comp/get-initial-state TranscriptSwitcher {})
                            :>/player (comp/get-initial-state ui-player/PlayerComponent {})})
    :query [:transcript/id
-           :transcript/current-word
            :transcript/label
            :transcript/duration
            :ui-player/doing
            :ui-player/scroll-to-active
            :ui-period/start
            :ui-period/end
+           {:transcript/current-word (comp/get-query WordLink)}
            {:transcript/segments (comp/get-query Segment)}
            {:>/transcript-switcher (comp/get-query TranscriptSwitcher)}
            {:>/player (comp/get-query ui-player/PlayerComponent)}]}
