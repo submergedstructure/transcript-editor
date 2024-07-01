@@ -12,14 +12,14 @@
             #_[com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
             [com.submerged-structure.ui-player :as ui-player]))
 
-(defsc Word-Link
+(defsc WordLink
   "Used to for local db normalisation"
   [this {:word/keys [start end next prev]}]
   {:ident :word/id
    :query [:word/id :word/prev :word/next  :word/start :word/end]})
 
 
-(defsc Segment-Link
+(defsc SegmentLink
   "Used to for local db normalisation"
   [this {:segment/keys [start end next prev]}]
   {:ident :segment/id
@@ -31,9 +31,9 @@
   {:ident :word/id
    :initial-state {:word/active false}
    :query [:word/id
-           {:word/prev (comp/get-query Word-Link)}
-           {:word/next (comp/get-query Word-Link)}
-           {:word/segment (comp/get-query Segment-Link)}
+           {:word/prev (comp/get-query WordLink)}
+           {:word/next (comp/get-query WordLink)}
+           {:word/segment (comp/get-query SegmentLink)}
            :word/word :word/start :word/end :word/active :word/score]}
   (span {:data-c score
          :classes [(when active "active") "word"]
@@ -47,8 +47,8 @@
   {:ident :segment/id
    :initial-state (fn [_] {:segment/words (comp/get-initial-state Word {})})
    :query [:segment/id
-           {:segment/prev (comp/get-query Segment-Link)}
-           {:segment/next (comp/get-query Segment-Link)}
+           {:segment/prev (comp/get-query SegmentLink)}
+           {:segment/next (comp/get-query SegmentLink)}
            :segment/start
            :segment/end
            {:segment/words (comp/get-query Word)}]}
@@ -119,7 +119,6 @@
 
 #_(def ui-transcript-switcher-option (comp/computed-factory TranscriptSwitcherOption {:keyfn :transcript/id}))
 
-(declare Transcript)
 
 (defsc TranscriptSwitcher [this {:transcript-switcher/keys [all-transcripts]}]
   {:query [{:transcript-switcher/all-transcripts (comp/get-query TranscriptSwitcherOption)}]
@@ -144,15 +143,14 @@
 (def ui-transcript-switcher (comp/computed-factory TranscriptSwitcher))
 
 (defsc Transcript [this {:transcript/keys [id
-                                           label
-                                           segments
-                                           duration]
-                         :ui-period/keys  [start end]
+                                           current-word
+                                           segments]
                          :ui-player/keys  [doing scroll-to-active]
                          :>/keys          [player
                                            transcript-switcher]}]
   {:ident :transcript/id
-   :initial-state (fn [_] {:ui-period/start 0
+   :initial-state (fn [_] {:transcript/current-word nil
+                           :ui-period/start 0
                            :ui-period/end nil
                            :ui-player/doing :loading
                            :ui-player/scroll-to-active true
@@ -160,6 +158,7 @@
                            :>/transcript-switcher (comp/get-initial-state TranscriptSwitcher {})
                            :>/player (comp/get-initial-state ui-player/PlayerComponent {})})
    :query [:transcript/id
+           :transcript/current-word
            :transcript/label
            :transcript/duration
            :ui-player/doing

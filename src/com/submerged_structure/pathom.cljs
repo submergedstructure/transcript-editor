@@ -60,11 +60,12 @@
 
   #_(first (filter #(= (:segment/id %) id) (mapcat :transcript/segments (vals mock-data/transcript))))
 
-(comment (segment-data-from-tree "4a1a191f-7586-47d2-bfbb-f21722ed8bb1"))
 
-(defn make-link-idents-in-object [obj ns keys]
+(defn make-link-idents-in-object
+  "turn IDs with `ns` namespaced keys `keys` in `obj` into idents to the objects in same `ns` or optionally `other-ns`."
+  [obj ns keys & [other-ns]]
   (let [nsed-keys (map (partial keyword ns) keys)
-        idents (map (fn [k] (hash-map (keyword ns "id") ((keyword ns k) obj))) keys)]
+        idents (map (fn [k] (hash-map (keyword (if other-ns other-ns ns) "id") ((keyword ns k) obj))) keys)]
     (apply assoc obj (interleave nsed-keys idents))))
 
 
@@ -72,7 +73,39 @@
 
   (make-link-idents-in-object {:segment/prev "1" :segment/next "2"} "segment" ["prev" "next"])
   ;; => #:segment{:prev #:segment{:id "1"}, :next #:segment{:id "2"}}
- )
+
+  (nth (keys mock-data/transcripts) 2)
+  ;; => "67fe3ce1-7bcd-434c-a595-c609c51873e7"
+
+  (get-in mock-data/transcripts ["67fe3ce1-7bcd-434c-a595-c609c51873e7" :transcript/segments 1 :segment/words 1])
+  (make-link-idents-in-object (get-in mock-data/transcripts ["67fe3ce1-7bcd-434c-a595-c609c51873e7" :transcript/segments 1 :segment/words 1]) "word" ["prev" "next"])
+  ;; => #:word{:end 13.894,
+  ;;           :score 0.94,
+  ;;           :start 13.194,
+  ;;           :word "wielokrotnym",
+  ;;           :id "0fb9c263-b65c-4276-a299-3bc29adb4d8b",
+  ;;           :prev #:word{:id "0ec8b93b-f437-41a0-a57c-c00b50f88d62"},
+  ;;           :next #:word{:id "381568e0-6722-4764-8883-5169ee4c47ee"},
+  ;;           :segment "3797cf8d-7483-4390-88f0-609f966f1254"}
+  (make-link-idents-in-object (get-in mock-data/transcripts ["67fe3ce1-7bcd-434c-a595-c609c51873e7" :transcript/segments 1 :segment/words 1]) "word" ["segment"] "segment")
+  ;; => #:word{:end 13.894,
+  ;;           :score 0.94,
+  ;;           :start 13.194,
+  ;;           :word "wielokrotnym",
+  ;;           :id "0fb9c263-b65c-4276-a299-3bc29adb4d8b",
+  ;;           :prev "0ec8b93b-f437-41a0-a57c-c00b50f88d62",
+  ;;           :next "381568e0-6722-4764-8883-5169ee4c47ee",
+  ;;           :segment #:segment{:id "3797cf8d-7483-4390-88f0-609f966f1254"}}
+
+
+
+  
+
+  
+
+
+  (segment-data-from-tree "4a1a191f-7586-47d2-bfbb-f21722ed8bb1")
+  )
 
 
 (pco/defresolver segment-data
@@ -89,7 +122,8 @@
        (mapcat :segment/words)
        (filter #(= (:word/id %) word-id))
        first
-       (#(make-link-idents-in-object % "word" ["prev" "next"]))))
+       (#(make-link-idents-in-object % "word" ["prev" "next"]))
+       (#(make-link-idents-in-object % "word" ["segment"] "segment"))))
 
 (comment (word-data-from-tree "1b966e29-e96a-4af7-a601-7a71d6fa89f4"))
 
