@@ -128,6 +128,12 @@
     (dom/div
      (ui-button-group
       nil
+      (ui-control-button
+       i/reply-all-icon
+       (fn [_]
+         (when-let [player (get-player)]
+           (js/console.log "Replay all")
+           (.seekTo player 0))))
       (ui-popup-for-controls
        "Rewind 5 seconds."
        "Or press the left arrow key."
@@ -152,12 +158,6 @@
                             " of "
                             (time-float-to-string (.getDuration (get-player)) (.getDuration (get-player))))})}))
       
-      (ui-control-button
-       i/reply-all-icon
-       (fn [_]
-         (when-let [player (get-player)]
-           (js/console.log "Replay all")
-           (.seekTo player 0))))
       (ui-popup-for-controls
        "Fast forward 5 seconds."
        "Or press the right arrow key."
