@@ -6,14 +6,15 @@
    [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.fulcro.algorithms.denormalize :as fdn]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
-   [com.fulcrologic.fulcro.data-fetch :as df]))
+   [com.fulcrologic.fulcro.data-fetch :as df]
+   [com.submerged-structure.mock-data :as mock-data]))
 
 (defn ^:export init
   "Called by shadow-cljs upon initialization, see shadow-cljs.edn"
   []
   (println "Initializing the app...")
   (app/set-root! app ui/Root {:initialize-state? true})
-  (comp/transact! app `[(com.submerged-structure.mutations/load-transcript {:transcript/id "71f28d76-ba2e-46da-be47-8d2162b20803"})])
+  (comp/transact! app `[(com.submerged-structure.mutations/load-transcript {:transcript/id ~(nth (keys mock-data/transcripts) 2)})])
   (app/mount! app (app/root-class app) "app"))
 
 (defn ^:export refresh 
