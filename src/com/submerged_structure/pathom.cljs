@@ -126,8 +126,6 @@
   [_ {:keys [:word/id]}]
   {::pco/input [:word/id]
    ::pco/output [:word/start :word/end :word/id :word/word :word/score]}
-  {::pco/input [:word/id]
-   ::pco/output [:word/start :word/end :word/id :word/word :word/score]}
   (->(word-data-from-tree id)
    (assoc :word/active false)))
 
