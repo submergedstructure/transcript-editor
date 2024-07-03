@@ -14,7 +14,7 @@
   []
   (println "Initializing the app...")
   (app/set-root! app ui/Root {:initialize-state? true})
-  (comp/transact! app `[(com.submerged-structure.mutations/load-transcript {:transcript/id ~(nth (keys mock-data/transcripts) 2)})])
+  (comp/transact! app `[(com.submerged-structure.mutations/load-transcript {:transcript/id ~(nth (keys mock-data/transcripts) 0)})])
   (app/mount! app (app/root-class app) "app"))
 
 (defn ^:export refresh 
@@ -35,7 +35,10 @@
 
   (let [state (app/current-state app)]
     (fdn/db->tree
-     (comp/get-query ui/Root) ; or any component
+     [{[:transcript/id "71f28d76-ba2e-46da-be47-8d2162b20803"]
+       [:transcript/id
+        #:transcript{:segments
+                     [:segment/id :segment/start :segment/end #:segment{:words [:word/id :word/start :word/end]}]}]}] ; or any component
           ;; Starting entity, state itself for Root
           ;; otherwise st. like (get-in state-map [:thing/id 1]):
      state

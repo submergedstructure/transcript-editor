@@ -46,7 +46,7 @@
       (set! (.-textContent player-time-el) (time-float-to-string current-time (.getDuration ws)))))
 
 
-(defsc PlayerComponent [this {:transcript/keys [id audio-filename]}]
+(defsc PlayerComponent [this {:transcript/keys [audio-filename]}]
   {:ident :transcript/id
    :initial-state {}
    :query [:transcript/id
@@ -58,7 +58,7 @@
      (js/setTimeout (js/console.log "shouldComponentUpdate" this next-props next-state) 0)
      (not= (select-keys next-props [:transcript/id])
            (select-keys (comp/props this) [:transcript/id])))}
-  (js/console.log "PlayerComponent" (comp/get-computed this :onTimeupdate) id audio-filename)
+  (js/console.log "PlayerComponent" (comp/get-computed this :onTimeupdate) audio-filename)
   (ui-wavesurfer-player
    {:url (js/encodeURI audio-filename)
     :height 100
@@ -72,9 +72,9 @@
     :onReady (fn [^js player]
                (js/console.log "onReady" player)
                (set-player! player)
-               (comp/transact! this `[(com.submerged-structure.mutations/update-ui-player-doing {:transcript/id ~id :ui-player/doing :paused})
-                                      (com.submerged-structure.mutations/update-transcript-duration {:transcript/id ~id :transcript/duration ~(.getDuration player)})
-                                      (com.submerged-structure.mutations/update-transcript-current-time {:transcript/id ~id :transcript/current-time ~(.getCurrentTime player)})]))
+               (comp/transact! this `[(com.submerged-structure.mutations/update-ui-player-doing {:ui-player/doing :paused})
+                                      (com.submerged-structure.mutations/update-transcript-duration {:transcript/duration ~(.getDuration player)})
+                                      (com.submerged-structure.mutations/update-transcript-current-time {:transcript/current-time ~(.getCurrentTime player)})]))
   
     :onError (fn [^js error]
                (js/console.log "onError" error)
@@ -89,11 +89,11 @@
   
     :onPause (fn [_]
                (js/console.log "onPause")
-               (comp/transact! this `[(com.submerged-structure.mutations/update-ui-player-doing {:transcript/id ~id :ui-player/doing :paused})]))
+               (comp/transact! this `[(com.submerged-structure.mutations/update-ui-player-doing {:ui-player/doing :paused})]))
   
     :onPlay (fn [_]
               (js/console.log "onPlay")
-              (comp/transact! this `[(com.submerged-structure.mutations/update-ui-player-doing {:transcript/id ~id :ui-player/doing :playing})]))
+              (comp/transact! this `[(com.submerged-structure.mutations/update-ui-player-doing {:ui-player/doing :playing})]))
   
     :plugins [(.create Minimap
                        {:height 20,
@@ -122,7 +122,7 @@
      :onClick on-click}
     options)))
 
-(defn ui-player-controls [transcript-comp id doing scroll-to-active]
+(defn ui-player-controls [transcript-comp doing scroll-to-active]
   (if (or (= doing :loading) (nil? (get-player)))
     (ui-icon {:name "loading spinner"})
     (dom/div
@@ -174,7 +174,7 @@
          (ui-control-button
           i/crosshairs-icon
           (fn [& _args]
-            (comp/transact! transcript-comp `[(com.submerged-structure.mutations/toggle-transcript-scroll-to-active {:transcript/id ~id})]))
+            (comp/transact! transcript-comp `[(com.submerged-structure.mutations/toggle-transcript-scroll-to-active {})]))
           {:positive scroll-to-active}))))))
 
 (comment (get-player))

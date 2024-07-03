@@ -102,14 +102,14 @@
   
 
 
-  (segment-data-from-tree "4a1a191f-7586-47d2-bfbb-f21722ed8bb1")
+  (segment-data-from-tree "946ed8e9-8546-4128-ac5f-a85c3b2cbf14")
   )
 
 
 (pco/defresolver segment-data
   [_ {:keys [segment/id]}]
   {::pco/input [:segment/id]
-   ::pco/output [:segment/words :segment/id]}
+   ::pco/output [:segment/words :segment/end :segment/start :segment/id]}
   (segment-data-from-tree id))
 
 (defn word-data-from-tree [word-id]

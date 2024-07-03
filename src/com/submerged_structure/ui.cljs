@@ -16,6 +16,7 @@
   "Used to for local db normalisation"
   [this {:word/keys [start end next prev]}]
   {:ident :word/id
+   :initial-state {:word/id nil}
    :query [:word/id :word/prev :word/next  :word/start :word/end]})
 
 
@@ -35,7 +36,7 @@
 (defsc Segment [this {:keys [segment/words]}]
   {:ident :segment/id
    :initial-state (fn [_] {:segment/words (comp/get-initial-state Word {})})
-   :query [:segment/id {:segment/words (comp/get-query Word)}]}
+   :query [:segment/id :segment/start :segment/end {:segment/words (comp/get-query Word)}]}
   (p (interleave (map ui-word words) (repeat " ")))) ;; space between words is language dependent may need to change to support eg. Asian languages.
 
 (def ui-segment (comp/factory Segment {:keyfn :segment/id}))
@@ -53,7 +54,7 @@
                                    :behavior "smooth"}))))
 
 (defn update-current-word [this t id]
-  (comp/transact!! this `[(com.submerged-structure.mutations/update-transcript-current-time {:transcript/id ~id :transcript/current-time ~t})])
+  (comp/transact!! this `[(com.submerged-structure.mutations/update-transcript-current-time {:transcript/current-time ~t})])
   (js/console.log "update-current-word" this id t)
   (js/setTimeout
    (fn []
@@ -71,7 +72,7 @@
         start (:ui-period/start props)
         end (:ui-period/end props)]
     (if (some nil? [start end]);check if either start or end are nil
-      (update-current-word-once-per-frame this id t)
+      (update-current-word-once-per-frame this t id)
       (when-not (<= start t end)
         (js/console.log "throttled according to time period " t start end)
         (update-current-word this t id)))))
@@ -164,7 +165,7 @@
           (ui-player/ui-player
            player
            {:onTimeupdate (transcript-on-timeupdate this id)})
-          (ui-player/ui-player-controls this id doing scroll-to-active))})
+          (ui-player/ui-player-controls this doing scroll-to-active))})
        (confidence-key)
        (div :.transcript
             {:id (str "transcript-" id)}

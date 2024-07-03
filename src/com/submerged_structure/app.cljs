@@ -38,7 +38,11 @@
    (get "2221f28c-0f2d-479b-b4a7-80924c80721c"))
   ;; => nil
 
+  (:root/current-transcript (app/current-state app))
+  ;; => [:transcript/id "71f28d76-ba2e-46da-be47-8d2162b20803"]
+
+
   (assoc-in (app/current-state app) [:transcript/id "2221f28c-0f2d-479b-b4a7-80924c80721c" :transcript/current-time] 20)
-  (comp/transact! app ['(com.submerged-structure.mutations/update-transcript-current-time {:transcript/id "2221f28c-0f2d-479b-b4a7-80924c80721c" :current-time 5})])
+  (comp/transact! app ['(com.submerged-structure.mutations/update-transcript-current-time {:transcript/current-time 5})])
   
   )
