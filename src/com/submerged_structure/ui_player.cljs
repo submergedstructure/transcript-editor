@@ -122,7 +122,7 @@
      :onClick on-click}
     options)))
 
-(defn ui-player-controls [transcript-comp doing scroll-to-active]
+(defn ui-player-controls [transcript-comp doing scroll-to-active segment-start]
   (if (or (= doing :loading) (nil? (get-player)))
     (ui-icon {:name "loading spinner"})
     (dom/div
@@ -133,7 +133,8 @@
        (fn [_]
          (when-let [player (get-player)]
            (js/console.log "Replay all")
-           (.seekTo player 0))))
+           (.setTime player segment-start)))
+       {:disabled (nil? segment-start)})
       (ui-popup-for-controls
        "Rewind 5 seconds."
        "Or press the left arrow key."

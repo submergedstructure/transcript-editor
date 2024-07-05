@@ -123,7 +123,8 @@
 
 (def ui-transcript-switcher (comp/computed-factory TranscriptSwitcher))
 
-(defsc Transcript [this {:transcript/keys [id
+(defsc Transcript [this {segment-start :ui-current-segment/start
+                         :transcript/keys [id
                                            segments]
                          :ui-player/keys  [doing scroll-to-active]
                          :>/keys          [player
@@ -132,6 +133,7 @@
    :initial-state (fn [_] {:transcript/current-word [:word/id nil]
                            :ui-period/start 0
                            :ui-period/end nil
+                           :ui-current-segment/start nil
                            :ui-player/doing :loading
                            :ui-player/scroll-to-active true
                            :transcript/segments (comp/get-initial-state Segment {})
@@ -140,10 +142,11 @@
    :query [:transcript/id
            :transcript/label
            :transcript/duration
-           :ui-player/doing
+          `:ui-player/doing
            :ui-player/scroll-to-active
            :ui-period/start
            :ui-period/end
+           :ui-current-segment/start
            {:transcript/current-word (comp/get-query WordLink)}
            {:transcript/segments (comp/get-query Segment)}
            {:>/transcript-switcher (comp/get-query TranscriptSwitcher)}
@@ -165,7 +168,7 @@
           (ui-player/ui-player
            player
            {:onTimeupdate (transcript-on-timeupdate this id)})
-          (ui-player/ui-player-controls this doing scroll-to-active))})
+          (ui-player/ui-player-controls this doing scroll-to-active segment-start))})
        (confidence-key)
        (div :.transcript
             {:id (str "transcript-" id)}

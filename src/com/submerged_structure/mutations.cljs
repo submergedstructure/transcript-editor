@@ -26,60 +26,35 @@
     state-deref state-deref)
    [:root/current-transcript :transcript/segments]))
 
-(defn get-word-from-segment-word-tree [segment-word-tree {:keys [segment-idx word-idx]}]
-  (get-in segment-word-tree [segment-idx :segment/words word-idx]))
+(defn get-word-from-segment-word-tree [segment-word-tree {segment-no :segment/no word-no :word/no}]
+  (get-in segment-word-tree [segment-no :segment/words word-no]))         
 
-(defn find-index-of-last-obj-with-ns-start-time-less-than-or-equal-t
-  "Returns the index of last object in objs with a start time less than or equal to t.
-   objs is a list of map with a key start namespaced by `ns`."
-  [objs ns t]
-  (last (keep-indexed (fn [idx obj] (when (<= ((keyword ns "start") obj) t) idx)) objs)))
+(defn word-start->segment-word-no'
+  [segment-word-tree]
+  (map-indexed (fn [word-no-in-transcript word-noed] (assoc word-noed :transcript/word-no word-no-in-transcript))              
+   (for [segment-no (range (count segment-word-tree))
+         word-no (range (count (get-in segment-word-tree [segment-no :segment/words])))
+         :let [segment (get-in segment-word-tree [segment-no])
+               word (get-in segment [:segment/words word-no])]
+         :when (:word/start word)]
+    (assoc (select-keys word [:word/start :word/end :word/id])
+           :segment/no segment-no
+           :word/no word-no))))
 
-(comment 
-  (let [words [#:word{:id "2a39170a-6b10-4d71-8f3b-eba33c5427f8", :start 380.499, :end 380.919}
-               #:word{:id "d0f7c756-8edd-46ed-a898-e85ceaf0f19b", :start 380.999, :end 381.54}
-               #:word{:id "a46da4f6-d836-40f8-a507-d2989d317d69", :start 381.58, :end 381.66}
-               #:word{:id "af58afb5-5eb3-4241-8ccc-a722439902c3", :start 381.7, :end 382.02}
-               #:word{:id "93ef0fb7-5694-4752-a84b-303115d79811", :start 382.08, :end 382.18}]]
-    (get-in words [(find-index-of-last-obj-with-ns-start-time-less-than-or-equal-t words "word" 382.0)]))
-  ;; => #:word{:id "d0f7c756-8edd-46ed-a898-e85ceaf0f19b", :start 380.999, :end 381.54}
+(def word-start->segment-word-no
+  "Take the segment word tree and no words and segments that have time stamps.
+   Return a list of words with all keys needed later.
+       :segment/no, :word/no, :transcript/word-no.
+   (memoized)"
+  (memoize word-start->segment-word-no'))
 
-)
-  
 
-(defn find-index-of-last-started-segment-and-word [segment-word-tree t]
-  (let [segment-idx (find-index-of-last-obj-with-ns-start-time-less-than-or-equal-t
-                     segment-word-tree
-                     "segment"
-                     t)]
-    (if segment-idx
-      {:segment-idx segment-idx
-       :word-idx (find-index-of-last-obj-with-ns-start-time-less-than-or-equal-t
-                  (get-in segment-word-tree [segment-idx :segment/words])
-                  "word"
-                  t)}
-      {:segment-idx nil :word-idx nil} ;; no segment started yet; or no time stamps
-      )))
+(defn find-last-word-started-before-t-with-added-segment-and-word-no-of-word [segment-word-tree t]
+  (let [segment-word-idxs (word-start->segment-word-no segment-word-tree)]
+    (last (take-while (fn [{:keys [:word/start] :as segment-word-idx}]
+                        (when (<= start t) segment-word-idx))
+                      segment-word-idxs))))
 
-(defn find-next-word-that-has-time-stamp [segment-word-tree segment-word-idx]
-  (loop [idx-next-word-to-check (update segment-word-idx :word-idx inc)]
-   (let [next-word-to-check (get-word-from-segment-word-tree segment-word-tree idx-next-word-to-check)]
-     (if next-word-to-check
-       (if (:word/start next-word-to-check)
-         next-word-to-check
-         (recur (update idx-next-word-to-check :word-idx inc))) ;; try next word
-       (let [next-segment-idx (inc (:segment-idx idx-next-word-to-check))] ;; is there a next segment?
-         (if (nth segment-word-tree next-segment-idx)
-           (recur {:segment-idx next-segment-idx :word-idx 0}) ;; try first word of next segment
-           nil ; no more words with time stamps
-           ))
-       ))))
-
-(defn find-start-of-next-word-or-return-x-when-none [segment-word-tree segment-word-idx x]
-  (let [next-word (find-next-word-that-has-time-stamp segment-word-tree segment-word-idx)]
-    (if next-word
-      (:word/start next-word)
-      x)))
 
 (comment
   (def segment-word-tree-short [#:segment{:id "91bf9164-8b55-4f32-abda-839100183a50",
@@ -94,71 +69,128 @@
                                           :end 6.293,
                                           :words
                                           [#:word{:id "1d0a2f01-b3dd-45c1-a911-04e6aa7da3c6", :start 2.331, :end 2.491}
-                                           #:word{:id "870e7926-6060-48ee-a5f2-336aecbfc71c", :start 2.531, :end 3.031}
-                                           #:word{:id "6c0aa568-869c-49d3-833f-fc9b637e4508", :start 3.091, :end 3.371}
-                                           #:word{:id "605160e4-f0e2-442d-a9f4-01ac509ff2c9", :start 3.431, :end 3.812}
-                                           #:word{:id "3900cf7a-db28-4063-82a0-2eec7cc36587", :start 3.872, :end 4.532}
-                                           #:word{:id "5a22677a-2745-400d-8d2e-478fd29f3eea", :start 4.592, :end 4.792}
-                                           #:word{:id "5d9a16bc-f536-4d4f-852c-44c2c8574ad4", :start 4.852, :end 6.293}]}])
-  (find-index-of-last-started-segment-and-word segment-word-tree-short 0.0)
-  ;; => {:segment-idx nil, :word-idx nil}
-  (find-index-of-last-started-segment-and-word segment-word-tree-short 2.0)
-  ;; => {:segment-idx 0, :word-idx 2}
+                                           #:word{:id "870e7926-6060-48ee-a5f2-336aecbfc71c"}
+                                           #:word{:id "6c0aa568-869c-49d3-833f-fc9b637e4508", :start 3.091, :end 3.371}]}])
+                                           
 
-  (def next-word (find-next-word-that-has-time-stamp segment-word-tree-short {:segment-idx 0, :word-idx 2})
-                 ;; => #:word{:id "1d0a2f01-b3dd-45c1-a911-04e6aa7da3c6", :start 2.331, :end 2.491}
-    )
+  (word-start->segment-word-no segment-word-tree-short)
+  ;; => ({:word/id "fb663d8a-947e-4a60-80e9-44d95217d431",
+  ;;      :word/start 0.449,
+  ;;      :word/end 0.89,
+  ;;      :segment/id "91bf9164-8b55-4f32-abda-839100183a50",
+  ;;      :segment/no 0,
+  ;;      :word/no 0,
+  ;;      :transcript/word-no 0}
+  ;;     {:word/id "a65e89e1-4122-4bed-b3b3-89a06c8b51ad",
+  ;;      :word/start 0.99,
+  ;;      :word/end 1.11,
+  ;;      :segment/id "91bf9164-8b55-4f32-abda-839100183a50",
+  ;;      :segment/no 0,
+  ;;      :word/no 1,
+  ;;      :transcript/word-no 1}
+  ;;     {:word/id "ab435781-ad27-45ca-b558-11b0b071774e",
+  ;;      :word/start 1.17,
+  ;;      :word/end 2.311,
+  ;;      :segment/id "91bf9164-8b55-4f32-abda-839100183a50",
+  ;;      :segment/no 0,
+  ;;      :word/no 2,
+  ;;      :transcript/word-no 2}
+  ;;     {:word/id "1d0a2f01-b3dd-45c1-a911-04e6aa7da3c6",
+  ;;      :word/start 2.331,
+  ;;      :word/end 2.491,
+  ;;      :segment/id "989d2f7d-ec22-41ca-971b-060ad31de92d",
+  ;;      :segment/no 1,
+  ;;      :word/no 0,
+  ;;      :transcript/word-no 3}
+  ;;     {:word/id "6c0aa568-869c-49d3-833f-fc9b637e4508",
+  ;;      :word/start 3.091,
+  ;;      :word/end 3.371,
+  ;;      :segment/id "989d2f7d-ec22-41ca-971b-060ad31de92d",
+  ;;      :segment/no 1,
+  ;;      :word/no 2,
+  ;;      :transcript/word-no 4})
 
-  (get-word-from-segment-word-tree segment-word-tree-short {:segment-idx 1, :word-idx 0})
-;; => #:word{:id "1d0a2f01-b3dd-45c1-a911-04e6aa7da3c6", :start 2.331, :end 2.491}
-  (get-word-from-segment-word-tree segment-word-tree (update segment-word-idx :word-idx inc))
 
+  (find-last-word-started-before-t-with-added-segment-and-word-no-of-word segment-word-tree-short 0.0)
+  ;; => nil
 
+  (find-last-word-started-before-t-with-added-segment-and-word-no-of-word segment-word-tree-short 0.5)
+  ;; => {:word/start 0.449,
+  ;;     :word/end 0.89,
+  ;;     :word/id "fb663d8a-947e-4a60-80e9-44d95217d431",
+  ;;     :segment/no 0,
+  ;;     :word/no 0,
+  ;;     :transcript/word-no 0}
 
-  (find-start-of-next-word-or-return-x-when-none segment-word-tree-short {:segment-idx 0, :word-idx 2} :not-found)
-  ;; => 2.331
+  (get-word-from-segment-word-tree segment-word-tree-short {:segment/no 0, :word/no 0})
+  ;; => #:word{:id "fb663d8a-947e-4a60-80e9-44d95217d431", :start 0.449, :end 0.89}
 
+  (find-last-word-started-before-t-with-added-segment-and-word-no-of-word segment-word-tree-short 2.0)
+  ;; => {:word/start 1.17,
+  ;;     :word/end 2.311,
+  ;;     :word/id "ab435781-ad27-45ca-b558-11b0b071774e",
+  ;;     :segment/no 0,
+  ;;     :word/no 2,
+  ;;     :transcript/word-no 2}
 
+  (get-word-from-segment-word-tree segment-word-tree-short {:segment/no 1, :word/no 0})
+  ;; => #:word{:id "1d0a2f01-b3dd-45c1-a911-04e6aa7da3c6", :start 2.331, :end 2.491}
+)
 
-  (find-index-of-last-started-segment-and-word segment-word-tree-short 2.5)
-  ;; => {:segment-idx 1, :word-idx 0}
-  (find-index-of-last-started-segment-and-word segment-word-tree-short 3.1)
-  ;; => {:segment-idx 1, :word-idx 2}
-  )
-  
-
-(defn find-current-word-and-period-good-for
+(defn changes-to-make-to-transcript-keys-in-local-db-when-time-changes
   "Return the id of current word to highlight or nil if no word to highlight.
    And return the period for t outside which this function should be called again."
   [state-deref t]
-  (js/console.log "find-current-word-and-period-good-for" state-deref t)
   (let [transcript-id (get-current-transcript-id-from-state state-deref)
         segment-word-tree (get-current-segment-word-tree-from-state state-deref)
-        segment-word-idx (find-index-of-last-started-segment-and-word segment-word-tree t)]
-    (if (:segment-idx segment-word-idx)
-      (let [last-started-word (get-word-from-segment-word-tree segment-word-tree segment-word-idx)]
-             ; there is a started word
-        (if (<= t (:word/end last-started-word))
-          [(:word/id last-started-word) ; still in the word
-           #:ui-period{:start (:word/start last-started-word)
-                       :end (:word/end last-started-word)}]
-               ; last started word finished
-          [nil
-           #:ui-period{:start (:word/end last-started-word)
-                       :end (find-start-of-next-word-or-return-x-when-none
-                             segment-word-tree
-                             segment-word-idx
-                             (get-in state-deref [:transcript/id transcript-id :transcript/duration]))}]))
-      (let [next-word (find-next-word-that-has-time-stamp segment-word-tree {:segment-idx 0 :word-idx -1})] ;first word with time stamp
-        (if next-word
-          [nil
-           #:ui-period{:start 0
-                       :end (:word/start next-word)}]
-          (do
-            (js/console.error "No words with time stamps found in the transcript")
-            [nil ; no words with time stamps
-             #:ui-period{:start 0
-                         :end (get-in state-deref [:transcript/id transcript-id :transcript/duration])}]))))))
+        last-word-with-nos (find-last-word-started-before-t-with-added-segment-and-word-no-of-word segment-word-tree t)
+        all-words-with-nos (word-start->segment-word-no segment-word-tree)
+        first-word (first all-words-with-nos)
+        transcript-duration (get-in state-deref [:transcript/id transcript-id :transcript/duration])
+        next-word (nth all-words-with-nos (inc (:word/no last-word-with-nos)))
+        this-segment-start (get-in segment-word-tree [(:segment/no last-word-with-nos) :segment/start])]
+    (cond
+      (and last-word-with-nos (<= t (:word/end last-word-with-nos))) ;; currently in word
+      {:ui-current-segment/start this-segment-start
+       :transcript/current-word [:word/id (:word/id last-word-with-nos)]
+       :ui-period/start (:word/start last-word-with-nos)
+       :ui-period/end (:word/end last-word-with-nos)}
+      (and last-word-with-nos next-word) ;; currently in pause after this word
+      {:ui-current-segment/start this-segment-start
+       :transcript/current-word [:word/id nil]
+       :ui-period/start (:word/end last-word-with-nos)
+       :ui-period/end (:word/start next-word)}
+      (and last-word-with-nos next-word) ;; currently in pause after last word
+      {:ui-current-segment/start this-segment-start
+       :transcript/current-word [:word/id nil]
+       :ui-period/start (:word/end last-word-with-nos)
+       :ui-period/end transcript-duration} ;; if this is last word then end of period is end of transcript
+      first-word
+      {:ui-current-segment/start this-segment-start
+       :transcript/current-word [:word/id nil] ;; before first word
+       :ui-period/start 0
+       :ui-period/end (:word/start first-word)}
+      :else ;; no timestamped words in transcript!!
+      {:ui-current-segment/start this-segment-start
+       :transcript/current-word[:word/id nil] ;; before first word
+       :ui-period/start 0
+       :ui-period/end transcript-duration})))
+
+(comment
+  ;;run (app/current-state app) in ns com.submerged-structure.client to get the state then:
+  (def state-deref *1)
+  (def segment-word-tree (get-current-segment-word-tree-from-state state-deref))
+  (def all-words-with-nos (word-start->segment-word-no segment-word-tree))
+
+  (find-last-word-started-before-t-with-added-segment-and-word-no-of-word segment-word-tree 0.993154)
+
+
+
+  (changes-to-make-to-transcript-keys-in-local-db-when-time-changes state-deref 1.2)
+  (def segment-word-no (find-last-word-started-before-t-with-added-segment-and-word-no-of-word segment-word-tree 0.0))
+  (get-word-from-segment-word-tree segment-word-tree segment-word-no)
+
+  (changes-to-make-to-transcript-keys-in-local-db-when-time-changes state-deref 15.0))
 
 (defmutation update-transcript-current-time
   "Sets the currently active word, if there is one, and also sets the start and end time of the time period that the word or pause covers."
@@ -166,17 +198,15 @@
   [{:transcript/keys [current-time]}]
   (action [{:keys [state]}]
           (let [transcript-id (get-current-transcript-id-from-state @state)
-                [new-current-word-id current-period] (find-current-word-and-period-good-for @state current-time)
+                transcript-keys-to-update (changes-to-make-to-transcript-keys-in-local-db-when-time-changes @state current-time)
                 last-current-word-id (get-in @state [:transcript/id transcript-id :transcript/current-word 1])]
             (do 
-              (js/console.log "update-transcript-current-time" current-time last-current-word-id new-current-word-id current-period)
-              (swap! state assoc-in [:transcript/id transcript-id :ui-period/start] (:ui-period/start current-period))
-              (swap! state assoc-in [:transcript/id transcript-id :ui-period/end] (:ui-period/end current-period))
-              (swap! state assoc-in [:transcript/id transcript-id :transcript/current-word] [:word/id new-current-word-id])
+              (js/console.log "update-transcript-current-time" current-time last-current-word-id transcript-keys-to-update)
+              (doall (map (fn [[k v]] (swap! state assoc-in (conj [:transcript/id transcript-id] k) v)) transcript-keys-to-update))
               ;; deactivate last word
               (when last-current-word-id
                 (swap! state assoc-in [:word/id last-current-word-id :word/active] false))
-              (when new-current-word-id
+              (when-let [new-current-word-id (get-in transcript-keys-to-update [:transcript/current-word 1])]
                 ;; activate new active word
                 (swap! state assoc-in [:word/id new-current-word-id :word/active] true)))))
   (remote [_] false))
@@ -184,7 +214,6 @@
 (defmutation update-ui-player-doing [{:keys [ui-player/doing]}]
   (action [{:keys [state]}]
           (swap! state assoc-in [:transcript/id (get-current-transcript-id-from-state @state) :ui-player/doing] doing)))
-
 
 (defmutation update-transcript-duration [{:transcript/keys [duration]}]
   (action [{:keys [state]}]
@@ -206,16 +235,3 @@
   (action [{:keys [state]}]
           (swap! state update-in [:transcript/id (get-current-transcript-id-from-state @state) :ui-player/scroll-to-active] not))
   (remote [_] false))
-
-(comment
-  ;;run (app/current-state app) in ns com.submerged-structure.client to get the state then:
-  (def state-deref *1)
-  (def segment-word-tree (get-current-segment-word-tree-from-state state-deref))
-
-  (def segment-word-idx (find-index-of-last-started-segment-and-word segment-word-tree 0.))
-  (get-word-from-segment-word-tree segment-word-tree segment-word-idx)
-  (find-next-word-that-has-time-stamp segment-word-tree segment-word-idx)
-  (find-next-word-that-has-time-stamp segment-word-tree {:segment-idx 0 :word-idx -1})
-  
-  (find-current-word-and-period-good-for state-deref 15.0)
-  )
