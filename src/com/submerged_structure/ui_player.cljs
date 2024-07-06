@@ -7,8 +7,6 @@
             [com.fulcrologic.fulcro.dom :as dom]
             [com.fulcrologic.semantic-ui.elements.button.ui-button-group :refer [ui-button-group]]
             [com.fulcrologic.semantic-ui.modules.popup.ui-popup :refer [ui-popup]]
-            [com.fulcrologic.semantic-ui.modules.popup.ui-popup-content :refer [ui-popup-content]]
-            [com.fulcrologic.semantic-ui.modules.popup.ui-popup-header :refer [ui-popup-header]]
             [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
             [com.fulcrologic.semantic-ui.elements.icon.ui-icon :refer [ui-icon]]
             [com.fulcrologic.semantic-ui.icons :as i]
@@ -122,27 +120,57 @@
      :onClick on-click}
     options)))
 
-(defn ui-player-controls [transcript-comp doing scroll-to-active segment-start]
+(defn ui-player-controls [transcript-comp doing scroll-to-active prev-word-start prev-segment-start word-start segment-start next-word-start next-segment-start]
   (if (or (= doing :loading) (nil? (get-player)))
     (ui-icon {:name "loading spinner"})
     (dom/div
      (ui-button-group
-      nil
-      (ui-control-button
-       i/reply-all-icon
-       (fn [_]
-         (when-let [player (get-player)]
-           (js/console.log "Replay all")
-           (.setTime player segment-start)))
-       {:disabled (nil? segment-start)})
       (ui-popup-for-controls
-       "Rewind 5 seconds."
+       "Rewind 15 seconds."
        "Or press the left arrow key."
        (ui-control-button
          i/chevron-left-icon
          (fn [_]
            (when-let [player (get-player)]
-             (.skip player -5)))))
+             (.skip player -15)))))
+      (ui-popup-for-controls
+       "Back one line."
+       ""
+       (ui-control-button
+        i/angle-double-left-icon
+        (fn [_]
+          (when-let [player (get-player)]
+            (.setTime player prev-segment-start)))
+        {:disabled (nil? prev-segment-start)}))
+      (ui-popup-for-controls
+       "Back one word."
+       ""
+       (ui-control-button
+       i/angle-left-icon
+       (fn [_]
+         (when-let [player (get-player)]
+           (.setTime player prev-word-start)))
+       {:disabled (nil? prev-word-start)}))
+      (ui-popup-for-controls
+       "Replay line."
+       ""
+       (ui-control-button
+       i/reply-all-icon
+       (fn [_]
+         (when-let [player (get-player)]
+           (.setTime player segment-start)
+           (.play player)))
+       {:disabled (nil? segment-start)}))
+      (ui-popup-for-controls
+       "Replay word."
+       ""
+       (ui-control-button
+       i/reply-icon
+       (fn [_]
+         (when-let [player (get-player)]
+           (.setTime player word-start)
+           (.play player)))
+       {:disabled (nil? word-start)}))
       (ui-popup-for-controls
        "Play/Pause"
        "Or press the space bar."
@@ -158,15 +186,32 @@
                             (dom/span :#player-time (time-float-to-string 0 (.getDuration (get-player))))
                             " of "
                             (time-float-to-string (.getDuration (get-player)) (.getDuration (get-player))))})}))
-      
       (ui-popup-for-controls
-       "Fast forward 5 seconds."
+       "Forward one word."
+       ""
+       (ui-control-button
+        i/angle-right-icon
+        (fn [_]
+          (when-let [player (get-player)]
+            (.setTime player next-word-start)))
+        {:disabled (nil? next-word-start)}))
+      (ui-popup-for-controls
+       "Forward one line."
+       ""
+       (ui-control-button
+        i/angle-double-right-icon
+        (fn [_]
+          (when-let [player (get-player)]
+            (.setTime player next-segment-start)))
+        {:disabled (nil? next-segment-start)}))
+      (ui-popup-for-controls
+       "Fast forward 15 seconds."
        "Or press the right arrow key."
        (ui-control-button
         i/chevron-right-icon
         (fn [_]
             (when-let [player (get-player)]
-              (.skip player 5))))))
+              (.skip player 15))))))
        (ui-button-group
         nil
         (ui-popup-for-controls

@@ -123,7 +123,13 @@
 
 (def ui-transcript-switcher (comp/computed-factory TranscriptSwitcher))
 
-(defsc Transcript [this {segment-start :ui-current-segment/start
+(defsc Transcript [this {prev-segment-start :ui-prev-segment/start
+                         current-word-start  :ui-current-word/start
+                         current-segment-start  :ui-current-segment/start
+                         next-segment-start :ui-next-segment/start
+                         prev-word-start :ui-prev-word/start
+                         next-word-start :ui-next-word/start
+                         
                          :transcript/keys [id
                                            segments]
                          :ui-player/keys  [doing scroll-to-active]
@@ -143,11 +149,20 @@
            :transcript/label
            :transcript/duration
           `:ui-player/doing
+           
            :ui-player/scroll-to-active
+
            :ui-period/start
            :ui-period/end
+
+           :ui-prev-segment/start
+           :ui-current-word/start
            :ui-current-segment/start
+           :ui-next-segment/start
+           :ui-prev-word/start
+           :ui-next-word/start
            {:transcript/current-word (comp/get-query WordLink)}
+           
            {:transcript/segments (comp/get-query Segment)}
            {:>/transcript-switcher (comp/get-query TranscriptSwitcher)}
            {:>/player (comp/get-query ui-player/PlayerComponent)}]}
@@ -168,7 +183,7 @@
           (ui-player/ui-player
            player
            {:onTimeupdate (transcript-on-timeupdate this id)})
-          (ui-player/ui-player-controls this doing scroll-to-active segment-start))})
+          (ui-player/ui-player-controls this doing scroll-to-active  prev-word-start prev-segment-start current-word-start current-segment-start next-word-start next-segment-start))})
        (confidence-key)
        (div :.transcript
             {:id (str "transcript-" id)}
