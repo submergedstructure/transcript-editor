@@ -254,6 +254,11 @@
                 (swap! state assoc-in [:word/id new-current-word-id :word/active] true)))))
   (remote [_] false))
 
+
+(defmutation hide-transcript-help [_]
+  (action [{:keys [state]}]
+          (swap! state assoc :ui/help-hidden true)))
+
 (defmutation update-ui-player-doing [{:keys [ui-player/doing]}]
   (action [{:keys [state]}]
           (swap! state assoc-in [:transcript/id (get-current-transcript-id-from-state @state) :ui-player/doing] doing)))
@@ -269,7 +274,8 @@
         (let [next-transcript-ident [:transcript/id id]]
           (swap! state assoc-in [:root/current-transcript] next-transcript-ident)
           (df/load! app next-transcript-ident ui/Transcript)
-          (swap! state assoc-in (concat next-transcript-ident [:ui-player/doing]) :loading))
+          (swap! state assoc-in (concat next-transcript-ident [:ui-player/doing]) :loading)
+          (swap! state assoc :ui/help-hidden false))
         
         (df/load! app :root/current-transcript ui/Transcript)))
   (remote [_] false))

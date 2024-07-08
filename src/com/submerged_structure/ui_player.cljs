@@ -221,6 +221,10 @@
           i/crosshairs-icon
           (fn [& _args]
             (comp/transact! transcript-comp `[(com.submerged-structure.mutations/toggle-transcript-scroll-to-active {})]))
-          {:positive scroll-to-active}))))))
+          {:positive scroll-to-active
+           :labelPosition "right"
+           :label (ui-label
+                   {:pointing "left"
+                    :content (str "Auto scroll " (if scroll-to-active "on" "off"))})}))))))
 
 (comment (get-player))
