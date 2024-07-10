@@ -50,7 +50,7 @@
 (defn find-last-word-started-before-t-with-added-segment-and-word-no-of-word [segment-word-tree t]
   (let [segment-word-idxs (all-words-with-word-and-segment-nos segment-word-tree)]
     (last (take-while (fn [{:keys [:word/start] :as segment-word-idx}]
-                        (when (<= start t) segment-word-idx))
+                        (when-not (< t start) segment-word-idx))
                       segment-word-idxs))))
 
 
@@ -178,7 +178,6 @@
   (def all-words-with-nos (all-words-with-word-and-segment-nos segment-word-tree))
   (find-last-word-started-before-t-with-added-segment-and-word-no-of-word segment-word-tree 0.0)
   ;; => nil
-
 
   (find-last-word-started-before-t-with-added-segment-and-word-no-of-word segment-word-tree 10.0)
   ;; => {:word/start 9.413,

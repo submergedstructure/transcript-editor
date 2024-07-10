@@ -75,7 +75,7 @@
         end (:ui-period/end props)]
     (if (some nil? [start end]);check if either start or end are nil
       (update-current-word-once-per-frame this t id)
-      (when-not (<= start t end)
+      (when-not (< start t end)
         (js/console.log "throttled according to time period " t start end)
         (update-current-word this t id)))))
 
