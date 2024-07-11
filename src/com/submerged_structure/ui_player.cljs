@@ -125,6 +125,7 @@
     (ui-icon {:name "loading spinner"})
     (dom/div
      (ui-button-group
+      nil
       (ui-popup-for-controls
        "Rewind 15 seconds."
        "Or press the left arrow key."
@@ -152,7 +153,7 @@
            (.setTime player prev-word-start)))
        {:disabled (nil? prev-word-start)}))
       (ui-popup-for-controls
-       "Replay line."
+       "Back to start of line and play."
        ""
        (ui-control-button
        i/reply-all-icon
@@ -162,7 +163,7 @@
            (.play player)))
        {:disabled (nil? segment-start)}))
       (ui-popup-for-controls
-       "Replay word."
+       "Back to start of word and play."
        ""
        (ui-control-button
        i/reply-icon
@@ -173,7 +174,7 @@
        {:disabled (nil? word-start)}))
       (ui-popup-for-controls
        "Play/Pause"
-       "Or press the space bar."
+       ""
        (ui-control-button
         (if (= doing :playing) i/pause-icon i/play-icon)
         (fn [_]
@@ -186,6 +187,16 @@
                             (dom/span :#player-time (time-float-to-string 0 (.getDuration (get-player))))
                             " of "
                             (time-float-to-string (.getDuration (get-player)) (.getDuration (get-player))))})}))
+      (ui-popup-for-controls
+       "Forward one word and play."
+       ""
+       (ui-control-button
+        i/share-icon
+        (fn [_]
+          (when-let [player (get-player)]
+            (.setTime player next-word-start)
+            (.play player)))
+        {:disabled (nil? next-word-start)}))
       (ui-popup-for-controls
        "Forward one word."
        ""
@@ -206,7 +217,7 @@
         {:disabled (nil? next-segment-start)}))
       (ui-popup-for-controls
        "Fast forward 15 seconds."
-       "Or press the right arrow key."
+       ""
        (ui-control-button
         i/chevron-right-icon
         (fn [_]
