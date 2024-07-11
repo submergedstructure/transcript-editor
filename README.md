@@ -16,10 +16,8 @@ See the code running here: [automatic gihtub pages deploy](https://dev.submerged
 
 ## Todo
 
-* I need to check the code selecting the currently active word based on the current time reported by the player. Seems it some cases it is selecting the wrong word.
 * I need to make the timestamps editable.
 * I need to make the words themselves editable.
-* Ability to move forward and backward by segments or words as well as moving the audio forward / backward by 5 seconds.
 * Add keyboard shortcuts.
 * Add communication to a server to save edited transcripts.
 * Add download of trnanscripts in various formats.
@@ -30,7 +28,8 @@ See the code running here: [automatic gihtub pages deploy](https://dev.submerged
 ### Done
 
 * I'd like to add a button that toggles the scroll to current word as the current word changes, defaulting to on.
-
+* I need to check the code selecting the currently active word based on the current time reported by the player. Seems it some cases it is selecting the wrong word.
+* Ability to move forward and backward by segments or words as well as moving the audio forward / backward by not 5 but 15 seconds.
 
 
 ## Based on minimalist-fulcro-template-backendless
