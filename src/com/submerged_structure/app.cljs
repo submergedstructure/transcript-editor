@@ -27,7 +27,7 @@
                                              error-text
                                              body
                                              (:com.wsscode.pathom3.connect.runner/attribute-errors body)))
-                                  :render-middleware
+                                  #_#_:render-middleware
                                    (when goog.DEBUG js/holyjak.fulcro_troubleshooting.troubleshooting_render_middleware)})
                  (with-react18)))
 

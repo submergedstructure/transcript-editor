@@ -95,9 +95,7 @@
   
     :plugins [(.create Minimap
                        {:height 20,
-                        :normalize? true,
-                        :waveColor "#ddd",
-                        :progressColor "#999"})]}))
+                        :normalize? true})]}))
 
 (def ui-player
   "Third param will be a computed function."
