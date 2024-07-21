@@ -55,9 +55,10 @@
   (js/console.log "update-current-word" this id t)
   (js/setTimeout
    (fn []
-     (when (:ui-player/scroll-to-active (comp/props this)) 
-      (when-let [active-word (js/document.querySelector ".word.active")]
-       (scroll-element-to-middle-of-visible-area-below-player active-word id))))
+     (when-let [active-word (js/document.querySelector ".word.active")]
+       (ui-player/player-on-current-word-update (:ui-period/start (comp/props this)) (:ui-period/end (comp/props this)) (get-in (comp/props this) [:transcript/current-word :word/word]))
+       (when (:ui-player/scroll-to-active (comp/props this))
+         (scroll-element-to-middle-of-visible-area-below-player active-word id))))
    0))
 
 (def update-current-word-once-per-frame

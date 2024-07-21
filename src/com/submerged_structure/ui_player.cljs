@@ -1,48 +1,72 @@
 (ns com.submerged-structure.ui-player
-  (:require [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-            [com.fulcrologic.fulcro.algorithms.react-interop :as interop]
-            ["@wavesurfer/react" :default WavesurferPlayer]
-            ["wavesurfer.js/dist/plugins/minimap.esm.js" :default Minimap]
+   (:require [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+             [com.fulcrologic.fulcro.algorithms.react-interop :as interop]
+             ["@wavesurfer/react" :default WavesurferPlayer]
+             ["wavesurfer.js/dist/plugins/minimap.esm.js" :default Minimap]
+             ["wavesurfer.js/dist/plugins/Regions.esm.js" :default Regions]
+             ["wavesurfer.js/dist/plugins/Timeline.esm.js" :default Timeline]
 
-            [com.fulcrologic.fulcro.dom :as dom]
-            [com.fulcrologic.semantic-ui.elements.button.ui-button-group :refer [ui-button-group]]
-            [com.fulcrologic.semantic-ui.modules.popup.ui-popup :refer [ui-popup]]
-            [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
-            [com.fulcrologic.semantic-ui.elements.icon.ui-icon :refer [ui-icon]]
-            [com.fulcrologic.semantic-ui.icons :as i]
-            [com.fulcrologic.semantic-ui.elements.label.ui-label :refer [ui-label]]
-            
-            [goog.string :as gstring]))
+             [com.fulcrologic.fulcro.dom :as dom]
+             [com.fulcrologic.semantic-ui.elements.button.ui-button-group :refer [ui-button-group]]
+             [com.fulcrologic.semantic-ui.modules.popup.ui-popup :refer [ui-popup]]
+             [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
+             [com.fulcrologic.semantic-ui.elements.icon.ui-icon :refer [ui-icon]]
+             [com.fulcrologic.semantic-ui.icons :as i]
+             [com.fulcrologic.semantic-ui.elements.label.ui-label :refer [ui-label]]
 
-(defonce player-local (atom {:player nil}))
+             [goog.string :as gstring]))
 
-(defn ^js get-player []
-  (:player @player-local))
+ (defonce player-local (atom {:player nil}))
 
-(defn set-player! [player]
-  (swap! player-local assoc :player player))
+ (defn ^js get-player []
+   (:player @player-local))
 
-(defn player-height [transcript-id] (.-clientHeight (js/document.querySelector (str "#player-" transcript-id))))
+ (defn ^js get-player-regions-plugin [& [^js ws-player]]
+   (-> (or ws-player (get-player))
+       (.getActivePlugins)
+       (.find #(instance? Regions %))))
+ 
+ 
 
-(defn on-word-click [_ start]
-  (let [player (get-player)]
-    (when player
-      (.setTime player start)
-      (.play player))))
+ (comment (get-player-regions-plugin)
+          (js/console.log "get-player-regions-plugin" (get-player-regions-plugin)))
 
-(def ui-wavesurfer-player (interop/react-factory WavesurferPlayer))
+ (defn set-player! [player]
+   (swap! player-local assoc :player player))
 
-(defn time-float-to-string [t duration]
-  (let [max-t-minutes-length (count (str (quot duration 60)))
-        t-2dp (.toFixed t 2)]
-    (str  (gstring/padNumber (quot t-2dp 60) max-t-minutes-length 0)
-          ":" (gstring/padNumber (mod t-2dp 60) 2 1))))
+ (defn player-height [transcript-id] (.-clientHeight (js/document.querySelector (str "#player-" transcript-id))))
 
-(defn player-on-timeupdate [^js ws]
-    (let [current-time (.getCurrentTime ws)
-          player-time-el (js/document.querySelector "span#player-time")]
-      (set! (.-textContent player-time-el) (time-float-to-string current-time (.getDuration ws)))))
+ (defn on-word-click [_ start]
+   (let [player (get-player)]
+     (when player
+       (.setTime player start)
+       (.play player))))
 
+ (def ui-wavesurfer-player (interop/react-factory WavesurferPlayer))
+
+ (defn time-float-to-string [t duration]
+   (let [max-t-minutes-length (count (str (quot duration 60)))
+         t-2dp (.toFixed t 2)]
+     (str  (gstring/padNumber (quot t-2dp 60) max-t-minutes-length 0)
+           ":" (gstring/padNumber (mod t-2dp 60) 2 1))))
+
+ (defn player-on-timeupdate [^js ws]
+   (let [current-time (.getCurrentTime ws)
+         player-time-el (js/document.querySelector "span#player-time")]
+     (set! (.-textContent player-time-el) (time-float-to-string current-time (.getDuration ws)))))
+
+ (defn player-on-current-word-update [start-current-word end-current-word current-word]
+   (let [rp (get-player-regions-plugin)]
+       (.clearRegions rp)
+       (.addRegion rp
+        #js {:content current-word
+             :start start-current-word
+             :end end-current-word
+             :drag true
+             :resize true
+             :color "rgba(0, 0, 128, 0.5)"})))
+
+(comment (player-on-current-word-update 5 15 "test"))
 
 (defsc PlayerComponent [this {:transcript/keys [audio-filename]}]
   {:ident :transcript/id
@@ -59,43 +83,41 @@
   (js/console.log "PlayerComponent" (comp/get-computed this :onTimeupdate) audio-filename)
   (ui-wavesurfer-player
    {:url (js/encodeURI audio-filename)
-    :height 100
-    :minPxPerSec 50,
+    :height 150
+    :minPxPerSec 100,
     :waveColor "violet"
     :normalize? true,
     :interact? true,
-  
-    :backend 'MediaElement'
-  
+
+
+    :onDecode (fn [^js ws]
+                (set-player! ws))
+
     :onReady (fn [^js player]
                (js/console.log "onReady" player)
-               (set-player! player)
                (comp/transact! this `[(com.submerged-structure.mutations/update-ui-player-doing {:ui-player/doing :paused})
                                       (com.submerged-structure.mutations/update-transcript-duration {:transcript/duration ~(.getDuration player)})
                                       (com.submerged-structure.mutations/update-transcript-current-time {:transcript/current-time ~(.getCurrentTime player)})]))
-  
-    :onError (fn [^js error]
-               (js/console.log "onError" error)
-               #_(ui-modal-dimmer
-                  {:open true
-                   :header "Error"
-                   :content "An error occurred while playing the audio."
-                   :actions [{:key :ok :content "OK" :onClick (fn [_] (.close player))}]}))
+
+    :onError (fn [^js & args]
+               (js/console.log "onError" args))
     :onTimeupdate (comp/get-computed this :onTimeupdate)
     :hideScrollbar true,
     :autoCenter false,
-  
+
     :onPause (fn [_]
                (js/console.log "onPause")
                (comp/transact! this `[(com.submerged-structure.mutations/update-ui-player-doing {:ui-player/doing :paused})]))
-  
+
     :onPlay (fn [_]
               (js/console.log "onPlay")
               (comp/transact! this `[(com.submerged-structure.mutations/update-ui-player-doing {:ui-player/doing :playing})]))
-  
+
     :plugins [(.create Minimap
-                       {:height 20,
-                        :normalize? true})]}))
+                       #js {:height 40,
+                        :normalize? true})
+              (.create Regions
+                       #js {:on (fn [& args] (js/console.log "Regions event" args))})]}))
 
 (def ui-player
   "Third param will be a computed function."
@@ -132,7 +154,8 @@
         (fn [_]
           (when-let [player (get-player)]
             (.skip player -15)))
-        {:disabled (< 15 (.getCurrentTime (get-player)))}))
+        ;only gets updated when the ui-period changes but that's OK
+        {:disabled (< (.getCurrentTime (get-player)) 15)}))
       (ui-popup-for-controls
        "Back one line."
        ""
@@ -146,31 +169,31 @@
        "Back one word."
        ""
        (ui-control-button
-       i/angle-left-icon
-       (fn [_]
-         (when-let [player (get-player)]
-           (.setTime player prev-word-start)))
-       {:disabled (nil? prev-word-start)}))
+        i/angle-left-icon
+        (fn [_]
+          (when-let [player (get-player)]
+            (.setTime player prev-word-start)))
+        {:disabled (nil? prev-word-start)}))
       (ui-popup-for-controls
        "Back to start of line and play."
        ""
        (ui-control-button
-       i/reply-all-icon
-       (fn [_]
-         (when-let [player (get-player)]
-           (.setTime player segment-start)
-           (.play player)))
-       {:disabled (nil? segment-start)}))
+        i/reply-all-icon
+        (fn [_]
+          (when-let [player (get-player)]
+            (.setTime player segment-start)
+            (.play player)))
+        {:disabled (nil? segment-start)}))
       (ui-popup-for-controls
        "Back to start of word and play."
        ""
        (ui-control-button
-       i/reply-icon
-       (fn [_]
-         (when-let [player (get-player)]
-           (.setTime player word-start)
-           (.play player)))
-       {:disabled (nil? word-start)}))
+        i/reply-icon
+        (fn [_]
+          (when-let [player (get-player)]
+            (.setTime player word-start)
+            (.play player)))
+        {:disabled (nil? word-start)}))
       (ui-popup-for-controls
        "Play/Pause"
        ""
@@ -220,21 +243,25 @@
        (ui-control-button
         i/chevron-right-icon
         (fn [_]
-            (when-let [player (get-player)]
-              (.skip player 15))))))
-       (ui-button-group
-        nil
-        (ui-popup-for-controls
-         nil
-         "Toggle the transcript automatically scrolling to current spoken word."
-         (ui-control-button
-          i/crosshairs-icon
-          (fn [& _args]
-            (comp/transact! transcript-comp `[(com.submerged-structure.mutations/toggle-transcript-scroll-to-active {})]))
-          {:positive scroll-to-active
-           :labelPosition "right"
-           :label (ui-label
-                   {:pointing "left"
-                    :content (str "Auto scroll " (if scroll-to-active "on" "off"))})}))))))
+          (when-let [player (get-player)]
+            (.skip player 15)))
+        ;only gets updated when the ui-period changes but that's OK
+        {:disabled (let [time-remaining (- (.getDuration (get-player)) (.getCurrentTime (get-player)))] (< time-remaining 15))})))
+     (ui-button-group
+      nil
+      (ui-popup-for-controls
+       nil
+       "Toggle the transcript automatically scrolling to current spoken word."
+       (ui-control-button
+        i/crosshairs-icon
+        (fn [& _args]
+          (comp/transact! transcript-comp `[(com.submerged-structure.mutations/toggle-transcript-scroll-to-active {})]))
+        {:positive scroll-to-active
+         :labelPosition "right"
+         :label (ui-label
+                 {:pointing "left"
+                  :content (str "Auto scroll " (if scroll-to-active "on" "off"))})}))))))
 
-(comment (get-player))
+(comment (get-player)
+         (js/console.log (:player @player-local))
+         (player-on-current-word-update 10, 15, "hello"))
