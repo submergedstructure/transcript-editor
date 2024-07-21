@@ -5,6 +5,7 @@
             ;[fulcrologic.client.primitives :as fp]
             [clojure.walk :refer [postwalk]]
             [clojure.core :as clj]
+            [clojure.set :as set]
             [com.fulcrologic.fulcro.mutations :as m]
             [com.fulcrologic.fulcro.algorithms.normalize :as fn]
             [com.fulcrologic.fulcro.components :as comp]
@@ -17,7 +18,7 @@
 
 ;; Later this will be done on the server side and immediately put in the db.
 
-(def filepath "resources/public/audio_and_transcript/")
+(def filepath "resources/public/audio_and_transcript/whispers2t/")
 
 
 
@@ -63,10 +64,15 @@
                      slurp
                      (cheshire/parse-string false)
                      (get "output")
-                     (get "segments"))]
+                     (get 0))]
   (-> {"audio-filename" (str (subs full-filepath-without-extension (count "resources/public")) ".mp3")
        "label" label
-       "segments" segments}
+       "segments" (mapv
+                   (fn [segment]
+                     (let [segment' (set/rename-keys segment {"word_timestamps" "words" "start_time" "start" "end_time" "end"})]
+                       (update segment' "words" (fn [words] (mapv (fn [word] (set/rename-keys word {"prob" "score"})) words)))))
+                   segments)}
+      
       add-ids
       (add-ns-and-keywordize-keys-in-m "transcript"))))
 

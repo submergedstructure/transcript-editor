@@ -1,0 +1,6577 @@
+{
+  "delayTime": 908,
+  "executionTime": 13060,
+  "id": "65f31e34-e62d-4074-8035-8b0725be09d1-e1",
+  "output": [
+    [
+      {
+        "avg_logprob": -0.1370794080197811,
+        "end_time": 28.9,
+        "no_speech_prob": 0.000011205673217773438,
+        "start_time": 1.02,
+        "text": "Świetnie, znasz już dobrze historyjkę, pora więc zaczynać pytania i odpowiedzi. Tak jak zwykle, proszę odpowiadaj na pytania. Najlepiej rób to na głos lub jeśli wolisz tylko słuchaj jak ja odpowiadam na pytania. Zaczynajmy! Marek i Maria byli małżeństwem od 40 lat. Od ilu lat oni byli małżeństwem?",
+        "word_timestamps": [
+          {
+            "end": 2.2800000000000002,
+            "prob": 0.89,
+            "start": 1.02,
+            "word": "Świetnie,"
+          },
+          {
+            "end": 2.52,
+            "prob": 0.22,
+            "start": 2.2800000000000002,
+            "word": "znasz"
+          },
+          {
+            "end": 2.74,
+            "prob": 1,
+            "start": 2.52,
+            "word": "już"
+          },
+          {
+            "end": 3.02,
+            "prob": 0.91,
+            "start": 2.74,
+            "word": "dobrze"
+          },
+          {
+            "end": 4.4,
+            "prob": 0.84,
+            "start": 3.02,
+            "word": "historyjkę,"
+          },
+          {
+            "end": 4.62,
+            "prob": 0.48,
+            "start": 4.4,
+            "word": "pora"
+          },
+          {
+            "end": 4.9,
+            "prob": 0.91,
+            "start": 4.62,
+            "word": "więc"
+          },
+          {
+            "end": 5.539999999999999,
+            "prob": 0.95,
+            "start": 4.9,
+            "word": "zaczynać"
+          },
+          {
+            "end": 5.98,
+            "prob": 0.92,
+            "start": 5.539999999999999,
+            "word": "pytania"
+          },
+          {
+            "end": 6.220000000000001,
+            "prob": 0.91,
+            "start": 5.98,
+            "word": "i"
+          },
+          {
+            "end": 7.4,
+            "prob": 0.59,
+            "start": 6.220000000000001,
+            "word": "odpowiedzi."
+          },
+          {
+            "end": 7.58,
+            "prob": 0.95,
+            "start": 7.4,
+            "word": "Tak"
+          },
+          {
+            "end": 7.76,
+            "prob": 0.97,
+            "start": 7.58,
+            "word": "jak"
+          },
+          {
+            "end": 8.6,
+            "prob": 0.91,
+            "start": 7.76,
+            "word": "zwykle,"
+          },
+          {
+            "end": 8.9,
+            "prob": 0.97,
+            "start": 8.6,
+            "word": "proszę"
+          },
+          {
+            "end": 9.68,
+            "prob": 0.63,
+            "start": 8.9,
+            "word": "odpowiadaj"
+          },
+          {
+            "end": 9.84,
+            "prob": 0.84,
+            "start": 9.68,
+            "word": "na"
+          },
+          {
+            "end": 11.12,
+            "prob": 0.74,
+            "start": 9.84,
+            "word": "pytania."
+          },
+          {
+            "end": 11.82,
+            "prob": 0.96,
+            "start": 11.12,
+            "word": "Najlepiej"
+          },
+          {
+            "end": 12.28,
+            "prob": 0.33,
+            "start": 11.82,
+            "word": "rób"
+          },
+          {
+            "end": 12.559999999999999,
+            "prob": 0.36,
+            "start": 12.28,
+            "word": "to"
+          },
+          {
+            "end": 12.82,
+            "prob": 0.45,
+            "start": 12.559999999999999,
+            "word": "na"
+          },
+          {
+            "end": 13.299999999999999,
+            "prob": 0.97,
+            "start": 12.82,
+            "word": "głos"
+          },
+          {
+            "end": 14,
+            "prob": 0.91,
+            "start": 13.299999999999999,
+            "word": "lub"
+          },
+          {
+            "end": 14.32,
+            "prob": 0.74,
+            "start": 14,
+            "word": "jeśli"
+          },
+          {
+            "end": 14.98,
+            "prob": 0.61,
+            "start": 14.32,
+            "word": "wolisz"
+          },
+          {
+            "end": 15.379999999999999,
+            "prob": 0.96,
+            "start": 14.98,
+            "word": "tylko"
+          },
+          {
+            "end": 15.98,
+            "prob": 0.96,
+            "start": 15.379999999999999,
+            "word": "słuchaj"
+          },
+          {
+            "end": 16.44,
+            "prob": 0.39,
+            "start": 15.98,
+            "word": "jak"
+          },
+          {
+            "end": 16.78,
+            "prob": 0.91,
+            "start": 16.44,
+            "word": "ja"
+          },
+          {
+            "end": 17.54,
+            "prob": 0.74,
+            "start": 16.78,
+            "word": "odpowiadam"
+          },
+          {
+            "end": 17.68,
+            "prob": 0.99,
+            "start": 17.54,
+            "word": "na"
+          },
+          {
+            "end": 18.86,
+            "prob": 0.98,
+            "start": 17.68,
+            "word": "pytania."
+          },
+          {
+            "end": 20.16,
+            "prob": 0.68,
+            "start": 18.86,
+            "word": "Zaczynajmy!"
+          },
+          {
+            "end": 21.700000000000003,
+            "prob": 0.48,
+            "start": 21.42,
+            "word": "Marek"
+          },
+          {
+            "end": 21.86,
+            "prob": 0.64,
+            "start": 21.700000000000003,
+            "word": "i"
+          },
+          {
+            "end": 22.14,
+            "prob": 0.81,
+            "start": 21.86,
+            "word": "Maria"
+          },
+          {
+            "end": 22.5,
+            "prob": 0.83,
+            "start": 22.14,
+            "word": "byli"
+          },
+          {
+            "end": 23.580000000000002,
+            "prob": 0.87,
+            "start": 22.5,
+            "word": "małżeństwem"
+          },
+          {
+            "end": 24.14,
+            "prob": 0.65,
+            "start": 23.580000000000002,
+            "word": "od"
+          },
+          {
+            "end": 24.64,
+            "prob": 0.7,
+            "start": 24.14,
+            "word": "40"
+          },
+          {
+            "end": 25.720000000000002,
+            "prob": 0.89,
+            "start": 24.64,
+            "word": "lat."
+          },
+          {
+            "end": 26.480000000000004,
+            "prob": 0.87,
+            "start": 26.220000000000006,
+            "word": "Od"
+          },
+          {
+            "end": 26.800000000000004,
+            "prob": 0.2,
+            "start": 26.480000000000004,
+            "word": "ilu"
+          },
+          {
+            "end": 27.160000000000004,
+            "prob": 0.99,
+            "start": 26.800000000000004,
+            "word": "lat"
+          },
+          {
+            "end": 27.680000000000003,
+            "prob": 0.61,
+            "start": 27.160000000000004,
+            "word": "oni"
+          },
+          {
+            "end": 28.000000000000004,
+            "prob": 0.98,
+            "start": 27.680000000000003,
+            "word": "byli"
+          },
+          {
+            "end": 28.860000000000003,
+            "prob": 0.85,
+            "start": 28.000000000000004,
+            "word": "małżeństwem?"
+          }
+        ]
+      },
+      {
+        "avg_logprob": -0.08484962653240254,
+        "end_time": 61.96,
+        "no_speech_prob": 0.0008168220520019531,
+        "start_time": 29.12,
+        "text": "Od trzydziestu czy od czterdziestu? Od czterdziestu. Oni byli małżeństwem od czterdziestu lat. Kto był małżeństwem od czterdziestu lat? Marek i Maria. Oni byli małżeństwem od czterdziestu lat. Czy Marek i Maria byli małżeństwem? Tak, oni byli małżeństwem. Czy Maria była żoną Marka?",
+        "word_timestamps": [
+          {
+            "end": 29.7,
+            "prob": 0.37,
+            "start": 29.12,
+            "word": "Od"
+          },
+          {
+            "end": 30.720000000000002,
+            "prob": 0.61,
+            "start": 29.7,
+            "word": "trzydziestu"
+          },
+          {
+            "end": 31.060000000000002,
+            "prob": 0.48,
+            "start": 30.720000000000002,
+            "word": "czy"
+          },
+          {
+            "end": 31.44,
+            "prob": 0.89,
+            "start": 31.060000000000002,
+            "word": "od"
+          },
+          {
+            "end": 33.08,
+            "prob": 0.68,
+            "start": 31.44,
+            "word": "czterdziestu?"
+          },
+          {
+            "end": 34.97999999999999,
+            "prob": 0.97,
+            "start": 34.91999999999999,
+            "word": "Od"
+          },
+          {
+            "end": 36.55999999999999,
+            "prob": 0.93,
+            "start": 34.97999999999999,
+            "word": "czterdziestu."
+          },
+          {
+            "end": 36.89999999999999,
+            "prob": 0.77,
+            "start": 36.55999999999999,
+            "word": "Oni"
+          },
+          {
+            "end": 37.19999999999999,
+            "prob": 0.87,
+            "start": 36.89999999999999,
+            "word": "byli"
+          },
+          {
+            "end": 37.97999999999999,
+            "prob": 0.9,
+            "start": 37.19999999999999,
+            "word": "małżeństwem"
+          },
+          {
+            "end": 38.57999999999999,
+            "prob": 0.89,
+            "start": 37.97999999999999,
+            "word": "od"
+          },
+          {
+            "end": 39.53999999999999,
+            "prob": 0.99,
+            "start": 38.57999999999999,
+            "word": "czterdziestu"
+          },
+          {
+            "end": 40.37999999999999,
+            "prob": 0.97,
+            "start": 39.53999999999999,
+            "word": "lat."
+          },
+          {
+            "end": 41.45999999999999,
+            "prob": 0.79,
+            "start": 41.219999999999985,
+            "word": "Kto"
+          },
+          {
+            "end": 41.69999999999999,
+            "prob": 0.28,
+            "start": 41.45999999999999,
+            "word": "był"
+          },
+          {
+            "end": 42.51999999999999,
+            "prob": 0.98,
+            "start": 41.69999999999999,
+            "word": "małżeństwem"
+          },
+          {
+            "end": 42.999999999999986,
+            "prob": 0.98,
+            "start": 42.51999999999999,
+            "word": "od"
+          },
+          {
+            "end": 43.819999999999986,
+            "prob": 0.99,
+            "start": 42.999999999999986,
+            "word": "czterdziestu"
+          },
+          {
+            "end": 44.59999999999999,
+            "prob": 0.91,
+            "start": 43.819999999999986,
+            "word": "lat?"
+          },
+          {
+            "end": 47.05999999999998,
+            "prob": 0.49,
+            "start": 46.73999999999998,
+            "word": "Marek"
+          },
+          {
+            "end": 47.179999999999986,
+            "prob": 0.41,
+            "start": 47.05999999999998,
+            "word": "i"
+          },
+          {
+            "end": 47.97999999999998,
+            "prob": 0.61,
+            "start": 47.179999999999986,
+            "word": "Maria."
+          },
+          {
+            "end": 48.259999999999984,
+            "prob": 0.97,
+            "start": 47.97999999999998,
+            "word": "Oni"
+          },
+          {
+            "end": 48.499999999999986,
+            "prob": 1,
+            "start": 48.259999999999984,
+            "word": "byli"
+          },
+          {
+            "end": 49.29999999999998,
+            "prob": 0.99,
+            "start": 48.499999999999986,
+            "word": "małżeństwem"
+          },
+          {
+            "end": 49.719999999999985,
+            "prob": 0.99,
+            "start": 49.29999999999998,
+            "word": "od"
+          },
+          {
+            "end": 50.45999999999998,
+            "prob": 1,
+            "start": 49.719999999999985,
+            "word": "czterdziestu"
+          },
+          {
+            "end": 51.19999999999999,
+            "prob": 0.98,
+            "start": 50.45999999999998,
+            "word": "lat."
+          },
+          {
+            "end": 52.21999999999997,
+            "prob": 0.96,
+            "start": 51.99999999999997,
+            "word": "Czy"
+          },
+          {
+            "end": 52.59999999999997,
+            "prob": 0.68,
+            "start": 52.21999999999997,
+            "word": "Marek"
+          },
+          {
+            "end": 52.77999999999997,
+            "prob": 0.99,
+            "start": 52.59999999999997,
+            "word": "i"
+          },
+          {
+            "end": 53.13999999999997,
+            "prob": 0.96,
+            "start": 52.77999999999997,
+            "word": "Maria"
+          },
+          {
+            "end": 53.49999999999997,
+            "prob": 0.98,
+            "start": 53.13999999999997,
+            "word": "byli"
+          },
+          {
+            "end": 54.839999999999975,
+            "prob": 0.98,
+            "start": 53.49999999999997,
+            "word": "małżeństwem?"
+          },
+          {
+            "end": 57.27999999999997,
+            "prob": 0.57,
+            "start": 56.41999999999997,
+            "word": "Tak,"
+          },
+          {
+            "end": 57.479999999999976,
+            "prob": 0.48,
+            "start": 57.27999999999997,
+            "word": "oni"
+          },
+          {
+            "end": 57.85999999999997,
+            "prob": 1,
+            "start": 57.479999999999976,
+            "word": "byli"
+          },
+          {
+            "end": 59.13999999999997,
+            "prob": 0.98,
+            "start": 57.85999999999997,
+            "word": "małżeństwem."
+          },
+          {
+            "end": 60.19999999999996,
+            "prob": 1,
+            "start": 59.999999999999964,
+            "word": "Czy"
+          },
+          {
+            "end": 60.55999999999996,
+            "prob": 0.53,
+            "start": 60.19999999999996,
+            "word": "Maria"
+          },
+          {
+            "end": 60.87999999999997,
+            "prob": 0.39,
+            "start": 60.55999999999996,
+            "word": "była"
+          },
+          {
+            "end": 61.33999999999996,
+            "prob": 0.86,
+            "start": 60.87999999999997,
+            "word": "żoną"
+          },
+          {
+            "end": 61.93999999999997,
+            "prob": 0.65,
+            "start": 61.33999999999996,
+            "word": "Marka?"
+          }
+        ]
+      },
+      {
+        "avg_logprob": -0.09047273400871234,
+        "end_time": 88.42,
+        "no_speech_prob": 0.0015974044799804688,
+        "start_time": 63.76,
+        "text": "Tak, oni byli małżeństwem, czyli Maria była żoną Marka, a Marek był mężem Marii. Marek od zawsze chciał zobaczyć piramidy. Czy Marek chciał zobaczyć piramidy? Tak, on chciał zobaczyć piramidy. Czy Marek od zawsze marzył, żeby zobaczyć piramidy?",
+        "word_timestamps": [
+          {
+            "end": 64.72,
+            "prob": 0.87,
+            "start": 63.76,
+            "word": "Tak,"
+          },
+          {
+            "end": 64.96,
+            "prob": 0.88,
+            "start": 64.72,
+            "word": "oni"
+          },
+          {
+            "end": 65.32,
+            "prob": 0.95,
+            "start": 64.96,
+            "word": "byli"
+          },
+          {
+            "end": 66.74,
+            "prob": 0.91,
+            "start": 65.32,
+            "word": "małżeństwem,"
+          },
+          {
+            "end": 66.94,
+            "prob": 0.94,
+            "start": 66.74,
+            "word": "czyli"
+          },
+          {
+            "end": 67.39999999999999,
+            "prob": 0.52,
+            "start": 66.94,
+            "word": "Maria"
+          },
+          {
+            "end": 67.82,
+            "prob": 0.87,
+            "start": 67.39999999999999,
+            "word": "była"
+          },
+          {
+            "end": 68.32,
+            "prob": 0.83,
+            "start": 67.82,
+            "word": "żoną"
+          },
+          {
+            "end": 69.34,
+            "prob": 0.55,
+            "start": 68.32,
+            "word": "Marka,"
+          },
+          {
+            "end": 69.46,
+            "prob": 0.95,
+            "start": 69.34,
+            "word": "a"
+          },
+          {
+            "end": 69.89999999999999,
+            "prob": 0.65,
+            "start": 69.46,
+            "word": "Marek"
+          },
+          {
+            "end": 70.14,
+            "prob": 0.93,
+            "start": 69.89999999999999,
+            "word": "był"
+          },
+          {
+            "end": 70.7,
+            "prob": 0.62,
+            "start": 70.14,
+            "word": "mężem"
+          },
+          {
+            "end": 71.5,
+            "prob": 0.59,
+            "start": 70.7,
+            "word": "Marii."
+          },
+          {
+            "end": 72.51999999999998,
+            "prob": 0.96,
+            "start": 72.19999999999997,
+            "word": "Marek"
+          },
+          {
+            "end": 72.73999999999998,
+            "prob": 0.96,
+            "start": 72.51999999999998,
+            "word": "od"
+          },
+          {
+            "end": 72.99999999999997,
+            "prob": 0.98,
+            "start": 72.73999999999998,
+            "word": "zawsze"
+          },
+          {
+            "end": 73.45999999999998,
+            "prob": 0.89,
+            "start": 72.99999999999997,
+            "word": "chciał"
+          },
+          {
+            "end": 74.07999999999998,
+            "prob": 1,
+            "start": 73.45999999999998,
+            "word": "zobaczyć"
+          },
+          {
+            "end": 75.15999999999998,
+            "prob": 0.62,
+            "start": 74.07999999999998,
+            "word": "piramidy."
+          },
+          {
+            "end": 76.21999999999998,
+            "prob": 0.98,
+            "start": 76.01999999999998,
+            "word": "Czy"
+          },
+          {
+            "end": 76.59999999999998,
+            "prob": 0.94,
+            "start": 76.21999999999998,
+            "word": "Marek"
+          },
+          {
+            "end": 76.85999999999999,
+            "prob": 0.92,
+            "start": 76.59999999999998,
+            "word": "chciał"
+          },
+          {
+            "end": 77.41999999999997,
+            "prob": 1,
+            "start": 76.85999999999999,
+            "word": "zobaczyć"
+          },
+          {
+            "end": 78.57999999999998,
+            "prob": 0.93,
+            "start": 77.41999999999997,
+            "word": "piramidy?"
+          },
+          {
+            "end": 80.75999999999996,
+            "prob": 0.88,
+            "start": 79.91999999999997,
+            "word": "Tak,"
+          },
+          {
+            "end": 80.89999999999996,
+            "prob": 0.82,
+            "start": 80.75999999999996,
+            "word": "on"
+          },
+          {
+            "end": 81.35999999999997,
+            "prob": 0.97,
+            "start": 80.89999999999996,
+            "word": "chciał"
+          },
+          {
+            "end": 81.99999999999997,
+            "prob": 1,
+            "start": 81.35999999999997,
+            "word": "zobaczyć"
+          },
+          {
+            "end": 83.07999999999997,
+            "prob": 0.93,
+            "start": 81.99999999999997,
+            "word": "piramidy."
+          },
+          {
+            "end": 84.47999999999996,
+            "prob": 1,
+            "start": 84.25999999999996,
+            "word": "Czy"
+          },
+          {
+            "end": 85.25999999999996,
+            "prob": 0.99,
+            "start": 84.47999999999996,
+            "word": "Marek"
+          },
+          {
+            "end": 85.63999999999996,
+            "prob": 0.98,
+            "start": 85.25999999999996,
+            "word": "od"
+          },
+          {
+            "end": 86.07999999999996,
+            "prob": 1,
+            "start": 85.63999999999996,
+            "word": "zawsze"
+          },
+          {
+            "end": 86.77999999999996,
+            "prob": 0.55,
+            "start": 86.07999999999996,
+            "word": "marzył,"
+          },
+          {
+            "end": 86.93999999999997,
+            "prob": 0.94,
+            "start": 86.77999999999996,
+            "word": "żeby"
+          },
+          {
+            "end": 87.63999999999996,
+            "prob": 1,
+            "start": 86.93999999999997,
+            "word": "zobaczyć"
+          },
+          {
+            "end": 88.39999999999996,
+            "prob": 0.97,
+            "start": 87.63999999999996,
+            "word": "piramidy?"
+          }
+        ]
+      },
+      {
+        "avg_logprob": -0.12673705698628174,
+        "end_time": 125.5,
+        "no_speech_prob": 0.00005602836608886719,
+        "start_time": 90.68,
+        "text": "Tak, on od zawsze chciał zobaczyć piramidy, czyli od zawsze, od dawna marzył, żeby zobaczyć piramidy. Co on chciał zobaczyć? Piramidy. On chciał zobaczyć piramidy. Kto chciał zobaczyć piramidy? Marek. On chciał zobaczyć piramidy. On szukał dobrej oferty na wyjazd do Egiptu. Czy Marek szukał dobrej oferty na wyjazd do Egiptu?",
+        "word_timestamps": [
+          {
+            "end": 91.82,
+            "prob": 0.69,
+            "start": 90.67999999999999,
+            "word": "Tak,"
+          },
+          {
+            "end": 92.1,
+            "prob": 0.85,
+            "start": 91.82,
+            "word": "on"
+          },
+          {
+            "end": 92.58,
+            "prob": 0.79,
+            "start": 92.1,
+            "word": "od"
+          },
+          {
+            "end": 92.94,
+            "prob": 0.83,
+            "start": 92.58,
+            "word": "zawsze"
+          },
+          {
+            "end": 93.41999999999999,
+            "prob": 0.89,
+            "start": 92.94,
+            "word": "chciał"
+          },
+          {
+            "end": 94.02,
+            "prob": 0.99,
+            "start": 93.41999999999999,
+            "word": "zobaczyć"
+          },
+          {
+            "end": 94.91999999999999,
+            "prob": 0.63,
+            "start": 94.02,
+            "word": "piramidy,"
+          },
+          {
+            "end": 95.1,
+            "prob": 0.97,
+            "start": 94.91999999999999,
+            "word": "czyli"
+          },
+          {
+            "end": 95.52,
+            "prob": 1,
+            "start": 95.1,
+            "word": "od"
+          },
+          {
+            "end": 96.33999999999999,
+            "prob": 0.56,
+            "start": 95.52,
+            "word": "zawsze,"
+          },
+          {
+            "end": 96.77999999999999,
+            "prob": 0.88,
+            "start": 96.33999999999999,
+            "word": "od"
+          },
+          {
+            "end": 97.25999999999999,
+            "prob": 0.9,
+            "start": 96.77999999999999,
+            "word": "dawna"
+          },
+          {
+            "end": 98.1,
+            "prob": 0.54,
+            "start": 97.25999999999999,
+            "word": "marzył,"
+          },
+          {
+            "end": 98.58,
+            "prob": 0.97,
+            "start": 98.1,
+            "word": "żeby"
+          },
+          {
+            "end": 99.5,
+            "prob": 1,
+            "start": 98.58,
+            "word": "zobaczyć"
+          },
+          {
+            "end": 100.63999999999999,
+            "prob": 0.85,
+            "start": 99.5,
+            "word": "piramidy."
+          },
+          {
+            "end": 101.94,
+            "prob": 0.76,
+            "start": 101.75999999999999,
+            "word": "Co"
+          },
+          {
+            "end": 102.1,
+            "prob": 0.87,
+            "start": 101.94,
+            "word": "on"
+          },
+          {
+            "end": 102.39999999999999,
+            "prob": 0.99,
+            "start": 102.1,
+            "word": "chciał"
+          },
+          {
+            "end": 103.66,
+            "prob": 0.94,
+            "start": 102.39999999999999,
+            "word": "zobaczyć?"
+          },
+          {
+            "end": 106.07999999999998,
+            "prob": 0.74,
+            "start": 105.27999999999999,
+            "word": "Piramidy."
+          },
+          {
+            "end": 106.21999999999998,
+            "prob": 0.89,
+            "start": 106.07999999999998,
+            "word": "On"
+          },
+          {
+            "end": 106.67999999999999,
+            "prob": 0.97,
+            "start": 106.21999999999998,
+            "word": "chciał"
+          },
+          {
+            "end": 107.25999999999999,
+            "prob": 0.99,
+            "start": 106.67999999999999,
+            "word": "zobaczyć"
+          },
+          {
+            "end": 108.33999999999999,
+            "prob": 0.86,
+            "start": 107.25999999999999,
+            "word": "piramidy."
+          },
+          {
+            "end": 109.31999999999998,
+            "prob": 0.78,
+            "start": 108.99999999999999,
+            "word": "Kto"
+          },
+          {
+            "end": 109.61999999999998,
+            "prob": 0.98,
+            "start": 109.31999999999998,
+            "word": "chciał"
+          },
+          {
+            "end": 110.19999999999999,
+            "prob": 1,
+            "start": 109.61999999999998,
+            "word": "zobaczyć"
+          },
+          {
+            "end": 111.33999999999999,
+            "prob": 0.94,
+            "start": 110.19999999999999,
+            "word": "piramidy?"
+          },
+          {
+            "end": 113.15999999999997,
+            "prob": 0.76,
+            "start": 112.31999999999998,
+            "word": "Marek."
+          },
+          {
+            "end": 113.93999999999997,
+            "prob": 0.99,
+            "start": 113.75999999999996,
+            "word": "On"
+          },
+          {
+            "end": 114.27999999999997,
+            "prob": 1,
+            "start": 113.93999999999997,
+            "word": "chciał"
+          },
+          {
+            "end": 114.83999999999997,
+            "prob": 1,
+            "start": 114.27999999999997,
+            "word": "zobaczyć"
+          },
+          {
+            "end": 115.97999999999996,
+            "prob": 0.97,
+            "start": 114.83999999999997,
+            "word": "piramidy."
+          },
+          {
+            "end": 116.97999999999996,
+            "prob": 0.98,
+            "start": 116.79999999999995,
+            "word": "On"
+          },
+          {
+            "end": 117.51999999999995,
+            "prob": 0.85,
+            "start": 116.97999999999996,
+            "word": "szukał"
+          },
+          {
+            "end": 117.99999999999996,
+            "prob": 0.97,
+            "start": 117.51999999999995,
+            "word": "dobrej"
+          },
+          {
+            "end": 118.51999999999995,
+            "prob": 0.82,
+            "start": 117.99999999999996,
+            "word": "oferty"
+          },
+          {
+            "end": 118.75999999999996,
+            "prob": 0.8,
+            "start": 118.51999999999995,
+            "word": "na"
+          },
+          {
+            "end": 119.27999999999996,
+            "prob": 0.57,
+            "start": 118.75999999999996,
+            "word": "wyjazd"
+          },
+          {
+            "end": 119.49999999999996,
+            "prob": 0.91,
+            "start": 119.27999999999996,
+            "word": "do"
+          },
+          {
+            "end": 120.49999999999996,
+            "prob": 0.86,
+            "start": 119.49999999999996,
+            "word": "Egiptu."
+          },
+          {
+            "end": 122.41999999999994,
+            "prob": 0.97,
+            "start": 122.21999999999994,
+            "word": "Czy"
+          },
+          {
+            "end": 122.75999999999995,
+            "prob": 0.71,
+            "start": 122.41999999999994,
+            "word": "Marek"
+          },
+          {
+            "end": 123.15999999999994,
+            "prob": 0.98,
+            "start": 122.75999999999995,
+            "word": "szukał"
+          },
+          {
+            "end": 123.57999999999994,
+            "prob": 0.98,
+            "start": 123.15999999999994,
+            "word": "dobrej"
+          },
+          {
+            "end": 124.03999999999995,
+            "prob": 0.99,
+            "start": 123.57999999999994,
+            "word": "oferty"
+          },
+          {
+            "end": 124.23999999999995,
+            "prob": 0.98,
+            "start": 124.03999999999995,
+            "word": "na"
+          },
+          {
+            "end": 124.65999999999994,
+            "prob": 0.99,
+            "start": 124.23999999999995,
+            "word": "wyjazd"
+          },
+          {
+            "end": 124.87999999999994,
+            "prob": 0.79,
+            "start": 124.65999999999994,
+            "word": "do"
+          },
+          {
+            "end": 125.47999999999995,
+            "prob": 0.97,
+            "start": 124.87999999999994,
+            "word": "Egiptu?"
+          }
+        ]
+      },
+      {
+        "avg_logprob": -0.11990146258392849,
+        "end_time": 154.84,
+        "no_speech_prob": 0.00013339519500732422,
+        "start_time": 127.1,
+        "text": "Tak, on szukał dobrej oferty na wyjazd do Egiptu. Czy Marek szukał taniej i dobrej wycieczki do Egiptu? Tak, on szukał dobrej oferty na wyjazd do Egiptu. Jeśli szukamy dobrej oferty to znaczy, że szukamy dobrej jakości w niskiej cenie. Dokąd on chciał wyjechać? Do Meksyku czy do Egiptu?",
+        "word_timestamps": [
+          {
+            "end": 128.1,
+            "prob": 0.81,
+            "start": 127.1,
+            "word": "Tak,"
+          },
+          {
+            "end": 128.28,
+            "prob": 0.9,
+            "start": 128.1,
+            "word": "on"
+          },
+          {
+            "end": 128.76,
+            "prob": 0.76,
+            "start": 128.28,
+            "word": "szukał"
+          },
+          {
+            "end": 129.28,
+            "prob": 0.92,
+            "start": 128.76,
+            "word": "dobrej"
+          },
+          {
+            "end": 129.76,
+            "prob": 0.8,
+            "start": 129.28,
+            "word": "oferty"
+          },
+          {
+            "end": 130,
+            "prob": 0.46,
+            "start": 129.76,
+            "word": "na"
+          },
+          {
+            "end": 130.51999999999998,
+            "prob": 0.91,
+            "start": 130,
+            "word": "wyjazd"
+          },
+          {
+            "end": 130.76,
+            "prob": 0.72,
+            "start": 130.51999999999998,
+            "word": "do"
+          },
+          {
+            "end": 131.64,
+            "prob": 0.78,
+            "start": 130.76,
+            "word": "Egiptu."
+          },
+          {
+            "end": 133.00000000000003,
+            "prob": 0.99,
+            "start": 132.86,
+            "word": "Czy"
+          },
+          {
+            "end": 133.34000000000003,
+            "prob": 0.62,
+            "start": 133.00000000000003,
+            "word": "Marek"
+          },
+          {
+            "end": 133.8,
+            "prob": 0.94,
+            "start": 133.34000000000003,
+            "word": "szukał"
+          },
+          {
+            "end": 134.54000000000002,
+            "prob": 0.77,
+            "start": 133.8,
+            "word": "taniej"
+          },
+          {
+            "end": 134.88000000000002,
+            "prob": 0.95,
+            "start": 134.54000000000002,
+            "word": "i"
+          },
+          {
+            "end": 135.32000000000002,
+            "prob": 0.41,
+            "start": 134.88000000000002,
+            "word": "dobrej"
+          },
+          {
+            "end": 135.82000000000002,
+            "prob": 0.93,
+            "start": 135.32000000000002,
+            "word": "wycieczki"
+          },
+          {
+            "end": 136.04000000000002,
+            "prob": 0.99,
+            "start": 135.82000000000002,
+            "word": "do"
+          },
+          {
+            "end": 137.04000000000002,
+            "prob": 0.99,
+            "start": 136.04000000000002,
+            "word": "Egiptu?"
+          },
+          {
+            "end": 139.70000000000005,
+            "prob": 0.92,
+            "start": 138.96000000000004,
+            "word": "Tak,"
+          },
+          {
+            "end": 139.82000000000005,
+            "prob": 0.94,
+            "start": 139.70000000000005,
+            "word": "on"
+          },
+          {
+            "end": 140.30000000000004,
+            "prob": 0.98,
+            "start": 139.82000000000005,
+            "word": "szukał"
+          },
+          {
+            "end": 140.80000000000004,
+            "prob": 0.99,
+            "start": 140.30000000000004,
+            "word": "dobrej"
+          },
+          {
+            "end": 141.24000000000004,
+            "prob": 0.99,
+            "start": 140.80000000000004,
+            "word": "oferty"
+          },
+          {
+            "end": 141.42000000000004,
+            "prob": 0.99,
+            "start": 141.24000000000004,
+            "word": "na"
+          },
+          {
+            "end": 141.90000000000003,
+            "prob": 1,
+            "start": 141.42000000000004,
+            "word": "wyjazd"
+          },
+          {
+            "end": 142.16000000000003,
+            "prob": 0.96,
+            "start": 141.90000000000003,
+            "word": "do"
+          },
+          {
+            "end": 143.16000000000003,
+            "prob": 0.92,
+            "start": 142.16000000000003,
+            "word": "Egiptu."
+          },
+          {
+            "end": 143.36000000000004,
+            "prob": 0.9,
+            "start": 143.16000000000003,
+            "word": "Jeśli"
+          },
+          {
+            "end": 144.04000000000005,
+            "prob": 0.9,
+            "start": 143.36000000000004,
+            "word": "szukamy"
+          },
+          {
+            "end": 144.64000000000004,
+            "prob": 0.99,
+            "start": 144.04000000000005,
+            "word": "dobrej"
+          },
+          {
+            "end": 145.32000000000005,
+            "prob": 0.98,
+            "start": 144.64000000000004,
+            "word": "oferty"
+          },
+          {
+            "end": 145.58000000000004,
+            "prob": 0.15,
+            "start": 145.32000000000005,
+            "word": "to"
+          },
+          {
+            "end": 146.38000000000005,
+            "prob": 0.96,
+            "start": 145.58000000000004,
+            "word": "znaczy,"
+          },
+          {
+            "end": 146.38000000000005,
+            "prob": 1,
+            "start": 146.38000000000005,
+            "word": "że"
+          },
+          {
+            "end": 147.18000000000004,
+            "prob": 0.95,
+            "start": 146.38000000000005,
+            "word": "szukamy"
+          },
+          {
+            "end": 148.12000000000003,
+            "prob": 0.97,
+            "start": 147.18000000000004,
+            "word": "dobrej"
+          },
+          {
+            "end": 148.78000000000003,
+            "prob": 0.95,
+            "start": 148.12000000000003,
+            "word": "jakości"
+          },
+          {
+            "end": 148.98000000000005,
+            "prob": 0.63,
+            "start": 148.78000000000003,
+            "word": "w"
+          },
+          {
+            "end": 149.50000000000003,
+            "prob": 0.65,
+            "start": 148.98000000000005,
+            "word": "niskiej"
+          },
+          {
+            "end": 150.40000000000003,
+            "prob": 0.9,
+            "start": 149.50000000000003,
+            "word": "cenie."
+          },
+          {
+            "end": 151.46000000000006,
+            "prob": 0.29,
+            "start": 151.10000000000005,
+            "word": "Dokąd"
+          },
+          {
+            "end": 151.70000000000005,
+            "prob": 0.45,
+            "start": 151.46000000000006,
+            "word": "on"
+          },
+          {
+            "end": 152.08000000000004,
+            "prob": 0.9,
+            "start": 151.70000000000005,
+            "word": "chciał"
+          },
+          {
+            "end": 152.92000000000004,
+            "prob": 0.78,
+            "start": 152.08000000000004,
+            "word": "wyjechać?"
+          },
+          {
+            "end": 153.14000000000004,
+            "prob": 0.68,
+            "start": 152.92000000000004,
+            "word": "Do"
+          },
+          {
+            "end": 153.78000000000006,
+            "prob": 0.51,
+            "start": 153.14000000000004,
+            "word": "Meksyku"
+          },
+          {
+            "end": 153.98000000000005,
+            "prob": 0.85,
+            "start": 153.78000000000006,
+            "word": "czy"
+          },
+          {
+            "end": 154.22000000000006,
+            "prob": 0.87,
+            "start": 153.98000000000005,
+            "word": "do"
+          },
+          {
+            "end": 154.82000000000005,
+            "prob": 0.84,
+            "start": 154.22000000000006,
+            "word": "Egiptu?"
+          }
+        ]
+      },
+      {
+        "avg_logprob": -0.11620987006104909,
+        "end_time": 186.54,
+        "no_speech_prob": 0.000896453857421875,
+        "start_time": 156.56,
+        "text": "Do Egiptu. On szukał oferty na wyjazd do Egiptu, czyli chciał wyjechać do Egiptu, a nie do Meksyku. Kto szukał dobrej oferty na wyjazd do Egiptu? Marek czy Maria? Marek. On szukał dobrej oferty na wyjazd do Egiptu, a nie Maria. Oglądał katalogi i szukał taniego hotelu. Czy Marek oglądał katalogi i szukał taniego hotelu?",
+        "word_timestamps": [
+          {
+            "end": 157.1,
+            "prob": 0.7,
+            "start": 156.56,
+            "word": "Do"
+          },
+          {
+            "end": 157.86,
+            "prob": 0.43,
+            "start": 157.1,
+            "word": "Egiptu."
+          },
+          {
+            "end": 158.56,
+            "prob": 0.95,
+            "start": 157.86,
+            "word": "On"
+          },
+          {
+            "end": 159.36,
+            "prob": 0.68,
+            "start": 158.56,
+            "word": "szukał"
+          },
+          {
+            "end": 159.9,
+            "prob": 0.83,
+            "start": 159.36,
+            "word": "oferty"
+          },
+          {
+            "end": 160.12,
+            "prob": 0.64,
+            "start": 159.9,
+            "word": "na"
+          },
+          {
+            "end": 160.66,
+            "prob": 0.94,
+            "start": 160.12,
+            "word": "wyjazd"
+          },
+          {
+            "end": 161.1,
+            "prob": 0.98,
+            "start": 160.66,
+            "word": "do"
+          },
+          {
+            "end": 161.76,
+            "prob": 0.91,
+            "start": 161.1,
+            "word": "Egiptu,"
+          },
+          {
+            "end": 161.98,
+            "prob": 0.99,
+            "start": 161.76,
+            "word": "czyli"
+          },
+          {
+            "end": 162.58,
+            "prob": 0.85,
+            "start": 161.98,
+            "word": "chciał"
+          },
+          {
+            "end": 163.16,
+            "prob": 0.98,
+            "start": 162.58,
+            "word": "wyjechać"
+          },
+          {
+            "end": 163.42000000000002,
+            "prob": 0.93,
+            "start": 163.16,
+            "word": "do"
+          },
+          {
+            "end": 163.94,
+            "prob": 0.84,
+            "start": 163.42000000000002,
+            "word": "Egiptu,"
+          },
+          {
+            "end": 164.18,
+            "prob": 0.83,
+            "start": 163.94,
+            "word": "a"
+          },
+          {
+            "end": 164.34,
+            "prob": 0.86,
+            "start": 164.18,
+            "word": "nie"
+          },
+          {
+            "end": 164.54,
+            "prob": 0.69,
+            "start": 164.34,
+            "word": "do"
+          },
+          {
+            "end": 165.66,
+            "prob": 0.65,
+            "start": 164.54,
+            "word": "Meksyku."
+          },
+          {
+            "end": 166.9,
+            "prob": 0.87,
+            "start": 166.72,
+            "word": "Kto"
+          },
+          {
+            "end": 167.38,
+            "prob": 0.98,
+            "start": 166.9,
+            "word": "szukał"
+          },
+          {
+            "end": 167.88,
+            "prob": 0.65,
+            "start": 167.38,
+            "word": "dobrej"
+          },
+          {
+            "end": 168.28,
+            "prob": 0.97,
+            "start": 167.88,
+            "word": "oferty"
+          },
+          {
+            "end": 168.5,
+            "prob": 0.98,
+            "start": 168.28,
+            "word": "na"
+          },
+          {
+            "end": 168.92000000000002,
+            "prob": 0.99,
+            "start": 168.5,
+            "word": "wyjazd"
+          },
+          {
+            "end": 169.12,
+            "prob": 0.77,
+            "start": 168.92000000000002,
+            "word": "do"
+          },
+          {
+            "end": 170.16,
+            "prob": 0.94,
+            "start": 169.12,
+            "word": "Egiptu?"
+          },
+          {
+            "end": 170.56,
+            "prob": 0.77,
+            "start": 170.16,
+            "word": "Marek"
+          },
+          {
+            "end": 170.72,
+            "prob": 0.29,
+            "start": 170.56,
+            "word": "czy"
+          },
+          {
+            "end": 171.72,
+            "prob": 0.7,
+            "start": 170.72,
+            "word": "Maria?"
+          },
+          {
+            "end": 173.5,
+            "prob": 0.78,
+            "start": 172.68,
+            "word": "Marek."
+          },
+          {
+            "end": 173.66000000000003,
+            "prob": 0.99,
+            "start": 173.5,
+            "word": "On"
+          },
+          {
+            "end": 174.12,
+            "prob": 0.98,
+            "start": 173.66000000000003,
+            "word": "szukał"
+          },
+          {
+            "end": 174.56,
+            "prob": 0.97,
+            "start": 174.12,
+            "word": "dobrej"
+          },
+          {
+            "end": 174.98000000000002,
+            "prob": 0.98,
+            "start": 174.56,
+            "word": "oferty"
+          },
+          {
+            "end": 175.22000000000003,
+            "prob": 1,
+            "start": 174.98000000000002,
+            "word": "na"
+          },
+          {
+            "end": 175.60000000000002,
+            "prob": 1,
+            "start": 175.22000000000003,
+            "word": "wyjazd"
+          },
+          {
+            "end": 175.84,
+            "prob": 0.87,
+            "start": 175.60000000000002,
+            "word": "do"
+          },
+          {
+            "end": 176.5,
+            "prob": 0.87,
+            "start": 175.84,
+            "word": "Egiptu,"
+          },
+          {
+            "end": 176.54000000000002,
+            "prob": 0.98,
+            "start": 176.5,
+            "word": "a"
+          },
+          {
+            "end": 176.70000000000002,
+            "prob": 1,
+            "start": 176.54000000000002,
+            "word": "nie"
+          },
+          {
+            "end": 177.66000000000003,
+            "prob": 0.88,
+            "start": 176.70000000000002,
+            "word": "Maria."
+          },
+          {
+            "end": 178.76000000000005,
+            "prob": 0.8,
+            "start": 178.22000000000003,
+            "word": "Oglądał"
+          },
+          {
+            "end": 179.36000000000004,
+            "prob": 0.53,
+            "start": 178.76000000000005,
+            "word": "katalogi"
+          },
+          {
+            "end": 180.00000000000006,
+            "prob": 0.93,
+            "start": 179.36000000000004,
+            "word": "i"
+          },
+          {
+            "end": 180.46000000000004,
+            "prob": 0.99,
+            "start": 180.00000000000006,
+            "word": "szukał"
+          },
+          {
+            "end": 180.92000000000004,
+            "prob": 0.74,
+            "start": 180.46000000000004,
+            "word": "taniego"
+          },
+          {
+            "end": 182.02000000000004,
+            "prob": 0.92,
+            "start": 180.92000000000004,
+            "word": "hotelu."
+          },
+          {
+            "end": 183.02000000000007,
+            "prob": 0.97,
+            "start": 182.94000000000005,
+            "word": "Czy"
+          },
+          {
+            "end": 183.40000000000006,
+            "prob": 0.62,
+            "start": 183.02000000000007,
+            "word": "Marek"
+          },
+          {
+            "end": 183.94000000000005,
+            "prob": 0.72,
+            "start": 183.40000000000006,
+            "word": "oglądał"
+          },
+          {
+            "end": 184.54000000000005,
+            "prob": 0.91,
+            "start": 183.94000000000005,
+            "word": "katalogi"
+          },
+          {
+            "end": 184.94000000000005,
+            "prob": 0.99,
+            "start": 184.54000000000005,
+            "word": "i"
+          },
+          {
+            "end": 185.40000000000006,
+            "prob": 0.99,
+            "start": 184.94000000000005,
+            "word": "szukał"
+          },
+          {
+            "end": 185.86000000000007,
+            "prob": 0.99,
+            "start": 185.40000000000006,
+            "word": "taniego"
+          },
+          {
+            "end": 186.50000000000006,
+            "prob": 0.99,
+            "start": 185.86000000000007,
+            "word": "hotelu?"
+          }
+        ]
+      },
+      {
+        "avg_logprob": -0.14068870857113697,
+        "end_time": 220.84,
+        "no_speech_prob": 0.00044417381286621094,
+        "start_time": 188.14,
+        "text": "Tak, on oglądał katalogi i szukał taniego hotelu. Czy Marek oglądał telewizję? Nie, nie telewizję. On oglądał katalogi, a nie telewizję. Jakiego hotelu on szukał? Taniego czy drogiego? Taniego. On szukał taniego hotelu. On nie szukał drogiego hotelu. Kto szukał taniego hotelu? Marek. On szukał taniego hotelu.",
+        "word_timestamps": [
+          {
+            "end": 189.06,
+            "prob": 0.86,
+            "start": 188.14000000000001,
+            "word": "Tak,"
+          },
+          {
+            "end": 189.18,
+            "prob": 0.62,
+            "start": 189.06,
+            "word": "on"
+          },
+          {
+            "end": 189.66000000000003,
+            "prob": 0.89,
+            "start": 189.18,
+            "word": "oglądał"
+          },
+          {
+            "end": 190.24,
+            "prob": 0.55,
+            "start": 189.66000000000003,
+            "word": "katalogi"
+          },
+          {
+            "end": 190.54000000000002,
+            "prob": 0.93,
+            "start": 190.24,
+            "word": "i"
+          },
+          {
+            "end": 191.12,
+            "prob": 0.79,
+            "start": 190.54000000000002,
+            "word": "szukał"
+          },
+          {
+            "end": 191.60000000000002,
+            "prob": 0.72,
+            "start": 191.12,
+            "word": "taniego"
+          },
+          {
+            "end": 192.60000000000002,
+            "prob": 0.92,
+            "start": 191.60000000000002,
+            "word": "hotelu."
+          },
+          {
+            "end": 193.88000000000002,
+            "prob": 0.97,
+            "start": 193.70000000000005,
+            "word": "Czy"
+          },
+          {
+            "end": 194.26000000000005,
+            "prob": 0.49,
+            "start": 193.88000000000002,
+            "word": "Marek"
+          },
+          {
+            "end": 194.74000000000004,
+            "prob": 0.99,
+            "start": 194.26000000000005,
+            "word": "oglądał"
+          },
+          {
+            "end": 195.98000000000005,
+            "prob": 0.81,
+            "start": 194.74000000000004,
+            "word": "telewizję?"
+          },
+          {
+            "end": 198.20000000000007,
+            "prob": 0.87,
+            "start": 197.82000000000008,
+            "word": "Nie,"
+          },
+          {
+            "end": 198.48000000000008,
+            "prob": 0.98,
+            "start": 198.20000000000007,
+            "word": "nie"
+          },
+          {
+            "end": 199.62000000000006,
+            "prob": 0.87,
+            "start": 198.48000000000008,
+            "word": "telewizję."
+          },
+          {
+            "end": 199.74000000000007,
+            "prob": 0.99,
+            "start": 199.62000000000006,
+            "word": "On"
+          },
+          {
+            "end": 200.30000000000007,
+            "prob": 0.99,
+            "start": 199.74000000000007,
+            "word": "oglądał"
+          },
+          {
+            "end": 201.16000000000008,
+            "prob": 0.79,
+            "start": 200.30000000000007,
+            "word": "katalogi,"
+          },
+          {
+            "end": 201.22000000000008,
+            "prob": 0.87,
+            "start": 201.16000000000008,
+            "word": "a"
+          },
+          {
+            "end": 201.36000000000007,
+            "prob": 0.98,
+            "start": 201.22000000000008,
+            "word": "nie"
+          },
+          {
+            "end": 202.54000000000008,
+            "prob": 0.96,
+            "start": 201.36000000000007,
+            "word": "telewizję."
+          },
+          {
+            "end": 203.7600000000001,
+            "prob": 0.78,
+            "start": 203.34000000000012,
+            "word": "Jakiego"
+          },
+          {
+            "end": 204.2600000000001,
+            "prob": 0.95,
+            "start": 203.7600000000001,
+            "word": "hotelu"
+          },
+          {
+            "end": 204.4400000000001,
+            "prob": 0.91,
+            "start": 204.2600000000001,
+            "word": "on"
+          },
+          {
+            "end": 205.4800000000001,
+            "prob": 0.85,
+            "start": 204.4400000000001,
+            "word": "szukał?"
+          },
+          {
+            "end": 206.0000000000001,
+            "prob": 0.88,
+            "start": 205.4800000000001,
+            "word": "Taniego"
+          },
+          {
+            "end": 206.24000000000012,
+            "prob": 0.93,
+            "start": 206.0000000000001,
+            "word": "czy"
+          },
+          {
+            "end": 207.40000000000012,
+            "prob": 0.73,
+            "start": 206.24000000000012,
+            "word": "drogiego?"
+          },
+          {
+            "end": 209.54000000000013,
+            "prob": 0.77,
+            "start": 208.66000000000014,
+            "word": "Taniego."
+          },
+          {
+            "end": 209.72000000000014,
+            "prob": 0.98,
+            "start": 209.54000000000013,
+            "word": "On"
+          },
+          {
+            "end": 210.20000000000013,
+            "prob": 0.98,
+            "start": 209.72000000000014,
+            "word": "szukał"
+          },
+          {
+            "end": 210.68000000000012,
+            "prob": 0.97,
+            "start": 210.20000000000013,
+            "word": "taniego"
+          },
+          {
+            "end": 211.58000000000013,
+            "prob": 0.97,
+            "start": 210.68000000000012,
+            "word": "hotelu."
+          },
+          {
+            "end": 211.72000000000014,
+            "prob": 0.99,
+            "start": 211.58000000000013,
+            "word": "On"
+          },
+          {
+            "end": 211.90000000000012,
+            "prob": 0.86,
+            "start": 211.72000000000014,
+            "word": "nie"
+          },
+          {
+            "end": 212.30000000000013,
+            "prob": 0.99,
+            "start": 211.90000000000012,
+            "word": "szukał"
+          },
+          {
+            "end": 212.82000000000014,
+            "prob": 0.97,
+            "start": 212.30000000000013,
+            "word": "drogiego"
+          },
+          {
+            "end": 213.84000000000012,
+            "prob": 0.99,
+            "start": 212.82000000000014,
+            "word": "hotelu."
+          },
+          {
+            "end": 215.16000000000017,
+            "prob": 0.85,
+            "start": 214.92000000000016,
+            "word": "Kto"
+          },
+          {
+            "end": 215.62000000000018,
+            "prob": 0.99,
+            "start": 215.16000000000017,
+            "word": "szukał"
+          },
+          {
+            "end": 216.04000000000016,
+            "prob": 0.97,
+            "start": 215.62000000000018,
+            "word": "taniego"
+          },
+          {
+            "end": 217.10000000000016,
+            "prob": 0.99,
+            "start": 216.04000000000016,
+            "word": "hotelu?"
+          },
+          {
+            "end": 219.0600000000002,
+            "prob": 0.82,
+            "start": 218.2400000000002,
+            "word": "Marek."
+          },
+          {
+            "end": 219.2200000000002,
+            "prob": 0.99,
+            "start": 219.0600000000002,
+            "word": "On"
+          },
+          {
+            "end": 219.70000000000022,
+            "prob": 0.99,
+            "start": 219.2200000000002,
+            "word": "szukał"
+          },
+          {
+            "end": 220.1400000000002,
+            "prob": 0.98,
+            "start": 219.70000000000022,
+            "word": "taniego"
+          },
+          {
+            "end": 220.8000000000002,
+            "prob": 0.98,
+            "start": 220.1400000000002,
+            "word": "hotelu."
+          }
+        ]
+      },
+      {
+        "avg_logprob": -0.0905386025372606,
+        "end_time": 249.88,
+        "no_speech_prob": 0.00001722574234008789,
+        "start_time": 221.46,
+        "text": "Właśnie wtedy samolot lecący z Warszawy do Egiptu rozbił się przy lądowaniu. Czy w tym czasie rozbił się samolot lecący z Warszawy do Egiptu? Tak, właśnie wtedy rozbił się samolot, czyli w tym samym czasie rozbił się samolot lecący z Warszawy do Egiptu. Czy wtedy rozbił się autobus jadący do Egiptu?",
+        "word_timestamps": [
+          {
+            "end": 222.12,
+            "prob": 0.68,
+            "start": 221.46,
+            "word": "Właśnie"
+          },
+          {
+            "end": 222.68,
+            "prob": 0.99,
+            "start": 222.12,
+            "word": "wtedy"
+          },
+          {
+            "end": 223.58,
+            "prob": 0.84,
+            "start": 222.68,
+            "word": "samolot"
+          },
+          {
+            "end": 224.1,
+            "prob": 0.53,
+            "start": 223.58,
+            "word": "lecący"
+          },
+          {
+            "end": 224.24,
+            "prob": 0.57,
+            "start": 224.1,
+            "word": "z"
+          },
+          {
+            "end": 224.76000000000002,
+            "prob": 0.95,
+            "start": 224.24,
+            "word": "Warszawy"
+          },
+          {
+            "end": 225,
+            "prob": 0.97,
+            "start": 224.76000000000002,
+            "word": "do"
+          },
+          {
+            "end": 225.6,
+            "prob": 0.91,
+            "start": 225,
+            "word": "Egiptu"
+          },
+          {
+            "end": 226.48000000000002,
+            "prob": 0.79,
+            "start": 225.6,
+            "word": "rozbił"
+          },
+          {
+            "end": 226.72,
+            "prob": 0.99,
+            "start": 226.48000000000002,
+            "word": "się"
+          },
+          {
+            "end": 226.96,
+            "prob": 0.94,
+            "start": 226.72,
+            "word": "przy"
+          },
+          {
+            "end": 228.12,
+            "prob": 0.63,
+            "start": 226.96,
+            "word": "lądowaniu."
+          },
+          {
+            "end": 229.60000000000002,
+            "prob": 0.99,
+            "start": 229.50000000000003,
+            "word": "Czy"
+          },
+          {
+            "end": 229.76000000000002,
+            "prob": 0.99,
+            "start": 229.60000000000002,
+            "word": "w"
+          },
+          {
+            "end": 229.90000000000003,
+            "prob": 1,
+            "start": 229.76000000000002,
+            "word": "tym"
+          },
+          {
+            "end": 230.34000000000003,
+            "prob": 0.99,
+            "start": 229.90000000000003,
+            "word": "czasie"
+          },
+          {
+            "end": 231.16000000000003,
+            "prob": 0.95,
+            "start": 230.34000000000003,
+            "word": "rozbił"
+          },
+          {
+            "end": 231.38000000000002,
+            "prob": 1,
+            "start": 231.16000000000003,
+            "word": "się"
+          },
+          {
+            "end": 232.04000000000002,
+            "prob": 0.99,
+            "start": 231.38000000000002,
+            "word": "samolot"
+          },
+          {
+            "end": 232.98000000000002,
+            "prob": 0.99,
+            "start": 232.04000000000002,
+            "word": "lecący"
+          },
+          {
+            "end": 233.26000000000002,
+            "prob": 0.89,
+            "start": 232.98000000000002,
+            "word": "z"
+          },
+          {
+            "end": 233.76000000000002,
+            "prob": 0.99,
+            "start": 233.26000000000002,
+            "word": "Warszawy"
+          },
+          {
+            "end": 233.96000000000004,
+            "prob": 0.99,
+            "start": 233.76000000000002,
+            "word": "do"
+          },
+          {
+            "end": 234.76000000000002,
+            "prob": 0.96,
+            "start": 233.96000000000004,
+            "word": "Egiptu?"
+          },
+          {
+            "end": 237.44000000000008,
+            "prob": 0.62,
+            "start": 236.40000000000006,
+            "word": "Tak,"
+          },
+          {
+            "end": 237.62000000000006,
+            "prob": 0.74,
+            "start": 237.44000000000008,
+            "word": "właśnie"
+          },
+          {
+            "end": 238.14000000000007,
+            "prob": 0.94,
+            "start": 237.62000000000006,
+            "word": "wtedy"
+          },
+          {
+            "end": 238.7800000000001,
+            "prob": 0.98,
+            "start": 238.14000000000007,
+            "word": "rozbił"
+          },
+          {
+            "end": 238.98000000000008,
+            "prob": 1,
+            "start": 238.7800000000001,
+            "word": "się"
+          },
+          {
+            "end": 239.8400000000001,
+            "prob": 0.83,
+            "start": 238.98000000000008,
+            "word": "samolot,"
+          },
+          {
+            "end": 240.0600000000001,
+            "prob": 0.98,
+            "start": 239.8400000000001,
+            "word": "czyli"
+          },
+          {
+            "end": 240.46000000000006,
+            "prob": 1,
+            "start": 240.0600000000001,
+            "word": "w"
+          },
+          {
+            "end": 240.72000000000008,
+            "prob": 1,
+            "start": 240.46000000000006,
+            "word": "tym"
+          },
+          {
+            "end": 241.12000000000006,
+            "prob": 0.98,
+            "start": 240.72000000000008,
+            "word": "samym"
+          },
+          {
+            "end": 241.64000000000007,
+            "prob": 0.99,
+            "start": 241.12000000000006,
+            "word": "czasie"
+          },
+          {
+            "end": 242.30000000000007,
+            "prob": 0.95,
+            "start": 241.64000000000007,
+            "word": "rozbił"
+          },
+          {
+            "end": 242.54000000000008,
+            "prob": 1,
+            "start": 242.30000000000007,
+            "word": "się"
+          },
+          {
+            "end": 243.20000000000007,
+            "prob": 1,
+            "start": 242.54000000000008,
+            "word": "samolot"
+          },
+          {
+            "end": 244.08000000000007,
+            "prob": 0.99,
+            "start": 243.20000000000007,
+            "word": "lecący"
+          },
+          {
+            "end": 244.30000000000007,
+            "prob": 0.98,
+            "start": 244.08000000000007,
+            "word": "z"
+          },
+          {
+            "end": 244.72000000000008,
+            "prob": 0.99,
+            "start": 244.30000000000007,
+            "word": "Warszawy"
+          },
+          {
+            "end": 244.94000000000008,
+            "prob": 0.99,
+            "start": 244.72000000000008,
+            "word": "do"
+          },
+          {
+            "end": 245.50000000000009,
+            "prob": 0.98,
+            "start": 244.94000000000008,
+            "word": "Egiptu."
+          },
+          {
+            "end": 246.60000000000008,
+            "prob": 1,
+            "start": 246.1800000000001,
+            "word": "Czy"
+          },
+          {
+            "end": 247.00000000000009,
+            "prob": 0.82,
+            "start": 246.60000000000008,
+            "word": "wtedy"
+          },
+          {
+            "end": 247.38000000000008,
+            "prob": 0.98,
+            "start": 247.00000000000009,
+            "word": "rozbił"
+          },
+          {
+            "end": 247.76000000000008,
+            "prob": 1,
+            "start": 247.38000000000008,
+            "word": "się"
+          },
+          {
+            "end": 248.42000000000007,
+            "prob": 0.95,
+            "start": 247.76000000000008,
+            "word": "autobus"
+          },
+          {
+            "end": 249.0200000000001,
+            "prob": 0.77,
+            "start": 248.42000000000007,
+            "word": "jadący"
+          },
+          {
+            "end": 249.2800000000001,
+            "prob": 0.99,
+            "start": 249.0200000000001,
+            "word": "do"
+          },
+          {
+            "end": 249.8400000000001,
+            "prob": 0.96,
+            "start": 249.2800000000001,
+            "word": "Egiptu?"
+          }
+        ]
+      },
+      {
+        "avg_logprob": -0.09645043203124294,
+        "end_time": 285.98,
+        "no_speech_prob": 0.00005227327346801758,
+        "start_time": 251.74,
+        "text": "Nie, to nie autobus się rozbił, to samolot się rozbił. Dokąd leciał ten samolot? Czy on leciał do Meksyku? Nie, on nie leciał do Meksyku. Ten samolot leciał do Egiptu. To był samolot lecący do Egiptu. Czy ten samolot rozbił się przy starcie, czy przy lądowaniu? Przy lądowaniu. On rozbił się przy lądowaniu, a nie przy starcie. To był nieszczęśliwy wypadek.",
+        "word_timestamps": [
+          {
+            "end": 252.74,
+            "prob": 0.66,
+            "start": 251.74,
+            "word": "Nie,"
+          },
+          {
+            "end": 252.98000000000002,
+            "prob": 0.98,
+            "start": 252.74,
+            "word": "to"
+          },
+          {
+            "end": 253.12,
+            "prob": 0.98,
+            "start": 252.98000000000002,
+            "word": "nie"
+          },
+          {
+            "end": 253.68,
+            "prob": 0.83,
+            "start": 253.12,
+            "word": "autobus"
+          },
+          {
+            "end": 253.86,
+            "prob": 0.85,
+            "start": 253.68,
+            "word": "się"
+          },
+          {
+            "end": 254.64000000000001,
+            "prob": 0.68,
+            "start": 253.86,
+            "word": "rozbił,"
+          },
+          {
+            "end": 254.72,
+            "prob": 0.98,
+            "start": 254.64000000000001,
+            "word": "to"
+          },
+          {
+            "end": 255.22,
+            "prob": 0.72,
+            "start": 254.72,
+            "word": "samolot"
+          },
+          {
+            "end": 255.42000000000002,
+            "prob": 1,
+            "start": 255.22,
+            "word": "się"
+          },
+          {
+            "end": 256.52,
+            "prob": 0.95,
+            "start": 255.42000000000002,
+            "word": "rozbił."
+          },
+          {
+            "end": 257.5,
+            "prob": 0.29,
+            "start": 257.15999999999997,
+            "word": "Dokąd"
+          },
+          {
+            "end": 257.9,
+            "prob": 0.8,
+            "start": 257.5,
+            "word": "leciał"
+          },
+          {
+            "end": 258.08,
+            "prob": 0.89,
+            "start": 257.9,
+            "word": "ten"
+          },
+          {
+            "end": 259.15999999999997,
+            "prob": 0.84,
+            "start": 258.08,
+            "word": "samolot?"
+          },
+          {
+            "end": 259.38,
+            "prob": 0.98,
+            "start": 259.15999999999997,
+            "word": "Czy"
+          },
+          {
+            "end": 259.68,
+            "prob": 0.81,
+            "start": 259.38,
+            "word": "on"
+          },
+          {
+            "end": 260.08,
+            "prob": 0.98,
+            "start": 259.68,
+            "word": "leciał"
+          },
+          {
+            "end": 260.24,
+            "prob": 0.92,
+            "start": 260.08,
+            "word": "do"
+          },
+          {
+            "end": 261.38,
+            "prob": 0.65,
+            "start": 260.24,
+            "word": "Meksyku?"
+          },
+          {
+            "end": 263.6,
+            "prob": 0.88,
+            "start": 263.24,
+            "word": "Nie,"
+          },
+          {
+            "end": 263.84000000000003,
+            "prob": 0.91,
+            "start": 263.6,
+            "word": "on"
+          },
+          {
+            "end": 264,
+            "prob": 0.98,
+            "start": 263.84000000000003,
+            "word": "nie"
+          },
+          {
+            "end": 264.34000000000003,
+            "prob": 0.99,
+            "start": 264,
+            "word": "leciał"
+          },
+          {
+            "end": 264.52,
+            "prob": 1,
+            "start": 264.34000000000003,
+            "word": "do"
+          },
+          {
+            "end": 265.7,
+            "prob": 0.96,
+            "start": 264.52,
+            "word": "Meksyku."
+          },
+          {
+            "end": 265.92,
+            "prob": 0.94,
+            "start": 265.7,
+            "word": "Ten"
+          },
+          {
+            "end": 266.5,
+            "prob": 0.98,
+            "start": 265.92,
+            "word": "samolot"
+          },
+          {
+            "end": 266.92,
+            "prob": 0.99,
+            "start": 266.5,
+            "word": "leciał"
+          },
+          {
+            "end": 267.1,
+            "prob": 0.99,
+            "start": 266.92,
+            "word": "do"
+          },
+          {
+            "end": 268.02,
+            "prob": 0.88,
+            "start": 267.1,
+            "word": "Egiptu."
+          },
+          {
+            "end": 268.2,
+            "prob": 0.97,
+            "start": 268.02,
+            "word": "To"
+          },
+          {
+            "end": 268.42,
+            "prob": 0.98,
+            "start": 268.2,
+            "word": "był"
+          },
+          {
+            "end": 269.1,
+            "prob": 0.99,
+            "start": 268.42,
+            "word": "samolot"
+          },
+          {
+            "end": 269.72,
+            "prob": 0.78,
+            "start": 269.1,
+            "word": "lecący"
+          },
+          {
+            "end": 269.94,
+            "prob": 0.99,
+            "start": 269.72,
+            "word": "do"
+          },
+          {
+            "end": 271,
+            "prob": 0.99,
+            "start": 269.94,
+            "word": "Egiptu."
+          },
+          {
+            "end": 272.02000000000004,
+            "prob": 1,
+            "start": 272.02000000000004,
+            "word": "Czy"
+          },
+          {
+            "end": 272.30000000000007,
+            "prob": 0.99,
+            "start": 272.02000000000004,
+            "word": "ten"
+          },
+          {
+            "end": 272.78000000000003,
+            "prob": 1,
+            "start": 272.30000000000007,
+            "word": "samolot"
+          },
+          {
+            "end": 273.22,
+            "prob": 0.99,
+            "start": 272.78000000000003,
+            "word": "rozbił"
+          },
+          {
+            "end": 273.50000000000006,
+            "prob": 1,
+            "start": 273.22,
+            "word": "się"
+          },
+          {
+            "end": 273.78000000000003,
+            "prob": 0.94,
+            "start": 273.50000000000006,
+            "word": "przy"
+          },
+          {
+            "end": 274.74000000000007,
+            "prob": 0.51,
+            "start": 273.78000000000003,
+            "word": "starcie,"
+          },
+          {
+            "end": 274.94000000000005,
+            "prob": 0.97,
+            "start": 274.74000000000007,
+            "word": "czy"
+          },
+          {
+            "end": 275.18000000000006,
+            "prob": 0.95,
+            "start": 274.94000000000005,
+            "word": "przy"
+          },
+          {
+            "end": 276.08000000000004,
+            "prob": 0.59,
+            "start": 275.18000000000006,
+            "word": "lądowaniu?"
+          },
+          {
+            "end": 277.8400000000001,
+            "prob": 0.95,
+            "start": 277.4800000000001,
+            "word": "Przy"
+          },
+          {
+            "end": 278.8800000000001,
+            "prob": 0.85,
+            "start": 277.8400000000001,
+            "word": "lądowaniu."
+          },
+          {
+            "end": 279.0800000000001,
+            "prob": 0.98,
+            "start": 278.8800000000001,
+            "word": "On"
+          },
+          {
+            "end": 279.5800000000001,
+            "prob": 0.99,
+            "start": 279.0800000000001,
+            "word": "rozbił"
+          },
+          {
+            "end": 279.80000000000007,
+            "prob": 1,
+            "start": 279.5800000000001,
+            "word": "się"
+          },
+          {
+            "end": 280.1000000000001,
+            "prob": 0.96,
+            "start": 279.80000000000007,
+            "word": "przy"
+          },
+          {
+            "end": 281.3200000000001,
+            "prob": 0.68,
+            "start": 280.1000000000001,
+            "word": "lądowaniu,"
+          },
+          {
+            "end": 281.50000000000006,
+            "prob": 0.98,
+            "start": 281.3200000000001,
+            "word": "a"
+          },
+          {
+            "end": 281.68000000000006,
+            "prob": 0.99,
+            "start": 281.50000000000006,
+            "word": "nie"
+          },
+          {
+            "end": 281.9000000000001,
+            "prob": 0.97,
+            "start": 281.68000000000006,
+            "word": "przy"
+          },
+          {
+            "end": 282.8800000000001,
+            "prob": 0.96,
+            "start": 281.9000000000001,
+            "word": "starcie."
+          },
+          {
+            "end": 283.70000000000005,
+            "prob": 0.97,
+            "start": 283.5400000000001,
+            "word": "To"
+          },
+          {
+            "end": 284.18000000000006,
+            "prob": 0.96,
+            "start": 283.70000000000005,
+            "word": "był"
+          },
+          {
+            "end": 285.20000000000005,
+            "prob": 0.74,
+            "start": 284.18000000000006,
+            "word": "nieszczęśliwy"
+          },
+          {
+            "end": 285.94000000000005,
+            "prob": 0.79,
+            "start": 285.20000000000005,
+            "word": "wypadek."
+          }
+        ]
+      },
+      {
+        "avg_logprob": -0.11185469203873684,
+        "end_time": 322.68,
+        "no_speech_prob": 0.00037407875061035156,
+        "start_time": 287.5,
+        "text": "Czy to był nieszczęśliwy wypadek? Tak, to był nieszczęśliwy wypadek. Czy pilot specjalnie rozbił samolot? Nie, nie specjalnie. Pilot nie rozbił specjalnie samolotu. To był nieszczęśliwy wypadek. Czy to stało się przypadkowo? Tak, to był nieszczęśliwy wypadek. Czyli to stało się przypadkowo. Maria postanowiła, że nigdy nie poleci samolotem.",
+        "word_timestamps": [
+          {
+            "end": 287.96,
+            "prob": 0.97,
+            "start": 287.5,
+            "word": "Czy"
+          },
+          {
+            "end": 288.14,
+            "prob": 0.99,
+            "start": 287.96,
+            "word": "to"
+          },
+          {
+            "end": 288.3,
+            "prob": 0.89,
+            "start": 288.14,
+            "word": "był"
+          },
+          {
+            "end": 289.06,
+            "prob": 0.82,
+            "start": 288.3,
+            "word": "nieszczęśliwy"
+          },
+          {
+            "end": 290.06,
+            "prob": 0.78,
+            "start": 289.06,
+            "word": "wypadek?"
+          },
+          {
+            "end": 292.8,
+            "prob": 0.62,
+            "start": 292.16,
+            "word": "Tak,"
+          },
+          {
+            "end": 292.86,
+            "prob": 0.99,
+            "start": 292.8,
+            "word": "to"
+          },
+          {
+            "end": 293.06,
+            "prob": 0.98,
+            "start": 292.86,
+            "word": "był"
+          },
+          {
+            "end": 293.8,
+            "prob": 0.99,
+            "start": 293.06,
+            "word": "nieszczęśliwy"
+          },
+          {
+            "end": 294.84000000000003,
+            "prob": 0.69,
+            "start": 293.8,
+            "word": "wypadek."
+          },
+          {
+            "end": 295.94,
+            "prob": 0.99,
+            "start": 295.8,
+            "word": "Czy"
+          },
+          {
+            "end": 296.24,
+            "prob": 0.39,
+            "start": 295.94,
+            "word": "pilot"
+          },
+          {
+            "end": 297.44,
+            "prob": 0.85,
+            "start": 296.24,
+            "word": "specjalnie"
+          },
+          {
+            "end": 297.88,
+            "prob": 0.8,
+            "start": 297.44,
+            "word": "rozbił"
+          },
+          {
+            "end": 299.06,
+            "prob": 0.96,
+            "start": 297.88,
+            "word": "samolot?"
+          },
+          {
+            "end": 300.9800000000001,
+            "prob": 0.85,
+            "start": 300.50000000000006,
+            "word": "Nie,"
+          },
+          {
+            "end": 301.28000000000003,
+            "prob": 0.78,
+            "start": 300.9800000000001,
+            "word": "nie"
+          },
+          {
+            "end": 302.74000000000007,
+            "prob": 0.88,
+            "start": 301.28000000000003,
+            "word": "specjalnie."
+          },
+          {
+            "end": 303.00000000000006,
+            "prob": 0.53,
+            "start": 302.74000000000007,
+            "word": "Pilot"
+          },
+          {
+            "end": 303.30000000000007,
+            "prob": 0.95,
+            "start": 303.00000000000006,
+            "word": "nie"
+          },
+          {
+            "end": 303.62000000000006,
+            "prob": 0.99,
+            "start": 303.30000000000007,
+            "word": "rozbił"
+          },
+          {
+            "end": 304.50000000000006,
+            "prob": 0.97,
+            "start": 303.62000000000006,
+            "word": "specjalnie"
+          },
+          {
+            "end": 305.4800000000001,
+            "prob": 0.9,
+            "start": 304.50000000000006,
+            "word": "samolotu."
+          },
+          {
+            "end": 305.68000000000006,
+            "prob": 0.97,
+            "start": 305.4800000000001,
+            "word": "To"
+          },
+          {
+            "end": 305.9200000000001,
+            "prob": 0.98,
+            "start": 305.68000000000006,
+            "word": "był"
+          },
+          {
+            "end": 306.70000000000005,
+            "prob": 0.99,
+            "start": 305.9200000000001,
+            "word": "nieszczęśliwy"
+          },
+          {
+            "end": 307.78000000000003,
+            "prob": 0.87,
+            "start": 306.70000000000005,
+            "word": "wypadek."
+          },
+          {
+            "end": 308.96000000000004,
+            "prob": 1,
+            "start": 308.72,
+            "word": "Czy"
+          },
+          {
+            "end": 309.20000000000005,
+            "prob": 0.95,
+            "start": 308.96000000000004,
+            "word": "to"
+          },
+          {
+            "end": 309.58000000000004,
+            "prob": 0.96,
+            "start": 309.20000000000005,
+            "word": "stało"
+          },
+          {
+            "end": 309.80000000000007,
+            "prob": 0.99,
+            "start": 309.58000000000004,
+            "word": "się"
+          },
+          {
+            "end": 311.20000000000005,
+            "prob": 0.91,
+            "start": 309.80000000000007,
+            "word": "przypadkowo?"
+          },
+          {
+            "end": 313.6200000000001,
+            "prob": 0.91,
+            "start": 312.9600000000001,
+            "word": "Tak,"
+          },
+          {
+            "end": 313.7000000000001,
+            "prob": 0.99,
+            "start": 313.6200000000001,
+            "word": "to"
+          },
+          {
+            "end": 313.9200000000001,
+            "prob": 0.99,
+            "start": 313.7000000000001,
+            "word": "był"
+          },
+          {
+            "end": 314.6200000000001,
+            "prob": 0.99,
+            "start": 313.9200000000001,
+            "word": "nieszczęśliwy"
+          },
+          {
+            "end": 315.6400000000001,
+            "prob": 0.91,
+            "start": 314.6200000000001,
+            "word": "wypadek."
+          },
+          {
+            "end": 315.7800000000001,
+            "prob": 0.86,
+            "start": 315.6400000000001,
+            "word": "Czyli"
+          },
+          {
+            "end": 316.1600000000001,
+            "prob": 0.93,
+            "start": 315.7800000000001,
+            "word": "to"
+          },
+          {
+            "end": 316.5400000000001,
+            "prob": 0.99,
+            "start": 316.1600000000001,
+            "word": "stało"
+          },
+          {
+            "end": 316.7600000000001,
+            "prob": 1,
+            "start": 316.5400000000001,
+            "word": "się"
+          },
+          {
+            "end": 318.1200000000001,
+            "prob": 0.99,
+            "start": 316.7600000000001,
+            "word": "przypadkowo."
+          },
+          {
+            "end": 319.6600000000001,
+            "prob": 0.71,
+            "start": 319.2400000000001,
+            "word": "Maria"
+          },
+          {
+            "end": 320.7200000000001,
+            "prob": 0.92,
+            "start": 319.6600000000001,
+            "word": "postanowiła,"
+          },
+          {
+            "end": 320.7200000000001,
+            "prob": 1,
+            "start": 320.7200000000001,
+            "word": "że"
+          },
+          {
+            "end": 321.1600000000001,
+            "prob": 0.99,
+            "start": 320.7200000000001,
+            "word": "nigdy"
+          },
+          {
+            "end": 321.3600000000001,
+            "prob": 0.99,
+            "start": 321.1600000000001,
+            "word": "nie"
+          },
+          {
+            "end": 321.7600000000001,
+            "prob": 0.78,
+            "start": 321.3600000000001,
+            "word": "poleci"
+          },
+          {
+            "end": 322.6600000000001,
+            "prob": 0.93,
+            "start": 321.7600000000001,
+            "word": "samolotem."
+          }
+        ]
+      },
+      {
+        "avg_logprob": -0.08530416049455342,
+        "end_time": 352.4,
+        "no_speech_prob": 0.002216339111328125,
+        "start_time": 324.12,
+        "text": "Czy Maria postanowiła, że nigdy nie poleci samolotem? Tak, ona postanowiła, że nigdy nie poleci samolotem. Co postanowiła Maria? Że nigdy nie poleci samolotem. Ona postanowiła, że nigdy nie poleci samolotem. Czy Maria postanowiła, że już nigdy nie wsiądzie do samolotu?",
+        "word_timestamps": [
+          {
+            "end": 324.56,
+            "prob": 0.92,
+            "start": 324.12,
+            "word": "Czy"
+          },
+          {
+            "end": 324.88,
+            "prob": 0.9,
+            "start": 324.56,
+            "word": "Maria"
+          },
+          {
+            "end": 326.24,
+            "prob": 0.87,
+            "start": 324.88,
+            "word": "postanowiła,"
+          },
+          {
+            "end": 326.54,
+            "prob": 0.98,
+            "start": 326.24,
+            "word": "że"
+          },
+          {
+            "end": 326.96,
+            "prob": 1,
+            "start": 326.54,
+            "word": "nigdy"
+          },
+          {
+            "end": 327.16,
+            "prob": 0.98,
+            "start": 326.96,
+            "word": "nie"
+          },
+          {
+            "end": 327.54,
+            "prob": 0.78,
+            "start": 327.16,
+            "word": "poleci"
+          },
+          {
+            "end": 328.8,
+            "prob": 0.83,
+            "start": 327.54,
+            "word": "samolotem?"
+          },
+          {
+            "end": 332.14000000000004,
+            "prob": 0.68,
+            "start": 331.32000000000005,
+            "word": "Tak,"
+          },
+          {
+            "end": 332.34000000000003,
+            "prob": 0.92,
+            "start": 332.14000000000004,
+            "word": "ona"
+          },
+          {
+            "end": 333.34000000000003,
+            "prob": 0.98,
+            "start": 332.34000000000003,
+            "word": "postanowiła,"
+          },
+          {
+            "end": 333.34000000000003,
+            "prob": 1,
+            "start": 333.34000000000003,
+            "word": "że"
+          },
+          {
+            "end": 333.72,
+            "prob": 1,
+            "start": 333.34000000000003,
+            "word": "nigdy"
+          },
+          {
+            "end": 333.92,
+            "prob": 1,
+            "start": 333.72,
+            "word": "nie"
+          },
+          {
+            "end": 334.34000000000003,
+            "prob": 0.98,
+            "start": 333.92,
+            "word": "poleci"
+          },
+          {
+            "end": 335.48,
+            "prob": 0.98,
+            "start": 334.34000000000003,
+            "word": "samolotem."
+          },
+          {
+            "end": 336.76000000000005,
+            "prob": 0.92,
+            "start": 336.52000000000004,
+            "word": "Co"
+          },
+          {
+            "end": 337.46000000000004,
+            "prob": 0.97,
+            "start": 336.76000000000005,
+            "word": "postanowiła"
+          },
+          {
+            "end": 338.46000000000004,
+            "prob": 0.73,
+            "start": 337.46000000000004,
+            "word": "Maria?"
+          },
+          {
+            "end": 340.0800000000001,
+            "prob": 0.77,
+            "start": 339.86000000000007,
+            "word": "Że"
+          },
+          {
+            "end": 340.4200000000001,
+            "prob": 1,
+            "start": 340.0800000000001,
+            "word": "nigdy"
+          },
+          {
+            "end": 340.6600000000001,
+            "prob": 1,
+            "start": 340.4200000000001,
+            "word": "nie"
+          },
+          {
+            "end": 341.0200000000001,
+            "prob": 0.99,
+            "start": 340.6600000000001,
+            "word": "poleci"
+          },
+          {
+            "end": 342.3200000000001,
+            "prob": 0.89,
+            "start": 341.0200000000001,
+            "word": "samolotem."
+          },
+          {
+            "end": 342.6400000000001,
+            "prob": 0.95,
+            "start": 342.3200000000001,
+            "word": "Ona"
+          },
+          {
+            "end": 343.8000000000001,
+            "prob": 0.99,
+            "start": 342.6400000000001,
+            "word": "postanowiła,"
+          },
+          {
+            "end": 343.8000000000001,
+            "prob": 1,
+            "start": 343.8000000000001,
+            "word": "że"
+          },
+          {
+            "end": 344.1200000000001,
+            "prob": 1,
+            "start": 343.8000000000001,
+            "word": "nigdy"
+          },
+          {
+            "end": 344.4000000000001,
+            "prob": 1,
+            "start": 344.1200000000001,
+            "word": "nie"
+          },
+          {
+            "end": 344.7400000000001,
+            "prob": 0.99,
+            "start": 344.4000000000001,
+            "word": "poleci"
+          },
+          {
+            "end": 345.8400000000001,
+            "prob": 0.99,
+            "start": 344.7400000000001,
+            "word": "samolotem."
+          },
+          {
+            "end": 347.92000000000013,
+            "prob": 0.99,
+            "start": 347.6400000000001,
+            "word": "Czy"
+          },
+          {
+            "end": 348.3000000000001,
+            "prob": 1,
+            "start": 347.92000000000013,
+            "word": "Maria"
+          },
+          {
+            "end": 350.1400000000001,
+            "prob": 0.98,
+            "start": 348.3000000000001,
+            "word": "postanowiła,"
+          },
+          {
+            "end": 350.1600000000001,
+            "prob": 1,
+            "start": 350.1400000000001,
+            "word": "że"
+          },
+          {
+            "end": 350.4000000000001,
+            "prob": 0.92,
+            "start": 350.1600000000001,
+            "word": "już"
+          },
+          {
+            "end": 350.8200000000001,
+            "prob": 1,
+            "start": 350.4000000000001,
+            "word": "nigdy"
+          },
+          {
+            "end": 350.98000000000013,
+            "prob": 1,
+            "start": 350.8200000000001,
+            "word": "nie"
+          },
+          {
+            "end": 351.4000000000001,
+            "prob": 0.85,
+            "start": 350.98000000000013,
+            "word": "wsiądzie"
+          },
+          {
+            "end": 351.6400000000001,
+            "prob": 0.95,
+            "start": 351.4000000000001,
+            "word": "do"
+          },
+          {
+            "end": 352.3800000000001,
+            "prob": 0.95,
+            "start": 351.6400000000001,
+            "word": "samolotu?"
+          }
+        ]
+      },
+      {
+        "avg_logprob": -0.0919657435695656,
+        "end_time": 385.42,
+        "no_speech_prob": 0.0000426173210144043,
+        "start_time": 355.3,
+        "text": "Tak, ona postanowiła, że nigdy nie poleci samolotem, czyli że już nigdy nie wsiądzie do samolotu. Czym ona już nigdy nie poleci? Balonem czy samolotem? Samolotem. Ona już nigdy nie poleci samolotem, a nie balonem. Minęły dwa lata, a Marek wciąż marzył o piramidach. Czy po dwóch latach Marek wciąż marzył o piramidach?",
+        "word_timestamps": [
+          {
+            "end": 356.3,
+            "prob": 0.82,
+            "start": 355.3,
+            "word": "Tak,"
+          },
+          {
+            "end": 356.5,
+            "prob": 0.88,
+            "start": 356.3,
+            "word": "ona"
+          },
+          {
+            "end": 357.7,
+            "prob": 0.93,
+            "start": 356.5,
+            "word": "postanowiła,"
+          },
+          {
+            "end": 357.92,
+            "prob": 1,
+            "start": 357.7,
+            "word": "że"
+          },
+          {
+            "end": 358.36,
+            "prob": 0.98,
+            "start": 357.92,
+            "word": "nigdy"
+          },
+          {
+            "end": 358.56,
+            "prob": 0.99,
+            "start": 358.36,
+            "word": "nie"
+          },
+          {
+            "end": 359.02000000000004,
+            "prob": 0.78,
+            "start": 358.56,
+            "word": "poleci"
+          },
+          {
+            "end": 360.14,
+            "prob": 0.88,
+            "start": 359.02000000000004,
+            "word": "samolotem,"
+          },
+          {
+            "end": 360.40000000000003,
+            "prob": 0.96,
+            "start": 360.14,
+            "word": "czyli"
+          },
+          {
+            "end": 360.64,
+            "prob": 0.46,
+            "start": 360.40000000000003,
+            "word": "że"
+          },
+          {
+            "end": 360.96000000000004,
+            "prob": 0.99,
+            "start": 360.64,
+            "word": "już"
+          },
+          {
+            "end": 361.38,
+            "prob": 1,
+            "start": 360.96000000000004,
+            "word": "nigdy"
+          },
+          {
+            "end": 361.54,
+            "prob": 0.99,
+            "start": 361.38,
+            "word": "nie"
+          },
+          {
+            "end": 361.98,
+            "prob": 0.87,
+            "start": 361.54,
+            "word": "wsiądzie"
+          },
+          {
+            "end": 362.26,
+            "prob": 0.94,
+            "start": 361.98,
+            "word": "do"
+          },
+          {
+            "end": 363.22,
+            "prob": 0.95,
+            "start": 362.26,
+            "word": "samolotu."
+          },
+          {
+            "end": 364.50000000000006,
+            "prob": 0.66,
+            "start": 364.20000000000005,
+            "word": "Czym"
+          },
+          {
+            "end": 364.66,
+            "prob": 0.92,
+            "start": 364.50000000000006,
+            "word": "ona"
+          },
+          {
+            "end": 364.96000000000004,
+            "prob": 0.99,
+            "start": 364.66,
+            "word": "już"
+          },
+          {
+            "end": 365.34000000000003,
+            "prob": 1,
+            "start": 364.96000000000004,
+            "word": "nigdy"
+          },
+          {
+            "end": 365.52000000000004,
+            "prob": 0.99,
+            "start": 365.34000000000003,
+            "word": "nie"
+          },
+          {
+            "end": 366.6,
+            "prob": 0.89,
+            "start": 365.52000000000004,
+            "word": "poleci?"
+          },
+          {
+            "end": 367.20000000000005,
+            "prob": 0.67,
+            "start": 366.6,
+            "word": "Balonem"
+          },
+          {
+            "end": 367.42,
+            "prob": 0.69,
+            "start": 367.20000000000005,
+            "word": "czy"
+          },
+          {
+            "end": 368.72,
+            "prob": 0.88,
+            "start": 367.42,
+            "word": "samolotem?"
+          },
+          {
+            "end": 372.0000000000001,
+            "prob": 0.83,
+            "start": 370.7200000000001,
+            "word": "Samolotem."
+          },
+          {
+            "end": 372.2800000000001,
+            "prob": 0.87,
+            "start": 372.0000000000001,
+            "word": "Ona"
+          },
+          {
+            "end": 372.6000000000001,
+            "prob": 1,
+            "start": 372.2800000000001,
+            "word": "już"
+          },
+          {
+            "end": 372.9400000000001,
+            "prob": 1,
+            "start": 372.6000000000001,
+            "word": "nigdy"
+          },
+          {
+            "end": 373.18000000000006,
+            "prob": 1,
+            "start": 372.9400000000001,
+            "word": "nie"
+          },
+          {
+            "end": 373.5200000000001,
+            "prob": 0.99,
+            "start": 373.18000000000006,
+            "word": "poleci"
+          },
+          {
+            "end": 374.4400000000001,
+            "prob": 0.94,
+            "start": 373.5200000000001,
+            "word": "samolotem,"
+          },
+          {
+            "end": 374.6400000000001,
+            "prob": 0.86,
+            "start": 374.4400000000001,
+            "word": "a"
+          },
+          {
+            "end": 374.8200000000001,
+            "prob": 0.99,
+            "start": 374.6400000000001,
+            "word": "nie"
+          },
+          {
+            "end": 375.80000000000007,
+            "prob": 0.77,
+            "start": 374.8200000000001,
+            "word": "balonem."
+          },
+          {
+            "end": 377.0800000000001,
+            "prob": 0.74,
+            "start": 376.6400000000001,
+            "word": "Minęły"
+          },
+          {
+            "end": 377.3200000000001,
+            "prob": 0.94,
+            "start": 377.0800000000001,
+            "word": "dwa"
+          },
+          {
+            "end": 378.3600000000001,
+            "prob": 0.83,
+            "start": 377.3200000000001,
+            "word": "lata,"
+          },
+          {
+            "end": 378.42000000000013,
+            "prob": 0.66,
+            "start": 378.3600000000001,
+            "word": "a"
+          },
+          {
+            "end": 378.8800000000001,
+            "prob": 0.67,
+            "start": 378.42000000000013,
+            "word": "Marek"
+          },
+          {
+            "end": 379.3600000000001,
+            "prob": 0.86,
+            "start": 378.8800000000001,
+            "word": "wciąż"
+          },
+          {
+            "end": 379.9000000000001,
+            "prob": 0.37,
+            "start": 379.3600000000001,
+            "word": "marzył"
+          },
+          {
+            "end": 379.98000000000013,
+            "prob": 0.11,
+            "start": 379.9000000000001,
+            "word": "o"
+          },
+          {
+            "end": 381.0600000000001,
+            "prob": 0.86,
+            "start": 379.98000000000013,
+            "word": "piramidach."
+          },
+          {
+            "end": 382.20000000000016,
+            "prob": 0.99,
+            "start": 381.96000000000015,
+            "word": "Czy"
+          },
+          {
+            "end": 382.38000000000017,
+            "prob": 0.24,
+            "start": 382.20000000000016,
+            "word": "po"
+          },
+          {
+            "end": 382.7400000000001,
+            "prob": 0.96,
+            "start": 382.38000000000017,
+            "word": "dwóch"
+          },
+          {
+            "end": 383.2400000000001,
+            "prob": 0.99,
+            "start": 382.7400000000001,
+            "word": "latach"
+          },
+          {
+            "end": 383.60000000000014,
+            "prob": 0.9,
+            "start": 383.2400000000001,
+            "word": "Marek"
+          },
+          {
+            "end": 384.10000000000014,
+            "prob": 1,
+            "start": 383.60000000000014,
+            "word": "wciąż"
+          },
+          {
+            "end": 384.5600000000002,
+            "prob": 0.91,
+            "start": 384.10000000000014,
+            "word": "marzył"
+          },
+          {
+            "end": 384.70000000000016,
+            "prob": 0.98,
+            "start": 384.5600000000002,
+            "word": "o"
+          },
+          {
+            "end": 385.40000000000015,
+            "prob": 0.97,
+            "start": 384.70000000000016,
+            "word": "piramidach?"
+          }
+        ]
+      },
+      {
+        "avg_logprob": -0.0847790735209082,
+        "end_time": 420.68,
+        "no_speech_prob": 0.0003800392150878906,
+        "start_time": 387.66,
+        "text": "Tak, minęły dwa lata, a Marek wciąż marzył o piramidach. O czym marzył Marek? O piramidach. On marzył o piramidach. Czy minęły dwa lata, a Marek nadal chciał zobaczyć piramidy? Tak, minęły dwa lata, a Marek wciąż marzył o piramidach. Czyli on nadal chciał zobaczyć piramidy. Kto wciąż marzył o piramidach? Marek czy Maria?",
+        "word_timestamps": [
+          {
+            "end": 388.86,
+            "prob": 0.65,
+            "start": 387.66,
+            "word": "Tak,"
+          },
+          {
+            "end": 389.24,
+            "prob": 0.75,
+            "start": 388.86,
+            "word": "minęły"
+          },
+          {
+            "end": 389.46000000000004,
+            "prob": 0.78,
+            "start": 389.24,
+            "word": "dwa"
+          },
+          {
+            "end": 390,
+            "prob": 0.58,
+            "start": 389.46000000000004,
+            "word": "lata,"
+          },
+          {
+            "end": 390.02000000000004,
+            "prob": 0.1,
+            "start": 390,
+            "word": "a"
+          },
+          {
+            "end": 390.38000000000005,
+            "prob": 0.66,
+            "start": 390.02000000000004,
+            "word": "Marek"
+          },
+          {
+            "end": 390.90000000000003,
+            "prob": 0.87,
+            "start": 390.38000000000005,
+            "word": "wciąż"
+          },
+          {
+            "end": 391.42,
+            "prob": 0.29,
+            "start": 390.90000000000003,
+            "word": "marzył"
+          },
+          {
+            "end": 391.56,
+            "prob": 0.09,
+            "start": 391.42,
+            "word": "o"
+          },
+          {
+            "end": 392.66,
+            "prob": 0.87,
+            "start": 391.56,
+            "word": "piramidach."
+          },
+          {
+            "end": 393.50000000000006,
+            "prob": 0.82,
+            "start": 393.4200000000001,
+            "word": "O"
+          },
+          {
+            "end": 393.68000000000006,
+            "prob": 0.97,
+            "start": 393.50000000000006,
+            "word": "czym"
+          },
+          {
+            "end": 394.12000000000006,
+            "prob": 0.93,
+            "start": 393.68000000000006,
+            "word": "marzył"
+          },
+          {
+            "end": 395.1000000000001,
+            "prob": 0.83,
+            "start": 394.12000000000006,
+            "word": "Marek?"
+          },
+          {
+            "end": 396.6400000000001,
+            "prob": 0.58,
+            "start": 396.6000000000001,
+            "word": "O"
+          },
+          {
+            "end": 397.9000000000001,
+            "prob": 0.84,
+            "start": 396.6400000000001,
+            "word": "piramidach."
+          },
+          {
+            "end": 398.12000000000006,
+            "prob": 0.94,
+            "start": 397.9000000000001,
+            "word": "On"
+          },
+          {
+            "end": 398.68000000000006,
+            "prob": 0.97,
+            "start": 398.12000000000006,
+            "word": "marzył"
+          },
+          {
+            "end": 398.86000000000007,
+            "prob": 0.77,
+            "start": 398.68000000000006,
+            "word": "o"
+          },
+          {
+            "end": 399.86000000000007,
+            "prob": 0.96,
+            "start": 398.86000000000007,
+            "word": "piramidach."
+          },
+          {
+            "end": 400.6600000000001,
+            "prob": 0.98,
+            "start": 400.50000000000006,
+            "word": "Czy"
+          },
+          {
+            "end": 401.06000000000006,
+            "prob": 0.99,
+            "start": 400.6600000000001,
+            "word": "minęły"
+          },
+          {
+            "end": 401.30000000000007,
+            "prob": 1,
+            "start": 401.06000000000006,
+            "word": "dwa"
+          },
+          {
+            "end": 401.9800000000001,
+            "prob": 0.72,
+            "start": 401.30000000000007,
+            "word": "lata,"
+          },
+          {
+            "end": 402.02000000000004,
+            "prob": 0.93,
+            "start": 401.9800000000001,
+            "word": "a"
+          },
+          {
+            "end": 402.7200000000001,
+            "prob": 0.99,
+            "start": 402.02000000000004,
+            "word": "Marek"
+          },
+          {
+            "end": 403.34000000000003,
+            "prob": 0.82,
+            "start": 402.7200000000001,
+            "word": "nadal"
+          },
+          {
+            "end": 403.64000000000004,
+            "prob": 0.9,
+            "start": 403.34000000000003,
+            "word": "chciał"
+          },
+          {
+            "end": 404.18000000000006,
+            "prob": 0.99,
+            "start": 403.64000000000004,
+            "word": "zobaczyć"
+          },
+          {
+            "end": 405.36000000000007,
+            "prob": 0.73,
+            "start": 404.18000000000006,
+            "word": "piramidy?"
+          },
+          {
+            "end": 408.4000000000001,
+            "prob": 0.88,
+            "start": 407.5400000000001,
+            "word": "Tak,"
+          },
+          {
+            "end": 409.12000000000006,
+            "prob": 0.99,
+            "start": 408.7200000000001,
+            "word": "minęły"
+          },
+          {
+            "end": 409.36000000000007,
+            "prob": 1,
+            "start": 409.12000000000006,
+            "word": "dwa"
+          },
+          {
+            "end": 409.9200000000001,
+            "prob": 0.9,
+            "start": 409.36000000000007,
+            "word": "lata,"
+          },
+          {
+            "end": 409.9200000000001,
+            "prob": 0.83,
+            "start": 409.9200000000001,
+            "word": "a"
+          },
+          {
+            "end": 410.2200000000001,
+            "prob": 1,
+            "start": 409.9200000000001,
+            "word": "Marek"
+          },
+          {
+            "end": 410.70000000000005,
+            "prob": 1,
+            "start": 410.2200000000001,
+            "word": "wciąż"
+          },
+          {
+            "end": 411.26000000000005,
+            "prob": 1,
+            "start": 410.70000000000005,
+            "word": "marzył"
+          },
+          {
+            "end": 411.5400000000001,
+            "prob": 0.97,
+            "start": 411.26000000000005,
+            "word": "o"
+          },
+          {
+            "end": 412.46000000000004,
+            "prob": 0.95,
+            "start": 411.5400000000001,
+            "word": "piramidach."
+          },
+          {
+            "end": 412.58000000000004,
+            "prob": 0.9,
+            "start": 412.46000000000004,
+            "word": "Czyli"
+          },
+          {
+            "end": 413.06000000000006,
+            "prob": 0.94,
+            "start": 412.58000000000004,
+            "word": "on"
+          },
+          {
+            "end": 413.7800000000001,
+            "prob": 0.96,
+            "start": 413.06000000000006,
+            "word": "nadal"
+          },
+          {
+            "end": 414.18000000000006,
+            "prob": 1,
+            "start": 413.7800000000001,
+            "word": "chciał"
+          },
+          {
+            "end": 414.88000000000005,
+            "prob": 1,
+            "start": 414.18000000000006,
+            "word": "zobaczyć"
+          },
+          {
+            "end": 415.86000000000007,
+            "prob": 0.89,
+            "start": 414.88000000000005,
+            "word": "piramidy."
+          },
+          {
+            "end": 417.4000000000001,
+            "prob": 0.89,
+            "start": 417.0200000000001,
+            "word": "Kto"
+          },
+          {
+            "end": 417.86000000000007,
+            "prob": 0.98,
+            "start": 417.4000000000001,
+            "word": "wciąż"
+          },
+          {
+            "end": 418.2200000000001,
+            "prob": 0.99,
+            "start": 417.86000000000007,
+            "word": "marzył"
+          },
+          {
+            "end": 418.4600000000001,
+            "prob": 1,
+            "start": 418.2200000000001,
+            "word": "o"
+          },
+          {
+            "end": 419.4600000000001,
+            "prob": 0.92,
+            "start": 418.4600000000001,
+            "word": "piramidach?"
+          },
+          {
+            "end": 419.9200000000001,
+            "prob": 0.81,
+            "start": 419.4600000000001,
+            "word": "Marek"
+          },
+          {
+            "end": 420.0800000000001,
+            "prob": 0.3,
+            "start": 419.9200000000001,
+            "word": "czy"
+          },
+          {
+            "end": 420.6600000000001,
+            "prob": 0.75,
+            "start": 420.0800000000001,
+            "word": "Maria?"
+          }
+        ]
+      },
+      {
+        "avg_logprob": -0.1075591083083834,
+        "end_time": 459.88,
+        "no_speech_prob": 0.000896453857421875,
+        "start_time": 422.02,
+        "text": "Marek, on wciąż marzył o piramidach, a nie Maria. Żaden samolot nie rozbił się przez te dwa lata. Czy przez dwa lata rozbił się jakiś samolot? Nie, przez te dwa lata nie rozbił się żaden samolot. Co nie rozbiło się? Samolot! Samolot nie rozbił się. Czy był jakiś wypadek samolotowy? Nie, nie było żadnego wypadku. Nie rozbił się żaden samolot.",
+        "word_timestamps": [
+          {
+            "end": 423.32000000000005,
+            "prob": 0.67,
+            "start": 422.02000000000004,
+            "word": "Marek,"
+          },
+          {
+            "end": 423.6,
+            "prob": 0.89,
+            "start": 423.32000000000005,
+            "word": "on"
+          },
+          {
+            "end": 423.96000000000004,
+            "prob": 0.92,
+            "start": 423.6,
+            "word": "wciąż"
+          },
+          {
+            "end": 424.42,
+            "prob": 0.52,
+            "start": 423.96000000000004,
+            "word": "marzył"
+          },
+          {
+            "end": 424.54,
+            "prob": 0.14,
+            "start": 424.42,
+            "word": "o"
+          },
+          {
+            "end": 425.32000000000005,
+            "prob": 0.8,
+            "start": 424.54,
+            "word": "piramidach,"
+          },
+          {
+            "end": 425.36,
+            "prob": 0.89,
+            "start": 425.32000000000005,
+            "word": "a"
+          },
+          {
+            "end": 425.48,
+            "prob": 0.99,
+            "start": 425.36,
+            "word": "nie"
+          },
+          {
+            "end": 426.46000000000004,
+            "prob": 0.43,
+            "start": 425.48,
+            "word": "Maria."
+          },
+          {
+            "end": 428.12,
+            "prob": 0.57,
+            "start": 427.74,
+            "word": "Żaden"
+          },
+          {
+            "end": 428.72,
+            "prob": 0.94,
+            "start": 428.12,
+            "word": "samolot"
+          },
+          {
+            "end": 429.26,
+            "prob": 0.76,
+            "start": 428.72,
+            "word": "nie"
+          },
+          {
+            "end": 429.64,
+            "prob": 0.88,
+            "start": 429.26,
+            "word": "rozbił"
+          },
+          {
+            "end": 429.84000000000003,
+            "prob": 1,
+            "start": 429.64,
+            "word": "się"
+          },
+          {
+            "end": 430.14,
+            "prob": 0.94,
+            "start": 429.84000000000003,
+            "word": "przez"
+          },
+          {
+            "end": 430.36,
+            "prob": 0.97,
+            "start": 430.14,
+            "word": "te"
+          },
+          {
+            "end": 430.6,
+            "prob": 0.88,
+            "start": 430.36,
+            "word": "dwa"
+          },
+          {
+            "end": 431.40000000000003,
+            "prob": 0.88,
+            "start": 430.6,
+            "word": "lata."
+          },
+          {
+            "end": 432.68,
+            "prob": 0.99,
+            "start": 432.50000000000006,
+            "word": "Czy"
+          },
+          {
+            "end": 432.98,
+            "prob": 0.98,
+            "start": 432.68,
+            "word": "przez"
+          },
+          {
+            "end": 433.24,
+            "prob": 0.97,
+            "start": 432.98,
+            "word": "dwa"
+          },
+          {
+            "end": 433.56000000000006,
+            "prob": 1,
+            "start": 433.24,
+            "word": "lata"
+          },
+          {
+            "end": 434.00000000000006,
+            "prob": 0.96,
+            "start": 433.56000000000006,
+            "word": "rozbił"
+          },
+          {
+            "end": 434.18,
+            "prob": 1,
+            "start": 434.00000000000006,
+            "word": "się"
+          },
+          {
+            "end": 434.56000000000006,
+            "prob": 0.24,
+            "start": 434.18,
+            "word": "jakiś"
+          },
+          {
+            "end": 435.66,
+            "prob": 0.99,
+            "start": 434.56000000000006,
+            "word": "samolot?"
+          },
+          {
+            "end": 438.7400000000001,
+            "prob": 0.54,
+            "start": 437.9000000000001,
+            "word": "Nie,"
+          },
+          {
+            "end": 438.9600000000001,
+            "prob": 0.98,
+            "start": 438.7400000000001,
+            "word": "przez"
+          },
+          {
+            "end": 439.2000000000001,
+            "prob": 1,
+            "start": 438.9600000000001,
+            "word": "te"
+          },
+          {
+            "end": 439.4200000000001,
+            "prob": 1,
+            "start": 439.2000000000001,
+            "word": "dwa"
+          },
+          {
+            "end": 439.7600000000001,
+            "prob": 1,
+            "start": 439.4200000000001,
+            "word": "lata"
+          },
+          {
+            "end": 439.9600000000001,
+            "prob": 0.99,
+            "start": 439.7600000000001,
+            "word": "nie"
+          },
+          {
+            "end": 440.3000000000001,
+            "prob": 0.98,
+            "start": 439.9600000000001,
+            "word": "rozbił"
+          },
+          {
+            "end": 440.5200000000001,
+            "prob": 1,
+            "start": 440.3000000000001,
+            "word": "się"
+          },
+          {
+            "end": 441.0200000000001,
+            "prob": 0.9,
+            "start": 440.5200000000001,
+            "word": "żaden"
+          },
+          {
+            "end": 442.1200000000001,
+            "prob": 0.98,
+            "start": 441.0200000000001,
+            "word": "samolot."
+          },
+          {
+            "end": 443.3200000000001,
+            "prob": 0.89,
+            "start": 443.16000000000014,
+            "word": "Co"
+          },
+          {
+            "end": 443.5200000000001,
+            "prob": 0.98,
+            "start": 443.3200000000001,
+            "word": "nie"
+          },
+          {
+            "end": 444.0200000000001,
+            "prob": 0.92,
+            "start": 443.5200000000001,
+            "word": "rozbiło"
+          },
+          {
+            "end": 444.84000000000015,
+            "prob": 0.96,
+            "start": 444.0200000000001,
+            "word": "się?"
+          },
+          {
+            "end": 447.46000000000015,
+            "prob": 0.71,
+            "start": 446.38000000000017,
+            "word": "Samolot!"
+          },
+          {
+            "end": 448.0000000000001,
+            "prob": 0.97,
+            "start": 447.46000000000015,
+            "word": "Samolot"
+          },
+          {
+            "end": 448.2400000000001,
+            "prob": 0.93,
+            "start": 448.0000000000001,
+            "word": "nie"
+          },
+          {
+            "end": 448.6200000000001,
+            "prob": 0.99,
+            "start": 448.2400000000001,
+            "word": "rozbił"
+          },
+          {
+            "end": 449.34000000000015,
+            "prob": 0.94,
+            "start": 448.6200000000001,
+            "word": "się."
+          },
+          {
+            "end": 450.5600000000002,
+            "prob": 0.99,
+            "start": 450.40000000000015,
+            "word": "Czy"
+          },
+          {
+            "end": 450.8000000000001,
+            "prob": 0.82,
+            "start": 450.5600000000002,
+            "word": "był"
+          },
+          {
+            "end": 451.08000000000015,
+            "prob": 0.95,
+            "start": 450.8000000000001,
+            "word": "jakiś"
+          },
+          {
+            "end": 451.66000000000014,
+            "prob": 0.7,
+            "start": 451.08000000000015,
+            "word": "wypadek"
+          },
+          {
+            "end": 453.0000000000001,
+            "prob": 0.98,
+            "start": 451.66000000000014,
+            "word": "samolotowy?"
+          },
+          {
+            "end": 455.1000000000002,
+            "prob": 0.77,
+            "start": 454.6600000000002,
+            "word": "Nie,"
+          },
+          {
+            "end": 455.4200000000002,
+            "prob": 0.98,
+            "start": 455.1000000000002,
+            "word": "nie"
+          },
+          {
+            "end": 455.84000000000015,
+            "prob": 0.97,
+            "start": 455.4200000000002,
+            "word": "było"
+          },
+          {
+            "end": 456.6000000000002,
+            "prob": 0.72,
+            "start": 455.84000000000015,
+            "word": "żadnego"
+          },
+          {
+            "end": 457.64000000000016,
+            "prob": 0.72,
+            "start": 456.6000000000002,
+            "word": "wypadku."
+          },
+          {
+            "end": 457.88000000000017,
+            "prob": 0.96,
+            "start": 457.64000000000016,
+            "word": "Nie"
+          },
+          {
+            "end": 458.3000000000002,
+            "prob": 0.99,
+            "start": 457.88000000000017,
+            "word": "rozbił"
+          },
+          {
+            "end": 458.5600000000002,
+            "prob": 1,
+            "start": 458.3000000000002,
+            "word": "się"
+          },
+          {
+            "end": 459.0400000000002,
+            "prob": 1,
+            "start": 458.5600000000002,
+            "word": "żaden"
+          },
+          {
+            "end": 459.8600000000002,
+            "prob": 0.99,
+            "start": 459.0400000000002,
+            "word": "samolot."
+          }
+        ]
+      },
+      {
+        "avg_logprob": -0.12522461258846782,
+        "end_time": 491.02,
+        "no_speech_prob": 0.0008554458618164062,
+        "start_time": 460.76,
+        "text": "Pewnego dnia Marek powiedział, że chce lecieć do Egiptu. Czy Marek powiedział, że chce lecieć do Egiptu? Tak, on powiedział, że chce lecieć do Egiptu. Kiedy on powiedział, że chce lecieć do Egiptu? Pewnego dnia. Któregoś dnia powiedział, że chce lecieć do Egiptu. Gdzie on chciał lecieć? Do Egiptu. On chciał lecieć do Egiptu.",
+        "word_timestamps": [
+          {
+            "end": 461.38000000000005,
+            "prob": 0.52,
+            "start": 460.76000000000005,
+            "word": "Pewnego"
+          },
+          {
+            "end": 461.96000000000004,
+            "prob": 0.92,
+            "start": 461.38000000000005,
+            "word": "dnia"
+          },
+          {
+            "end": 462.56000000000006,
+            "prob": 0.66,
+            "start": 461.96000000000004,
+            "word": "Marek"
+          },
+          {
+            "end": 463.16,
+            "prob": 0.89,
+            "start": 462.56000000000006,
+            "word": "powiedział,"
+          },
+          {
+            "end": 463.18000000000006,
+            "prob": 1,
+            "start": 463.16,
+            "word": "że"
+          },
+          {
+            "end": 463.50000000000006,
+            "prob": 0.51,
+            "start": 463.18000000000006,
+            "word": "chce"
+          },
+          {
+            "end": 464.04,
+            "prob": 0.46,
+            "start": 463.50000000000006,
+            "word": "lecieć"
+          },
+          {
+            "end": 464.08000000000004,
+            "prob": 0.96,
+            "start": 464.04,
+            "word": "do"
+          },
+          {
+            "end": 465.08000000000004,
+            "prob": 0.78,
+            "start": 464.08000000000004,
+            "word": "Egiptu."
+          },
+          {
+            "end": 466.8400000000001,
+            "prob": 0.69,
+            "start": 466.68000000000006,
+            "word": "Czy"
+          },
+          {
+            "end": 467.20000000000005,
+            "prob": 0.99,
+            "start": 466.8400000000001,
+            "word": "Marek"
+          },
+          {
+            "end": 467.88000000000005,
+            "prob": 0.99,
+            "start": 467.20000000000005,
+            "word": "powiedział,"
+          },
+          {
+            "end": 467.88000000000005,
+            "prob": 1,
+            "start": 467.88000000000005,
+            "word": "że"
+          },
+          {
+            "end": 468.2200000000001,
+            "prob": 0.94,
+            "start": 467.88000000000005,
+            "word": "chce"
+          },
+          {
+            "end": 468.70000000000005,
+            "prob": 0.98,
+            "start": 468.2200000000001,
+            "word": "lecieć"
+          },
+          {
+            "end": 468.86000000000007,
+            "prob": 0.99,
+            "start": 468.70000000000005,
+            "word": "do"
+          },
+          {
+            "end": 469.94000000000005,
+            "prob": 0.96,
+            "start": 468.86000000000007,
+            "word": "Egiptu?"
+          },
+          {
+            "end": 471.74000000000007,
+            "prob": 0.55,
+            "start": 471.26000000000005,
+            "word": "Tak,"
+          },
+          {
+            "end": 471.86000000000007,
+            "prob": 0.87,
+            "start": 471.74000000000007,
+            "word": "on"
+          },
+          {
+            "end": 472.38000000000005,
+            "prob": 0.99,
+            "start": 471.86000000000007,
+            "word": "powiedział,"
+          },
+          {
+            "end": 472.6000000000001,
+            "prob": 1,
+            "start": 472.38000000000005,
+            "word": "że"
+          },
+          {
+            "end": 472.9000000000001,
+            "prob": 0.99,
+            "start": 472.6000000000001,
+            "word": "chce"
+          },
+          {
+            "end": 473.4800000000001,
+            "prob": 0.98,
+            "start": 472.9000000000001,
+            "word": "lecieć"
+          },
+          {
+            "end": 473.6000000000001,
+            "prob": 0.99,
+            "start": 473.4800000000001,
+            "word": "do"
+          },
+          {
+            "end": 474.6000000000001,
+            "prob": 0.99,
+            "start": 473.6000000000001,
+            "word": "Egiptu."
+          },
+          {
+            "end": 475.8400000000001,
+            "prob": 0.83,
+            "start": 475.6400000000001,
+            "word": "Kiedy"
+          },
+          {
+            "end": 476.1600000000001,
+            "prob": 0.88,
+            "start": 475.8400000000001,
+            "word": "on"
+          },
+          {
+            "end": 476.6600000000001,
+            "prob": 1,
+            "start": 476.1600000000001,
+            "word": "powiedział,"
+          },
+          {
+            "end": 476.80000000000007,
+            "prob": 1,
+            "start": 476.6600000000001,
+            "word": "że"
+          },
+          {
+            "end": 477.12000000000006,
+            "prob": 1,
+            "start": 476.80000000000007,
+            "word": "chce"
+          },
+          {
+            "end": 477.68000000000006,
+            "prob": 0.65,
+            "start": 477.12000000000006,
+            "word": "lecieć"
+          },
+          {
+            "end": 477.7200000000001,
+            "prob": 0.99,
+            "start": 477.68000000000006,
+            "word": "do"
+          },
+          {
+            "end": 478.62000000000006,
+            "prob": 0.87,
+            "start": 477.7200000000001,
+            "word": "Egiptu?"
+          },
+          {
+            "end": 480.12000000000006,
+            "prob": 0.76,
+            "start": 479.74000000000007,
+            "word": "Pewnego"
+          },
+          {
+            "end": 481.0600000000001,
+            "prob": 0.67,
+            "start": 480.12000000000006,
+            "word": "dnia."
+          },
+          {
+            "end": 481.6400000000001,
+            "prob": 0.56,
+            "start": 481.0600000000001,
+            "word": "Któregoś"
+          },
+          {
+            "end": 481.9000000000001,
+            "prob": 0.98,
+            "start": 481.6400000000001,
+            "word": "dnia"
+          },
+          {
+            "end": 482.5800000000001,
+            "prob": 0.91,
+            "start": 481.9000000000001,
+            "word": "powiedział,"
+          },
+          {
+            "end": 482.68000000000006,
+            "prob": 1,
+            "start": 482.5800000000001,
+            "word": "że"
+          },
+          {
+            "end": 483.0000000000001,
+            "prob": 1,
+            "start": 482.68000000000006,
+            "word": "chce"
+          },
+          {
+            "end": 483.5200000000001,
+            "prob": 0.99,
+            "start": 483.0000000000001,
+            "word": "lecieć"
+          },
+          {
+            "end": 483.68000000000006,
+            "prob": 1,
+            "start": 483.5200000000001,
+            "word": "do"
+          },
+          {
+            "end": 484.56000000000006,
+            "prob": 0.97,
+            "start": 483.68000000000006,
+            "word": "Egiptu."
+          },
+          {
+            "end": 485.5800000000001,
+            "prob": 0.85,
+            "start": 485.2800000000001,
+            "word": "Gdzie"
+          },
+          {
+            "end": 485.7400000000001,
+            "prob": 0.93,
+            "start": 485.5800000000001,
+            "word": "on"
+          },
+          {
+            "end": 486.04000000000013,
+            "prob": 0.86,
+            "start": 485.7400000000001,
+            "word": "chciał"
+          },
+          {
+            "end": 487.0800000000001,
+            "prob": 0.98,
+            "start": 486.04000000000013,
+            "word": "lecieć?"
+          },
+          {
+            "end": 488.2000000000001,
+            "prob": 0.77,
+            "start": 488.0200000000001,
+            "word": "Do"
+          },
+          {
+            "end": 489.0800000000001,
+            "prob": 0.86,
+            "start": 488.2000000000001,
+            "word": "Egiptu."
+          },
+          {
+            "end": 489.3000000000001,
+            "prob": 0.98,
+            "start": 489.0800000000001,
+            "word": "On"
+          },
+          {
+            "end": 489.66000000000014,
+            "prob": 0.98,
+            "start": 489.3000000000001,
+            "word": "chciał"
+          },
+          {
+            "end": 490.1400000000001,
+            "prob": 0.96,
+            "start": 489.66000000000014,
+            "word": "lecieć"
+          },
+          {
+            "end": 490.3400000000001,
+            "prob": 0.99,
+            "start": 490.1400000000001,
+            "word": "do"
+          },
+          {
+            "end": 491.0000000000001,
+            "prob": 0.97,
+            "start": 490.3400000000001,
+            "word": "Egiptu."
+          }
+        ]
+      },
+      {
+        "avg_logprob": -0.12287540130378787,
+        "end_time": 525.36,
+        "no_speech_prob": 0.002471923828125,
+        "start_time": 492.14,
+        "text": "Możesz obejrzeć piramidy w internecie. Nie musisz tam lecieć, powiedziała Maria. Czy Maria powiedziała, że Marek może obejrzeć piramidy w internecie? Tak, ona powiedziała, że Marek może obejrzeć piramidy w internecie. Czy Marek musi lecieć do Egiptu, żeby obejrzeć piramidy? Nie, on nie musi lecieć do Egiptu. On może obejrzeć piramidy w internecie.",
+        "word_timestamps": [
+          {
+            "end": 492.88000000000005,
+            "prob": 0.76,
+            "start": 492.14000000000004,
+            "word": "Możesz"
+          },
+          {
+            "end": 493.52000000000004,
+            "prob": 0.95,
+            "start": 492.88000000000005,
+            "word": "obejrzeć"
+          },
+          {
+            "end": 494.08000000000004,
+            "prob": 0.55,
+            "start": 493.52000000000004,
+            "word": "piramidy"
+          },
+          {
+            "end": 494.30000000000007,
+            "prob": 0.79,
+            "start": 494.08000000000004,
+            "word": "w"
+          },
+          {
+            "end": 495.46000000000004,
+            "prob": 0.76,
+            "start": 494.30000000000007,
+            "word": "internecie."
+          },
+          {
+            "end": 495.50000000000006,
+            "prob": 0.94,
+            "start": 495.46000000000004,
+            "word": "Nie"
+          },
+          {
+            "end": 495.82000000000005,
+            "prob": 0.73,
+            "start": 495.50000000000006,
+            "word": "musisz"
+          },
+          {
+            "end": 496.04,
+            "prob": 0.96,
+            "start": 495.82000000000005,
+            "word": "tam"
+          },
+          {
+            "end": 496.94000000000005,
+            "prob": 0.7,
+            "start": 496.04,
+            "word": "lecieć,"
+          },
+          {
+            "end": 497.46000000000004,
+            "prob": 0.93,
+            "start": 496.94000000000005,
+            "word": "powiedziała"
+          },
+          {
+            "end": 498.40000000000003,
+            "prob": 0.77,
+            "start": 497.46000000000004,
+            "word": "Maria."
+          },
+          {
+            "end": 499.46000000000004,
+            "prob": 0.89,
+            "start": 499.26000000000005,
+            "word": "Czy"
+          },
+          {
+            "end": 499.80000000000007,
+            "prob": 0.82,
+            "start": 499.46000000000004,
+            "word": "Maria"
+          },
+          {
+            "end": 500.74000000000007,
+            "prob": 0.89,
+            "start": 499.80000000000007,
+            "word": "powiedziała,"
+          },
+          {
+            "end": 500.74000000000007,
+            "prob": 1,
+            "start": 500.74000000000007,
+            "word": "że"
+          },
+          {
+            "end": 501.2200000000001,
+            "prob": 0.69,
+            "start": 500.74000000000007,
+            "word": "Marek"
+          },
+          {
+            "end": 501.50000000000006,
+            "prob": 0.99,
+            "start": 501.2200000000001,
+            "word": "może"
+          },
+          {
+            "end": 502.20000000000005,
+            "prob": 0.99,
+            "start": 501.50000000000006,
+            "word": "obejrzeć"
+          },
+          {
+            "end": 502.78000000000003,
+            "prob": 0.96,
+            "start": 502.20000000000005,
+            "word": "piramidy"
+          },
+          {
+            "end": 503.1000000000001,
+            "prob": 0.98,
+            "start": 502.78000000000003,
+            "word": "w"
+          },
+          {
+            "end": 504.1600000000001,
+            "prob": 0.97,
+            "start": 503.1000000000001,
+            "word": "internecie?"
+          },
+          {
+            "end": 507.02000000000004,
+            "prob": 0.7,
+            "start": 506.36000000000007,
+            "word": "Tak,"
+          },
+          {
+            "end": 507.28000000000003,
+            "prob": 0.87,
+            "start": 507.02000000000004,
+            "word": "ona"
+          },
+          {
+            "end": 508.24000000000007,
+            "prob": 0.98,
+            "start": 507.28000000000003,
+            "word": "powiedziała,"
+          },
+          {
+            "end": 508.24000000000007,
+            "prob": 1,
+            "start": 508.24000000000007,
+            "word": "że"
+          },
+          {
+            "end": 508.80000000000007,
+            "prob": 1,
+            "start": 508.24000000000007,
+            "word": "Marek"
+          },
+          {
+            "end": 509.1,
+            "prob": 1,
+            "start": 508.80000000000007,
+            "word": "może"
+          },
+          {
+            "end": 509.82000000000005,
+            "prob": 0.99,
+            "start": 509.1,
+            "word": "obejrzeć"
+          },
+          {
+            "end": 510.40000000000003,
+            "prob": 0.95,
+            "start": 509.82000000000005,
+            "word": "piramidy"
+          },
+          {
+            "end": 510.68000000000006,
+            "prob": 1,
+            "start": 510.40000000000003,
+            "word": "w"
+          },
+          {
+            "end": 511.72,
+            "prob": 0.97,
+            "start": 510.68000000000006,
+            "word": "internecie."
+          },
+          {
+            "end": 512.86,
+            "prob": 1,
+            "start": 512.6,
+            "word": "Czy"
+          },
+          {
+            "end": 513.3000000000001,
+            "prob": 0.99,
+            "start": 512.86,
+            "word": "Marek"
+          },
+          {
+            "end": 513.64,
+            "prob": 0.82,
+            "start": 513.3000000000001,
+            "word": "musi"
+          },
+          {
+            "end": 514.2800000000001,
+            "prob": 0.56,
+            "start": 513.64,
+            "word": "lecieć"
+          },
+          {
+            "end": 514.2800000000001,
+            "prob": 0.73,
+            "start": 514.2800000000001,
+            "word": "do"
+          },
+          {
+            "end": 515.2800000000001,
+            "prob": 0.71,
+            "start": 514.2800000000001,
+            "word": "Egiptu,"
+          },
+          {
+            "end": 515.5600000000001,
+            "prob": 0.97,
+            "start": 515.2800000000001,
+            "word": "żeby"
+          },
+          {
+            "end": 516.32,
+            "prob": 1,
+            "start": 515.5600000000001,
+            "word": "obejrzeć"
+          },
+          {
+            "end": 517.5600000000001,
+            "prob": 0.96,
+            "start": 516.32,
+            "word": "piramidy?"
+          },
+          {
+            "end": 520.2800000000001,
+            "prob": 0.58,
+            "start": 519.3000000000001,
+            "word": "Nie,"
+          },
+          {
+            "end": 520.58,
+            "prob": 0.65,
+            "start": 520.2800000000001,
+            "word": "on"
+          },
+          {
+            "end": 520.82,
+            "prob": 0.9,
+            "start": 520.58,
+            "word": "nie"
+          },
+          {
+            "end": 521.0600000000001,
+            "prob": 0.93,
+            "start": 520.82,
+            "word": "musi"
+          },
+          {
+            "end": 521.62,
+            "prob": 0.97,
+            "start": 521.0600000000001,
+            "word": "lecieć"
+          },
+          {
+            "end": 521.84,
+            "prob": 1,
+            "start": 521.62,
+            "word": "do"
+          },
+          {
+            "end": 522.36,
+            "prob": 0.82,
+            "start": 521.84,
+            "word": "Egiptu."
+          },
+          {
+            "end": 522.5600000000001,
+            "prob": 0.99,
+            "start": 522.36,
+            "word": "On"
+          },
+          {
+            "end": 522.9000000000001,
+            "prob": 0.99,
+            "start": 522.5600000000001,
+            "word": "może"
+          },
+          {
+            "end": 523.74,
+            "prob": 1,
+            "start": 522.9000000000001,
+            "word": "obejrzeć"
+          },
+          {
+            "end": 524.3000000000001,
+            "prob": 0.96,
+            "start": 523.74,
+            "word": "piramidy"
+          },
+          {
+            "end": 524.58,
+            "prob": 0.99,
+            "start": 524.3000000000001,
+            "word": "w"
+          },
+          {
+            "end": 525.32,
+            "prob": 0.99,
+            "start": 524.58,
+            "word": "internecie."
+          }
+        ]
+      },
+      {
+        "avg_logprob": -0.12438234345892728,
+        "end_time": 560.78,
+        "no_speech_prob": 0.0016736984252929688,
+        "start_time": 526.22,
+        "text": "Co Marek może obejrzeć w internecie? Piramidy. On może obejrzeć piramidy w internecie. Czego Marek nie musi robić? Lecieć do Egiptu. On nie musi lecieć do Egiptu. Wszędzie może dojść do wypadku, nawet w drodze do pracy, powiedział Marek. Czy Marek powiedział, że wszędzie może dojść do wypadku? Tak, on powiedział, że wszędzie może dojść do wypadku.",
+        "word_timestamps": [
+          {
+            "end": 526.7399999999999,
+            "prob": 0.76,
+            "start": 526.2199999999999,
+            "word": "Co"
+          },
+          {
+            "end": 527.1399999999999,
+            "prob": 0.67,
+            "start": 526.7399999999999,
+            "word": "Marek"
+          },
+          {
+            "end": 527.3999999999999,
+            "prob": 0.98,
+            "start": 527.1399999999999,
+            "word": "może"
+          },
+          {
+            "end": 527.92,
+            "prob": 0.96,
+            "start": 527.3999999999999,
+            "word": "obejrzeć"
+          },
+          {
+            "end": 528.0999999999999,
+            "prob": 0.84,
+            "start": 527.92,
+            "word": "w"
+          },
+          {
+            "end": 529.2599999999999,
+            "prob": 0.86,
+            "start": 528.0999999999999,
+            "word": "internecie?"
+          },
+          {
+            "end": 531.6199999999998,
+            "prob": 0.4,
+            "start": 530.6399999999998,
+            "word": "Piramidy."
+          },
+          {
+            "end": 531.7799999999997,
+            "prob": 0.87,
+            "start": 531.6199999999998,
+            "word": "On"
+          },
+          {
+            "end": 532.0999999999998,
+            "prob": 1,
+            "start": 531.7799999999997,
+            "word": "może"
+          },
+          {
+            "end": 532.6199999999998,
+            "prob": 0.99,
+            "start": 532.0999999999998,
+            "word": "obejrzeć"
+          },
+          {
+            "end": 533.1999999999998,
+            "prob": 0.81,
+            "start": 532.6199999999998,
+            "word": "piramidy"
+          },
+          {
+            "end": 533.4799999999998,
+            "prob": 0.98,
+            "start": 533.1999999999998,
+            "word": "w"
+          },
+          {
+            "end": 534.5599999999998,
+            "prob": 0.92,
+            "start": 533.4799999999998,
+            "word": "internecie."
+          },
+          {
+            "end": 535.8399999999997,
+            "prob": 0.88,
+            "start": 535.5399999999997,
+            "word": "Czego"
+          },
+          {
+            "end": 536.4999999999997,
+            "prob": 0.99,
+            "start": 535.8399999999997,
+            "word": "Marek"
+          },
+          {
+            "end": 536.7999999999997,
+            "prob": 0.95,
+            "start": 536.4999999999997,
+            "word": "nie"
+          },
+          {
+            "end": 537.0799999999997,
+            "prob": 0.99,
+            "start": 536.7999999999997,
+            "word": "musi"
+          },
+          {
+            "end": 538.1199999999997,
+            "prob": 0.9,
+            "start": 537.0799999999997,
+            "word": "robić?"
+          },
+          {
+            "end": 539.5399999999996,
+            "prob": 0.68,
+            "start": 539.0999999999996,
+            "word": "Lecieć"
+          },
+          {
+            "end": 539.6599999999996,
+            "prob": 0.98,
+            "start": 539.5399999999996,
+            "word": "do"
+          },
+          {
+            "end": 540.6599999999996,
+            "prob": 0.75,
+            "start": 539.6599999999996,
+            "word": "Egiptu."
+          },
+          {
+            "end": 540.6599999999996,
+            "prob": 0.97,
+            "start": 540.6599999999996,
+            "word": "On"
+          },
+          {
+            "end": 540.8599999999996,
+            "prob": 0.96,
+            "start": 540.6599999999996,
+            "word": "nie"
+          },
+          {
+            "end": 541.1599999999996,
+            "prob": 0.99,
+            "start": 540.8599999999996,
+            "word": "musi"
+          },
+          {
+            "end": 541.6799999999996,
+            "prob": 0.84,
+            "start": 541.1599999999996,
+            "word": "lecieć"
+          },
+          {
+            "end": 541.7999999999996,
+            "prob": 0.98,
+            "start": 541.6799999999996,
+            "word": "do"
+          },
+          {
+            "end": 542.6399999999996,
+            "prob": 0.99,
+            "start": 541.7999999999996,
+            "word": "Egiptu."
+          },
+          {
+            "end": 544.8599999999994,
+            "prob": 0.5,
+            "start": 544.2799999999995,
+            "word": "Wszędzie"
+          },
+          {
+            "end": 545.4999999999994,
+            "prob": 0.95,
+            "start": 544.8599999999994,
+            "word": "może"
+          },
+          {
+            "end": 545.8999999999995,
+            "prob": 0.82,
+            "start": 545.4999999999994,
+            "word": "dojść"
+          },
+          {
+            "end": 546.0399999999995,
+            "prob": 0.97,
+            "start": 545.8999999999995,
+            "word": "do"
+          },
+          {
+            "end": 547.1799999999995,
+            "prob": 0.7,
+            "start": 546.0399999999995,
+            "word": "wypadku,"
+          },
+          {
+            "end": 547.3799999999994,
+            "prob": 0.98,
+            "start": 547.1799999999995,
+            "word": "nawet"
+          },
+          {
+            "end": 547.6599999999995,
+            "prob": 0.99,
+            "start": 547.3799999999994,
+            "word": "w"
+          },
+          {
+            "end": 547.9199999999995,
+            "prob": 0.96,
+            "start": 547.6599999999995,
+            "word": "drodze"
+          },
+          {
+            "end": 548.1199999999994,
+            "prob": 0.97,
+            "start": 547.9199999999995,
+            "word": "do"
+          },
+          {
+            "end": 549.1399999999995,
+            "prob": 0.52,
+            "start": 548.1199999999994,
+            "word": "pracy,"
+          },
+          {
+            "end": 549.4199999999995,
+            "prob": 0.4,
+            "start": 549.1399999999995,
+            "word": "powiedział"
+          },
+          {
+            "end": 550.3799999999994,
+            "prob": 0.96,
+            "start": 549.4199999999995,
+            "word": "Marek."
+          },
+          {
+            "end": 551.0999999999995,
+            "prob": 0.69,
+            "start": 550.9399999999994,
+            "word": "Czy"
+          },
+          {
+            "end": 551.4599999999995,
+            "prob": 1,
+            "start": 551.0999999999995,
+            "word": "Marek"
+          },
+          {
+            "end": 552.7799999999994,
+            "prob": 0.91,
+            "start": 551.4599999999995,
+            "word": "powiedział,"
+          },
+          {
+            "end": 552.9599999999995,
+            "prob": 1,
+            "start": 552.7799999999994,
+            "word": "że"
+          },
+          {
+            "end": 553.4599999999995,
+            "prob": 0.61,
+            "start": 552.9599999999995,
+            "word": "wszędzie"
+          },
+          {
+            "end": 553.8199999999994,
+            "prob": 0.99,
+            "start": 553.4599999999995,
+            "word": "może"
+          },
+          {
+            "end": 554.1399999999994,
+            "prob": 0.99,
+            "start": 553.8199999999994,
+            "word": "dojść"
+          },
+          {
+            "end": 554.2799999999994,
+            "prob": 1,
+            "start": 554.1399999999994,
+            "word": "do"
+          },
+          {
+            "end": 555.4599999999995,
+            "prob": 0.96,
+            "start": 554.2799999999994,
+            "word": "wypadku?"
+          },
+          {
+            "end": 557.6399999999993,
+            "prob": 0.63,
+            "start": 557.0599999999994,
+            "word": "Tak,"
+          },
+          {
+            "end": 557.7799999999993,
+            "prob": 0.93,
+            "start": 557.6399999999993,
+            "word": "on"
+          },
+          {
+            "end": 558.3799999999993,
+            "prob": 0.98,
+            "start": 557.7799999999993,
+            "word": "powiedział,"
+          },
+          {
+            "end": 558.4599999999994,
+            "prob": 1,
+            "start": 558.3799999999993,
+            "word": "że"
+          },
+          {
+            "end": 559.0399999999993,
+            "prob": 0.9,
+            "start": 558.4599999999994,
+            "word": "wszędzie"
+          },
+          {
+            "end": 559.3999999999993,
+            "prob": 0.99,
+            "start": 559.0399999999993,
+            "word": "może"
+          },
+          {
+            "end": 559.7799999999993,
+            "prob": 0.98,
+            "start": 559.3999999999993,
+            "word": "dojść"
+          },
+          {
+            "end": 560.0199999999993,
+            "prob": 1,
+            "start": 559.7799999999993,
+            "word": "do"
+          },
+          {
+            "end": 560.7599999999993,
+            "prob": 0.96,
+            "start": 560.0199999999993,
+            "word": "wypadku."
+          }
+        ]
+      },
+      {
+        "avg_logprob": -0.13687990809741774,
+        "end_time": 590.26,
+        "no_speech_prob": 0.0010156631469726562,
+        "start_time": 561.62,
+        "text": "Czy on powiedział, że do wypadku może dojść nawet w drodze do pracy? Tak, on powiedział, że do wypadku może dojść nawet w drodze do pracy. Kto powiedział, że do wypadku może dojść nawet w drodze do pracy? Marek czy Maria? Marek. On tak powiedział. On powiedział, że do wypadku może dojść nawet w drodze do pracy.",
+        "word_timestamps": [
+          {
+            "end": 562.0600000000001,
+            "prob": 0.94,
+            "start": 561.62,
+            "word": "Czy"
+          },
+          {
+            "end": 562.22,
+            "prob": 0.93,
+            "start": 562.0600000000001,
+            "word": "on"
+          },
+          {
+            "end": 562.86,
+            "prob": 0.8,
+            "start": 562.22,
+            "word": "powiedział,"
+          },
+          {
+            "end": 562.86,
+            "prob": 0.99,
+            "start": 562.86,
+            "word": "że"
+          },
+          {
+            "end": 563.02,
+            "prob": 0.33,
+            "start": 562.86,
+            "word": "do"
+          },
+          {
+            "end": 563.54,
+            "prob": 0.9,
+            "start": 563.02,
+            "word": "wypadku"
+          },
+          {
+            "end": 563.82,
+            "prob": 0.99,
+            "start": 563.54,
+            "word": "może"
+          },
+          {
+            "end": 564.26,
+            "prob": 0.7,
+            "start": 563.82,
+            "word": "dojść"
+          },
+          {
+            "end": 564.62,
+            "prob": 0.96,
+            "start": 564.26,
+            "word": "nawet"
+          },
+          {
+            "end": 564.88,
+            "prob": 0.99,
+            "start": 564.62,
+            "word": "w"
+          },
+          {
+            "end": 565.14,
+            "prob": 0.93,
+            "start": 564.88,
+            "word": "drodze"
+          },
+          {
+            "end": 565.34,
+            "prob": 0.95,
+            "start": 565.14,
+            "word": "do"
+          },
+          {
+            "end": 566.22,
+            "prob": 0.89,
+            "start": 565.34,
+            "word": "pracy?"
+          },
+          {
+            "end": 568.64,
+            "prob": 0.68,
+            "start": 568.04,
+            "word": "Tak,"
+          },
+          {
+            "end": 568.7399999999999,
+            "prob": 0.96,
+            "start": 568.64,
+            "word": "on"
+          },
+          {
+            "end": 569.4399999999999,
+            "prob": 1,
+            "start": 568.7399999999999,
+            "word": "powiedział,"
+          },
+          {
+            "end": 569.4399999999999,
+            "prob": 1,
+            "start": 569.4399999999999,
+            "word": "że"
+          },
+          {
+            "end": 569.6199999999999,
+            "prob": 0.98,
+            "start": 569.4399999999999,
+            "word": "do"
+          },
+          {
+            "end": 570.2199999999999,
+            "prob": 1,
+            "start": 569.6199999999999,
+            "word": "wypadku"
+          },
+          {
+            "end": 570.4799999999999,
+            "prob": 0.99,
+            "start": 570.2199999999999,
+            "word": "może"
+          },
+          {
+            "end": 570.9,
+            "prob": 0.96,
+            "start": 570.4799999999999,
+            "word": "dojść"
+          },
+          {
+            "end": 571.3599999999999,
+            "prob": 1,
+            "start": 570.9,
+            "word": "nawet"
+          },
+          {
+            "end": 571.68,
+            "prob": 1,
+            "start": 571.3599999999999,
+            "word": "w"
+          },
+          {
+            "end": 571.9399999999999,
+            "prob": 0.97,
+            "start": 571.68,
+            "word": "drodze"
+          },
+          {
+            "end": 572.1199999999999,
+            "prob": 0.99,
+            "start": 571.9399999999999,
+            "word": "do"
+          },
+          {
+            "end": 572.9599999999999,
+            "prob": 0.98,
+            "start": 572.1199999999999,
+            "word": "pracy."
+          },
+          {
+            "end": 574.2199999999999,
+            "prob": 0.74,
+            "start": 573.8999999999999,
+            "word": "Kto"
+          },
+          {
+            "end": 575.2599999999999,
+            "prob": 0.96,
+            "start": 574.2199999999999,
+            "word": "powiedział,"
+          },
+          {
+            "end": 575.5999999999999,
+            "prob": 1,
+            "start": 575.2599999999999,
+            "word": "że"
+          },
+          {
+            "end": 575.7999999999998,
+            "prob": 0.97,
+            "start": 575.5999999999999,
+            "word": "do"
+          },
+          {
+            "end": 576.6799999999998,
+            "prob": 1,
+            "start": 575.7999999999998,
+            "word": "wypadku"
+          },
+          {
+            "end": 577.1399999999999,
+            "prob": 1,
+            "start": 576.6799999999998,
+            "word": "może"
+          },
+          {
+            "end": 577.8799999999999,
+            "prob": 0.97,
+            "start": 577.1399999999999,
+            "word": "dojść"
+          },
+          {
+            "end": 578.5199999999999,
+            "prob": 0.99,
+            "start": 577.8799999999999,
+            "word": "nawet"
+          },
+          {
+            "end": 578.9199999999998,
+            "prob": 0.99,
+            "start": 578.5199999999999,
+            "word": "w"
+          },
+          {
+            "end": 579.2599999999999,
+            "prob": 0.99,
+            "start": 578.9199999999998,
+            "word": "drodze"
+          },
+          {
+            "end": 579.4799999999999,
+            "prob": 1,
+            "start": 579.2599999999999,
+            "word": "do"
+          },
+          {
+            "end": 580.3399999999999,
+            "prob": 0.77,
+            "start": 579.4799999999999,
+            "word": "pracy?"
+          },
+          {
+            "end": 580.9399999999998,
+            "prob": 0.68,
+            "start": 580.3399999999999,
+            "word": "Marek"
+          },
+          {
+            "end": 581.3199999999999,
+            "prob": 0.34,
+            "start": 580.9399999999998,
+            "word": "czy"
+          },
+          {
+            "end": 582.7999999999998,
+            "prob": 0.74,
+            "start": 581.3199999999999,
+            "word": "Maria?"
+          },
+          {
+            "end": 584.3399999999998,
+            "prob": 0.76,
+            "start": 583.9799999999998,
+            "word": "Marek."
+          },
+          {
+            "end": 584.5799999999998,
+            "prob": 0.93,
+            "start": 584.3399999999998,
+            "word": "On"
+          },
+          {
+            "end": 584.8199999999998,
+            "prob": 0.98,
+            "start": 584.5799999999998,
+            "word": "tak"
+          },
+          {
+            "end": 585.7399999999998,
+            "prob": 0.74,
+            "start": 584.8199999999998,
+            "word": "powiedział."
+          },
+          {
+            "end": 585.9399999999998,
+            "prob": 0.99,
+            "start": 585.7399999999998,
+            "word": "On"
+          },
+          {
+            "end": 586.6599999999999,
+            "prob": 1,
+            "start": 585.9399999999998,
+            "word": "powiedział,"
+          },
+          {
+            "end": 586.7599999999999,
+            "prob": 1,
+            "start": 586.6599999999999,
+            "word": "że"
+          },
+          {
+            "end": 586.8599999999998,
+            "prob": 0.99,
+            "start": 586.7599999999999,
+            "word": "do"
+          },
+          {
+            "end": 587.4199999999998,
+            "prob": 1,
+            "start": 586.8599999999998,
+            "word": "wypadku"
+          },
+          {
+            "end": 587.7199999999998,
+            "prob": 1,
+            "start": 587.4199999999998,
+            "word": "może"
+          },
+          {
+            "end": 588.2599999999999,
+            "prob": 0.97,
+            "start": 587.7199999999998,
+            "word": "dojść"
+          },
+          {
+            "end": 588.7599999999999,
+            "prob": 1,
+            "start": 588.2599999999999,
+            "word": "nawet"
+          },
+          {
+            "end": 589.2399999999998,
+            "prob": 1,
+            "start": 588.7599999999999,
+            "word": "w"
+          },
+          {
+            "end": 589.5599999999998,
+            "prob": 0.97,
+            "start": 589.2399999999998,
+            "word": "drodze"
+          },
+          {
+            "end": 589.7999999999998,
+            "prob": 0.99,
+            "start": 589.5599999999998,
+            "word": "do"
+          },
+          {
+            "end": 590.2399999999998,
+            "prob": 0.97,
+            "start": 589.7999999999998,
+            "word": "pracy."
+          }
+        ]
+      },
+      {
+        "avg_logprob": -0.11056533986979192,
+        "end_time": 626.16,
+        "no_speech_prob": 0.00007253885269165039,
+        "start_time": 591,
+        "text": "Maria powiedziała, że do pracy trzeba chodzić, a latanie samolotem to kuszenie losu. Czy Maria powiedziała, że chodzenie do pracy to konieczność? Tak, ona powiedziała, że do pracy trzeba chodzić, czyli że to jest konieczność. Czy ona powiedziała, że trzeba latać samolotem? Nie, ona tak nie powiedziała. Ona nie powiedziała, że trzeba latać samolotem.",
+        "word_timestamps": [
+          {
+            "end": 591.76,
+            "prob": 0.68,
+            "start": 591,
+            "word": "Maria"
+          },
+          {
+            "end": 592.96,
+            "prob": 0.88,
+            "start": 591.76,
+            "word": "powiedziała,"
+          },
+          {
+            "end": 593.24,
+            "prob": 1,
+            "start": 592.96,
+            "word": "że"
+          },
+          {
+            "end": 593.46,
+            "prob": 0.27,
+            "start": 593.24,
+            "word": "do"
+          },
+          {
+            "end": 593.76,
+            "prob": 0.95,
+            "start": 593.46,
+            "word": "pracy"
+          },
+          {
+            "end": 594.28,
+            "prob": 0.83,
+            "start": 593.76,
+            "word": "trzeba"
+          },
+          {
+            "end": 595.36,
+            "prob": 0.86,
+            "start": 594.28,
+            "word": "chodzić,"
+          },
+          {
+            "end": 595.38,
+            "prob": 0.09,
+            "start": 595.36,
+            "word": "a"
+          },
+          {
+            "end": 595.92,
+            "prob": 0.56,
+            "start": 595.38,
+            "word": "latanie"
+          },
+          {
+            "end": 596.82,
+            "prob": 0.91,
+            "start": 595.92,
+            "word": "samolotem"
+          },
+          {
+            "end": 597.22,
+            "prob": 0.81,
+            "start": 596.82,
+            "word": "to"
+          },
+          {
+            "end": 597.76,
+            "prob": 0.74,
+            "start": 597.22,
+            "word": "kuszenie"
+          },
+          {
+            "end": 598.7,
+            "prob": 0.81,
+            "start": 597.76,
+            "word": "losu."
+          },
+          {
+            "end": 600.0599999999998,
+            "prob": 0.92,
+            "start": 599.8999999999999,
+            "word": "Czy"
+          },
+          {
+            "end": 600.3999999999999,
+            "prob": 0.96,
+            "start": 600.0599999999998,
+            "word": "Maria"
+          },
+          {
+            "end": 601.2399999999998,
+            "prob": 0.94,
+            "start": 600.3999999999999,
+            "word": "powiedziała,"
+          },
+          {
+            "end": 601.2399999999998,
+            "prob": 1,
+            "start": 601.2399999999998,
+            "word": "że"
+          },
+          {
+            "end": 601.6599999999999,
+            "prob": 0.77,
+            "start": 601.2399999999998,
+            "word": "chodzenie"
+          },
+          {
+            "end": 602.0199999999999,
+            "prob": 0.91,
+            "start": 601.6599999999999,
+            "word": "do"
+          },
+          {
+            "end": 602.2999999999998,
+            "prob": 1,
+            "start": 602.0199999999999,
+            "word": "pracy"
+          },
+          {
+            "end": 602.5599999999998,
+            "prob": 0.92,
+            "start": 602.2999999999998,
+            "word": "to"
+          },
+          {
+            "end": 603.9799999999998,
+            "prob": 0.9,
+            "start": 602.5599999999998,
+            "word": "konieczność?"
+          },
+          {
+            "end": 607.2399999999997,
+            "prob": 0.69,
+            "start": 606.8799999999997,
+            "word": "Tak,"
+          },
+          {
+            "end": 607.4199999999997,
+            "prob": 0.93,
+            "start": 607.2399999999997,
+            "word": "ona"
+          },
+          {
+            "end": 608.4799999999997,
+            "prob": 0.98,
+            "start": 607.4199999999997,
+            "word": "powiedziała,"
+          },
+          {
+            "end": 608.8199999999997,
+            "prob": 1,
+            "start": 608.4799999999997,
+            "word": "że"
+          },
+          {
+            "end": 609.0999999999997,
+            "prob": 0.98,
+            "start": 608.8199999999997,
+            "word": "do"
+          },
+          {
+            "end": 609.3999999999996,
+            "prob": 1,
+            "start": 609.0999999999997,
+            "word": "pracy"
+          },
+          {
+            "end": 609.8799999999997,
+            "prob": 1,
+            "start": 609.3999999999996,
+            "word": "trzeba"
+          },
+          {
+            "end": 611.0199999999996,
+            "prob": 0.94,
+            "start": 609.8799999999997,
+            "word": "chodzić,"
+          },
+          {
+            "end": 611.2399999999997,
+            "prob": 0.99,
+            "start": 611.0199999999996,
+            "word": "czyli"
+          },
+          {
+            "end": 611.7199999999997,
+            "prob": 0.79,
+            "start": 611.2399999999997,
+            "word": "że"
+          },
+          {
+            "end": 611.9799999999997,
+            "prob": 0.98,
+            "start": 611.7199999999997,
+            "word": "to"
+          },
+          {
+            "end": 612.3999999999996,
+            "prob": 0.99,
+            "start": 611.9799999999997,
+            "word": "jest"
+          },
+          {
+            "end": 614.1999999999997,
+            "prob": 0.83,
+            "start": 612.3999999999996,
+            "word": "konieczność."
+          },
+          {
+            "end": 614.8799999999997,
+            "prob": 0.99,
+            "start": 614.8799999999997,
+            "word": "Czy"
+          },
+          {
+            "end": 615.1599999999996,
+            "prob": 0.99,
+            "start": 614.8799999999997,
+            "word": "ona"
+          },
+          {
+            "end": 616.5199999999996,
+            "prob": 0.99,
+            "start": 615.1599999999996,
+            "word": "powiedziała,"
+          },
+          {
+            "end": 616.5399999999996,
+            "prob": 1,
+            "start": 616.5199999999996,
+            "word": "że"
+          },
+          {
+            "end": 616.9599999999996,
+            "prob": 1,
+            "start": 616.5399999999996,
+            "word": "trzeba"
+          },
+          {
+            "end": 617.5199999999996,
+            "prob": 0.93,
+            "start": 616.9599999999996,
+            "word": "latać"
+          },
+          {
+            "end": 618.5799999999996,
+            "prob": 0.96,
+            "start": 617.5199999999996,
+            "word": "samolotem?"
+          },
+          {
+            "end": 621.4799999999996,
+            "prob": 0.72,
+            "start": 620.5199999999995,
+            "word": "Nie,"
+          },
+          {
+            "end": 621.7199999999996,
+            "prob": 0.99,
+            "start": 621.4799999999996,
+            "word": "ona"
+          },
+          {
+            "end": 621.9199999999996,
+            "prob": 0.99,
+            "start": 621.7199999999996,
+            "word": "tak"
+          },
+          {
+            "end": 622.1199999999995,
+            "prob": 0.99,
+            "start": 621.9199999999996,
+            "word": "nie"
+          },
+          {
+            "end": 623.0999999999996,
+            "prob": 0.88,
+            "start": 622.1199999999995,
+            "word": "powiedziała."
+          },
+          {
+            "end": 623.3399999999996,
+            "prob": 0.92,
+            "start": 623.0999999999996,
+            "word": "Ona"
+          },
+          {
+            "end": 623.5999999999996,
+            "prob": 0.99,
+            "start": 623.3399999999996,
+            "word": "nie"
+          },
+          {
+            "end": 624.3199999999996,
+            "prob": 0.99,
+            "start": 623.5999999999996,
+            "word": "powiedziała,"
+          },
+          {
+            "end": 624.3599999999996,
+            "prob": 1,
+            "start": 624.3199999999996,
+            "word": "że"
+          },
+          {
+            "end": 624.8199999999996,
+            "prob": 0.99,
+            "start": 624.3599999999996,
+            "word": "trzeba"
+          },
+          {
+            "end": 625.3199999999996,
+            "prob": 1,
+            "start": 624.8199999999996,
+            "word": "latać"
+          },
+          {
+            "end": 626.1399999999995,
+            "prob": 0.99,
+            "start": 625.3199999999996,
+            "word": "samolotem."
+          }
+        ]
+      },
+      {
+        "avg_logprob": -0.1064385698706496,
+        "end_time": 654.72,
+        "no_speech_prob": 0.00019407272338867188,
+        "start_time": 627.04,
+        "text": "Czy Maria powiedziała, że latanie samolotem jest niebezpieczne? Tak, ona powiedziała, że latanie samolotem to kuszenie losu, czyli że latanie samolotem jest niebezpieczne. Co jest kuszeniem losu? Latanie samolotem. Latanie samolotem to kuszenie losu. Doskonale, to już koniec dzisiejszych pytań i odpowiedzi.",
+        "word_timestamps": [
+          {
+            "end": 627.5,
+            "prob": 0.94,
+            "start": 627.04,
+            "word": "Czy"
+          },
+          {
+            "end": 627.8199999999999,
+            "prob": 0.65,
+            "start": 627.5,
+            "word": "Maria"
+          },
+          {
+            "end": 628.68,
+            "prob": 0.86,
+            "start": 627.8199999999999,
+            "word": "powiedziała,"
+          },
+          {
+            "end": 628.68,
+            "prob": 1,
+            "start": 628.68,
+            "word": "że"
+          },
+          {
+            "end": 629.24,
+            "prob": 0.68,
+            "start": 628.68,
+            "word": "latanie"
+          },
+          {
+            "end": 629.88,
+            "prob": 0.87,
+            "start": 629.24,
+            "word": "samolotem"
+          },
+          {
+            "end": 630.36,
+            "prob": 0.99,
+            "start": 629.88,
+            "word": "jest"
+          },
+          {
+            "end": 631.8399999999999,
+            "prob": 0.83,
+            "start": 630.36,
+            "word": "niebezpieczne?"
+          },
+          {
+            "end": 634.4999999999999,
+            "prob": 0.61,
+            "start": 633.7199999999998,
+            "word": "Tak,"
+          },
+          {
+            "end": 634.6799999999998,
+            "prob": 0.93,
+            "start": 634.4999999999999,
+            "word": "ona"
+          },
+          {
+            "end": 635.4999999999999,
+            "prob": 0.98,
+            "start": 634.6799999999998,
+            "word": "powiedziała,"
+          },
+          {
+            "end": 635.5599999999998,
+            "prob": 1,
+            "start": 635.4999999999999,
+            "word": "że"
+          },
+          {
+            "end": 636.0199999999999,
+            "prob": 0.99,
+            "start": 635.5599999999998,
+            "word": "latanie"
+          },
+          {
+            "end": 636.7999999999998,
+            "prob": 0.99,
+            "start": 636.0199999999999,
+            "word": "samolotem"
+          },
+          {
+            "end": 637.0399999999998,
+            "prob": 0.96,
+            "start": 636.7999999999998,
+            "word": "to"
+          },
+          {
+            "end": 637.5199999999999,
+            "prob": 0.8,
+            "start": 637.0399999999998,
+            "word": "kuszenie"
+          },
+          {
+            "end": 638.4199999999998,
+            "prob": 0.64,
+            "start": 637.5199999999999,
+            "word": "losu,"
+          },
+          {
+            "end": 638.6599999999999,
+            "prob": 0.98,
+            "start": 638.4199999999998,
+            "word": "czyli"
+          },
+          {
+            "end": 638.9399999999998,
+            "prob": 0.61,
+            "start": 638.6599999999999,
+            "word": "że"
+          },
+          {
+            "end": 639.4599999999998,
+            "prob": 0.99,
+            "start": 638.9399999999998,
+            "word": "latanie"
+          },
+          {
+            "end": 640.1599999999999,
+            "prob": 0.98,
+            "start": 639.4599999999998,
+            "word": "samolotem"
+          },
+          {
+            "end": 640.3999999999999,
+            "prob": 0.99,
+            "start": 640.1599999999999,
+            "word": "jest"
+          },
+          {
+            "end": 641.7799999999999,
+            "prob": 0.97,
+            "start": 640.3999999999999,
+            "word": "niebezpieczne."
+          },
+          {
+            "end": 642.6399999999996,
+            "prob": 0.98,
+            "start": 642.4799999999997,
+            "word": "Co"
+          },
+          {
+            "end": 642.8599999999997,
+            "prob": 0.99,
+            "start": 642.6399999999996,
+            "word": "jest"
+          },
+          {
+            "end": 643.4399999999997,
+            "prob": 0.79,
+            "start": 642.8599999999997,
+            "word": "kuszeniem"
+          },
+          {
+            "end": 644.3399999999997,
+            "prob": 0.91,
+            "start": 643.4399999999997,
+            "word": "losu?"
+          },
+          {
+            "end": 645.7199999999997,
+            "prob": 0.61,
+            "start": 645.2399999999997,
+            "word": "Latanie"
+          },
+          {
+            "end": 646.9199999999996,
+            "prob": 0.85,
+            "start": 645.7199999999997,
+            "word": "samolotem."
+          },
+          {
+            "end": 647.3799999999997,
+            "prob": 0.88,
+            "start": 646.9199999999996,
+            "word": "Latanie"
+          },
+          {
+            "end": 648.1599999999996,
+            "prob": 1,
+            "start": 647.3799999999997,
+            "word": "samolotem"
+          },
+          {
+            "end": 648.5799999999996,
+            "prob": 0.83,
+            "start": 648.1599999999996,
+            "word": "to"
+          },
+          {
+            "end": 649.1999999999996,
+            "prob": 0.97,
+            "start": 648.5799999999996,
+            "word": "kuszenie"
+          },
+          {
+            "end": 650.1799999999996,
+            "prob": 0.86,
+            "start": 649.1999999999996,
+            "word": "losu."
+          },
+          {
+            "end": 651.9599999999996,
+            "prob": 0.51,
+            "start": 650.8799999999995,
+            "word": "Doskonale,"
+          },
+          {
+            "end": 652.0799999999996,
+            "prob": 0.99,
+            "start": 651.9599999999996,
+            "word": "to"
+          },
+          {
+            "end": 652.3599999999996,
+            "prob": 0.99,
+            "start": 652.0799999999996,
+            "word": "już"
+          },
+          {
+            "end": 652.7599999999995,
+            "prob": 0.95,
+            "start": 652.3599999999996,
+            "word": "koniec"
+          },
+          {
+            "end": 653.4199999999996,
+            "prob": 0.92,
+            "start": 652.7599999999995,
+            "word": "dzisiejszych"
+          },
+          {
+            "end": 653.8599999999996,
+            "prob": 0.6,
+            "start": 653.4199999999996,
+            "word": "pytań"
+          },
+          {
+            "end": 654.0199999999995,
+            "prob": 0.9,
+            "start": 653.8599999999996,
+            "word": "i"
+          },
+          {
+            "end": 654.6999999999996,
+            "prob": 0.94,
+            "start": 654.0199999999995,
+            "word": "odpowiedzi."
+          }
+        ]
+      },
+      {
+        "avg_logprob": -0.16004354182792746,
+        "end_time": 679.1,
+        "no_speech_prob": 0.0059051513671875,
+        "start_time": 655.18,
+        "text": "Jestem ciekaw czy uważasz, że latanie samolotem to kuszenie losu? Ja myślę, że Maria trochę przesadza. Dobrze, jeśli potrafisz odpowiadać na pytania z tej historyjki, to zapraszam na następną. A jeśli nie, to proszę posłuchaj pytań i odpowiedzi jeszcze raz. Do usłyszenia następnym razem. Pa, pa!",
+        "word_timestamps": [
+          {
+            "end": 655.88,
+            "prob": 0.66,
+            "start": 655.18,
+            "word": "Jestem"
+          },
+          {
+            "end": 656.26,
+            "prob": 0.94,
+            "start": 655.88,
+            "word": "ciekaw"
+          },
+          {
+            "end": 656.78,
+            "prob": 0.26,
+            "start": 656.26,
+            "word": "czy"
+          },
+          {
+            "end": 657.64,
+            "prob": 0.86,
+            "start": 656.78,
+            "word": "uważasz,"
+          },
+          {
+            "end": 657.68,
+            "prob": 0.99,
+            "start": 657.64,
+            "word": "że"
+          },
+          {
+            "end": 658.18,
+            "prob": 0.82,
+            "start": 657.68,
+            "word": "latanie"
+          },
+          {
+            "end": 659.56,
+            "prob": 0.73,
+            "start": 658.18,
+            "word": "samolotem"
+          },
+          {
+            "end": 659.76,
+            "prob": 0.92,
+            "start": 659.56,
+            "word": "to"
+          },
+          {
+            "end": 660.2199999999999,
+            "prob": 0.68,
+            "start": 659.76,
+            "word": "kuszenie"
+          },
+          {
+            "end": 661.28,
+            "prob": 0.6,
+            "start": 660.2199999999999,
+            "word": "losu?"
+          },
+          {
+            "end": 661.76,
+            "prob": 0.92,
+            "start": 661.66,
+            "word": "Ja"
+          },
+          {
+            "end": 662.28,
+            "prob": 0.95,
+            "start": 661.76,
+            "word": "myślę,"
+          },
+          {
+            "end": 662.28,
+            "prob": 1,
+            "start": 662.28,
+            "word": "że"
+          },
+          {
+            "end": 662.56,
+            "prob": 0.78,
+            "start": 662.28,
+            "word": "Maria"
+          },
+          {
+            "end": 662.88,
+            "prob": 0.97,
+            "start": 662.56,
+            "word": "trochę"
+          },
+          {
+            "end": 664.18,
+            "prob": 0.73,
+            "start": 662.88,
+            "word": "przesadza."
+          },
+          {
+            "end": 665.4999999999999,
+            "prob": 0.59,
+            "start": 664.7399999999999,
+            "word": "Dobrze,"
+          },
+          {
+            "end": 665.8199999999999,
+            "prob": 0.95,
+            "start": 665.4999999999999,
+            "word": "jeśli"
+          },
+          {
+            "end": 666.4599999999999,
+            "prob": 0.96,
+            "start": 665.8199999999999,
+            "word": "potrafisz"
+          },
+          {
+            "end": 667.3199999999999,
+            "prob": 0.96,
+            "start": 666.4599999999999,
+            "word": "odpowiadać"
+          },
+          {
+            "end": 667.5199999999999,
+            "prob": 0.99,
+            "start": 667.3199999999999,
+            "word": "na"
+          },
+          {
+            "end": 668.1799999999998,
+            "prob": 0.91,
+            "start": 667.5199999999999,
+            "word": "pytania"
+          },
+          {
+            "end": 668.56,
+            "prob": 0.19,
+            "start": 668.1799999999998,
+            "word": "z"
+          },
+          {
+            "end": 668.6599999999999,
+            "prob": 0.87,
+            "start": 668.56,
+            "word": "tej"
+          },
+          {
+            "end": 669.5799999999999,
+            "prob": 0.68,
+            "start": 668.6599999999999,
+            "word": "historyjki,"
+          },
+          {
+            "end": 669.7199999999999,
+            "prob": 0.98,
+            "start": 669.5799999999999,
+            "word": "to"
+          },
+          {
+            "end": 670.1599999999999,
+            "prob": 0.96,
+            "start": 669.7199999999999,
+            "word": "zapraszam"
+          },
+          {
+            "end": 670.4599999999999,
+            "prob": 0.99,
+            "start": 670.1599999999999,
+            "word": "na"
+          },
+          {
+            "end": 671.5199999999999,
+            "prob": 0.81,
+            "start": 670.4599999999999,
+            "word": "następną."
+          },
+          {
+            "end": 671.5199999999999,
+            "prob": 0.94,
+            "start": 671.5199999999999,
+            "word": "A"
+          },
+          {
+            "end": 671.8199999999999,
+            "prob": 0.94,
+            "start": 671.5199999999999,
+            "word": "jeśli"
+          },
+          {
+            "end": 672.3799999999999,
+            "prob": 0.95,
+            "start": 671.8199999999999,
+            "word": "nie,"
+          },
+          {
+            "end": 672.5399999999998,
+            "prob": 0.98,
+            "start": 672.3799999999999,
+            "word": "to"
+          },
+          {
+            "end": 672.9599999999999,
+            "prob": 0.97,
+            "start": 672.5399999999998,
+            "word": "proszę"
+          },
+          {
+            "end": 673.6999999999999,
+            "prob": 0.87,
+            "start": 672.9599999999999,
+            "word": "posłuchaj"
+          },
+          {
+            "end": 674.1399999999999,
+            "prob": 0.41,
+            "start": 673.6999999999999,
+            "word": "pytań"
+          },
+          {
+            "end": 674.2599999999999,
+            "prob": 0.59,
+            "start": 674.1399999999999,
+            "word": "i"
+          },
+          {
+            "end": 674.7199999999999,
+            "prob": 0.83,
+            "start": 674.2599999999999,
+            "word": "odpowiedzi"
+          },
+          {
+            "end": 675.0199999999999,
+            "prob": 0.98,
+            "start": 674.7199999999999,
+            "word": "jeszcze"
+          },
+          {
+            "end": 675.8399999999999,
+            "prob": 0.94,
+            "start": 675.0199999999999,
+            "word": "raz."
+          },
+          {
+            "end": 676.3599999999998,
+            "prob": 0.71,
+            "start": 676.1799999999998,
+            "word": "Do"
+          },
+          {
+            "end": 676.8799999999998,
+            "prob": 0.9,
+            "start": 676.3599999999998,
+            "word": "usłyszenia"
+          },
+          {
+            "end": 677.7799999999999,
+            "prob": 0.86,
+            "start": 676.8799999999998,
+            "word": "następnym"
+          },
+          {
+            "end": 678.5199999999998,
+            "prob": 0.93,
+            "start": 677.7799999999999,
+            "word": "razem."
+          },
+          {
+            "end": 678.7399999999998,
+            "prob": 0.14,
+            "start": 678.5199999999998,
+            "word": "Pa,"
+          },
+          {
+            "end": 679.0199999999998,
+            "prob": 0.63,
+            "start": 678.7399999999998,
+            "word": "pa!"
+          }
+        ]
+      }
+    ]
+  ],
+  "status": "COMPLETED"
+}
