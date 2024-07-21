@@ -15,12 +15,6 @@
             [com.submerged-structure.ui-player :as ui-player]
             [com.fulcrologic.semantic-ui.icons :as i]))
 
-(defsc WordLink
-  "Used to for local db normalisation"
-  [this {:word/keys [start end next prev]}]
-  {:ident :word/id
-   :initial-state {:word/id nil}
-   :query [:word/id :word/prev :word/next  :word/start :word/end]})
 
 
 (defsc Word [this {:word/keys [word active score start]}]
@@ -171,7 +165,8 @@
            :ui-prev-word/start
            :ui-next-word/start
 
-           {:transcript/current-word (comp/get-query WordLink)}
+           {:transcript/current-word [:word/id
+                                      :word/word]}
 
            {:transcript/segments (comp/get-query Segment)}
            {:>/transcript-switcher (comp/get-query TranscriptSwitcher)}
