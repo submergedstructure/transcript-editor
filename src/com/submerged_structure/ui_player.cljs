@@ -128,10 +128,11 @@
        "Rewind 15 seconds."
        "Or press the left arrow key."
        (ui-control-button
-         i/chevron-left-icon
-         (fn [_]
-           (when-let [player (get-player)]
-             (.skip player -15)))))
+        i/chevron-left-icon
+        (fn [_]
+          (when-let [player (get-player)]
+            (.skip player -15)))
+        {:disabled (< 15 (.getCurrentTime (get-player)))}))
       (ui-popup-for-controls
        "Back one line."
        ""
