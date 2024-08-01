@@ -30,13 +30,14 @@
 
 (pco/defresolver all-transcripts [_ _]
   {::pco/output [{:transcript-switcher/all-transcripts [:transcript/id]}]}
-  {:transcript-switcher/all-transcripts (mapv #(into {} [[:transcript/id %]]) (keys mock-data/transcripts))})
+  {:transcript-switcher/all-transcripts (mapv #(into {} [[:transcript/id %]]) (mock-data/transcript-ids))})
 
 
 (pco/defresolver current-transcript [_ _]
   {::pco/output [{:root/current-transcript [:transcript/id]}]}
-  {:root/current-transcript {:transcript/id (nth (keys mock-data/transcripts) 2)}})
+  {:root/current-transcript (mock-data/nth-transcript-id 2)})
 
+(comment (filter (fn [[k _]] (= :transcript/id k)) mock-data/transcripts))
 
 (pco/defresolver transcript-data
   [_ {:keys [transcript/id]}]
@@ -44,22 +45,15 @@
    ::pco/output [:transcript/audio-filename :transcript/label :transcript/segments :transcript/id :ui-player/scroll-to-active :ui-player/doing]}
   (js/console.log "MOCK SERVER: Simulate loading transcript data" id)
   (->
-   (get mock-data/transcripts id)
-   (assoc :transcript/segments (mapv #(select-keys % [:segment/id]) (get-in mock-data/transcripts [id :transcript/segments]))
-          :ui-player/scroll-to-active true
+   (get mock-data/transcripts [:transcript/id id])
+   (assoc :ui-player/scroll-to-active true
           :ui-player/doing :loading)))
 
-(defn segment-data-from-tree [segment-id]
-  (->> (vals mock-data/transcripts);all transcripts
-       (mapcat :transcript/segments);all segemnts from all transcripts
-       (filter #(= (:segment/id %) segment-id))
-       first ;specific segment
-       (#(assoc % :segment/words (mapv (fn [word] (select-keys word [:word/id])) (get % :segment/words))))))
-
-  #_(first (filter #(= (:segment/id %) id) (mapcat :transcript/segments (vals mock-data/transcript))))
+#_(defn segment-data-from-tree [segment-id]
+  (get mock-data/transcripts [:segment/id segment-id]))
 
 
-(defn make-link-idents-in-object
+#_(defn make-link-idents-in-object
   "turn IDs with `ns` namespaced keys `keys` in `obj` into idents to the objects in same `ns` or optionally `other-ns`."
   [obj ns keys & [other-ns]]
   (let [nsed-keys (map (partial keyword ns) keys)
@@ -69,14 +63,14 @@
 
 (comment
 
-  (make-link-idents-in-object {:segment/prev "1" :segment/next "2"} "segment" ["prev" "next"])
+  #_(make-link-idents-in-object {:segment/prev "1" :segment/next "2"} "segment" ["prev" "next"])
   ;; => #:segment{:prev #:segment{:id "1"}, :next #:segment{:id "2"}}
 
   (nth (keys mock-data/transcripts) 2)
   ;; => "67fe3ce1-7bcd-434c-a595-c609c51873e7"
 
   (get-in mock-data/transcripts ["67fe3ce1-7bcd-434c-a595-c609c51873e7" :transcript/segments 1 :segment/words 1])
-  (make-link-idents-in-object (get-in mock-data/transcripts ["67fe3ce1-7bcd-434c-a595-c609c51873e7" :transcript/segments 1 :segment/words 1]) "word" ["prev" "next"])
+  #_(make-link-idents-in-object (get-in mock-data/transcripts ["67fe3ce1-7bcd-434c-a595-c609c51873e7" :transcript/segments 1 :segment/words 1]) "word" ["prev" "next"])
   ;; => #:word{:end 13.894,
   ;;           :score 0.94,
   ;;           :start 13.194,
@@ -85,7 +79,7 @@
   ;;           :prev #:word{:id "0ec8b93b-f437-41a0-a57c-c00b50f88d62"},
   ;;           :next #:word{:id "381568e0-6722-4764-8883-5169ee4c47ee"},
   ;;           :segment "3797cf8d-7483-4390-88f0-609f966f1254"}
-  (make-link-idents-in-object (get-in mock-data/transcripts ["67fe3ce1-7bcd-434c-a595-c609c51873e7" :transcript/segments 1 :segment/words 1]) "word" ["segment"] "segment")
+  #_(make-link-idents-in-object (get-in mock-data/transcripts ["67fe3ce1-7bcd-434c-a595-c609c51873e7" :transcript/segments 1 :segment/words 1]) "word" ["segment"] "segment")
   ;; => #:word{:end 13.894,
   ;;           :score 0.94,
   ;;           :start 13.194,
@@ -102,7 +96,7 @@
   
 
 
-  (segment-data-from-tree "946ed8e9-8546-4128-ac5f-a85c3b2cbf14")
+  #_(segment-data-from-tree "946ed8e9-8546-4128-ac5f-a85c3b2cbf14")
   )
 
 
@@ -110,23 +104,13 @@
   [_ {:keys [segment/id]}]
   {::pco/input [:segment/id]
    ::pco/output [:segment/words :segment/end :segment/start :segment/id]}
-  (segment-data-from-tree id))
-
-(defn word-data-from-tree [word-id]
-  (->> mock-data/transcripts
-       vals
-       (mapcat :transcript/segments)
-       (mapcat :segment/words)
-       (filter #(= (:word/id %) word-id))
-       first))
-
-(comment (word-data-from-tree "1b966e29-e96a-4af7-a601-7a71d6fa89f4"))
+  (get mock-data/transcripts [:segment/id id]))
 
 (pco/defresolver word-data
   [_ {:keys [:word/id]}]
   {::pco/input [:word/id]
    ::pco/output [:word/start :word/end :word/id :word/word :word/score]}
-  (->(word-data-from-tree id)
+  (->(get mock-data/transcripts [:word/id id])
    (assoc :word/active false)))
 
 

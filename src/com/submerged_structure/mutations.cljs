@@ -267,6 +267,7 @@
           (swap! state assoc-in [:transcript/id (get-current-transcript-id-from-state @state) :transcript/duration] duration))
   (remote [_] false))
 
+
 (defmutation load-transcript [{:transcript/keys [id]}] 
     (action [{:keys [app state]}]
       (if id

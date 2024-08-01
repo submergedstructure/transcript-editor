@@ -14,7 +14,7 @@
   []
   (println "Initializing the app...")
   (app/set-root! app ui/Root {:initialize-state? true})
-  (comp/transact! app `[(com.submerged-structure.mutations/load-transcript {:transcript/id ~(nth (keys mock-data/transcripts) 0)})])
+  (comp/transact! app `[(com.submerged-structure.mutations/load-transcript {:transcript/id ~(mock-data/nth-transcript-id 2)})])
   (app/mount! app (app/root-class app) "app"))
 
 (defn ^:export refresh 
