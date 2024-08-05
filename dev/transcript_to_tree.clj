@@ -55,10 +55,11 @@
 (defn replace-all-vectors-in-maps-with-ids-of-submaps [m]
   (apply merge m
          (for [[k v] m
-               :when (vector? v)
-               :let [submap-ns (namespace-of-map (first v))
-                     submap-id (keyword submap-ns "id")]]
-           {k (mapv #(into {} [[submap-id (submap-id %)]]) v)})))
+               :when (vector? v)]
+           {k (into [] (keep #(when-not (empty? v)
+                                (let [submap-ns (namespace-of-map (first v))
+                                      submap-id (keyword submap-ns "id")]
+                                  (into {} [[submap-id (submap-id %)]]))) v))})))
 
 (defn flatten-tree-of-maps-into-maps-referenced-by-id
   "Return map to lookup map by keywordized key with identity [keyword-for-id id] of chlidren as values."
@@ -294,7 +295,7 @@
       (assoc "lang" lang)
       (set/rename-keys {"start_time" "start" "end_time" "end"})))))
 
-(defn file-transcribed_segments_to_tree [transcription]
+(defn file-transcribed-segments-to-tree [transcription]
   (mapv
    (fn [segment]
      (->
@@ -314,12 +315,28 @@
 
   )
 
+(def allowed-translation-transcription-timestamp-difference 0.5)
+
+(defn get-segment-data-with-translation [filename transcripts-and-translations]
+  (let [transcribed (file-transcribed-segments-to-tree (get-in transcripts-and-translations [filename "transcription"]))
+        translations (file-translated-segments-to-tree (get-in transcripts-and-translations [filename "translations"]))]
+
+    (mapv (fn [segment]
+            (let [translations-for-segment
+                  (filterv
+                   (fn [translation]
+                     (and
+                      (< (- (get segment "start") allowed-translation-transcription-timestamp-difference) (get translation "start"))
+                      (< (get translation "end") (+ (get segment "end") allowed-translation-transcription-timestamp-difference))))
+                   translations)]
+              (assoc segment "translations" translations-for-segment)))
+          transcribed)))
+
 (defn transcript-tree [filename full-filepath-without-extension]
   (let [transcripts-and-translations (transcripts_all_files)]
     (-> {"audio-filename" (str (subs full-filepath-without-extension (count "resources/public")) ".mp3")
          "label" filename
-         "segments" (file-transcribed_segments_to_tree (get-in transcripts-and-translations [filename "transcription"]))
-         "translations" (file-translated-segments-to-tree (get-in transcripts-and-translations [filename "translations"]))}
+         "segments" (get-segment-data-with-translation filename transcripts-and-translations)}
         add-ids
         (add-ns-and-keywordize-keys-in-m "transcript"))))
 
@@ -343,7 +360,7 @@
       pprint/pprint
       with-out-str
       (str/replace #"^" "  ")
-      (#(str "(ns com.submerged-structure.mock-data)\n\n(def transcripts\n" % ")\n"))
+      (#(str/replace (slurp "resources/txt/mock_data_template.txt") "%%%" %))
       (#(spit "src/com/submerged_structure/mock_data.cljc" %))))
 
 

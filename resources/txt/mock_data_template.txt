@@ -1,0 +1,17 @@
+(ns com.submerged-structure.mock-data)
+
+(def transcripts
+%%%
+)
+
+(defn transcript-ids [] 
+   (into [] (keep (fn [[kw v]] (when (= :transcript/id kw) v)) (keys transcripts))))
+
+(defn nth-transcript-id[n]
+   (get (transcript-ids) n))
+
+(defn nth-transcript-identity[n]
+   [:transcript/id (nth-transcript-id n)])
+
+(comment (transcript-ids)
+   (nth-transcript-id 2))
