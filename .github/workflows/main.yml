@@ -36,9 +36,12 @@ jobs:
         uses: actions/setup-node@v3.4.1
         with:
           node-version-file: ".nvmrc"
+          cache: 'yarn'
       # Runs a set of commands using the runners shell
+      - name: Corepack enable
+        run: corepack enable
       - name: Install dependencies
-        run: npm install
+        run: yarn install
       - name: Setup Clojure
         uses: DeLaGuardo/setup-clojure@9.5
         with:
