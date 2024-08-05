@@ -3,8 +3,8 @@
              [com.fulcrologic.fulcro.algorithms.react-interop :as interop]
              ["@wavesurfer/react" :default WavesurferPlayer]
              ["wavesurfer.js/dist/plugins/minimap.esm.js" :default Minimap]
-             ["wavesurfer.js/dist/plugins/Regions.esm.js" :default Regions]
-             ["wavesurfer.js/dist/plugins/Timeline.esm.js" :default Timeline]
+             ["wavesurfer.js/dist/plugins/regions.esm.js" :default Regions]
+             ["wavesurfer.js/dist/plugins/timeline.esm.js" :default Timeline]
 
              [com.fulcrologic.fulcro.dom :as dom]
              [com.fulcrologic.semantic-ui.elements.button.ui-button-group :refer [ui-button-group]]
