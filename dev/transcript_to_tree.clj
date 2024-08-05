@@ -315,21 +315,33 @@
 
   )
 
-(def allowed-translation-transcription-timestamp-difference 0.5)
+(defn find-translations-within-timestamp-range [start end translations]
+  (filterv
+   (fn [translation]
+     (and
+      (< start (get translation "start"))
+      (< (get translation "end") end)))
+   translations))
+
+;;Detect any translations before the transcription segment starts 
+;; and that ends before the transcription segment ending.
+;;Must be long enough to detect translations with differing time stamps but not too long to detect translations 
+;; of other segments.
+;;If no translations found expand window by 0.1 seconds, each side, and try again.
+(defn find-translations-for-segment [segment translations]
+  (loop [allowed-translation-transcription-timestamp-difference 0.0]
+   (let [start (- (get segment "start") allowed-translation-transcription-timestamp-difference)
+         end (+ (get segment "end") allowed-translation-transcription-timestamp-difference)
+         translations (find-translations-within-timestamp-range start end translations)]
+    (if-not (empty? translations)
+      translations
+      (recur (+ allowed-translation-transcription-timestamp-difference 0.1))))))
 
 (defn get-segment-data-with-translation [filename transcripts-and-translations]
   (let [transcribed (file-transcribed-segments-to-tree (get-in transcripts-and-translations [filename "transcription"]))
         translations (file-translated-segments-to-tree (get-in transcripts-and-translations [filename "translations"]))]
-
     (mapv (fn [segment]
-            (let [translations-for-segment
-                  (filterv
-                   (fn [translation]
-                     (and
-                      (< (- (get segment "start") allowed-translation-transcription-timestamp-difference) (get translation "start"))
-                      (< (get translation "end") (+ (get segment "end") allowed-translation-transcription-timestamp-difference))))
-                   translations)]
-              (assoc segment "translations" translations-for-segment)))
+            (assoc segment "translations" (find-translations-for-segment segment translations)))
           transcribed)))
 
 (defn transcript-tree [filename full-filepath-without-extension]

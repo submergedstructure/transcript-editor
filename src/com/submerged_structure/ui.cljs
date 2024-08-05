@@ -12,8 +12,10 @@
             [com.fulcrologic.semantic-ui.elements.segment.ui-segment :as semantic-ui-segment]
             [com.fulcrologic.semantic-ui.collections.message.ui-message :refer [ui-message]]
             [com.fulcrologic.semantic-ui.collections.message.ui-message-header :refer [ui-message-header]]
+            [com.fulcrologic.semantic-ui.elements.label.ui-label :refer [ui-label]]
             [com.submerged-structure.ui-player :as ui-player]
-            [com.fulcrologic.semantic-ui.icons :as i]))
+            [com.fulcrologic.semantic-ui.icons :as i]
+            [clojure.string :as s]))
 
 
 
@@ -29,12 +31,23 @@
 
 (def ui-word (comp/factory Word {:keyfn :word/id}))
 
+(defsc Translation [_this {:translation/keys [id text lang]}]
+  {:ident :translation/id
+   :query [:translation/id :translation/text :translation/start :translation/end :translation/lang]}
+  (ui-label {:onRemove (fn [_] (js/console.log "remove" id))
+             :pointing :above
+             :detail text
+             :content lang}))
 
-(defsc Segment [this {:keys [segment/words]}]
+(def ui-translation (comp/factory Translation {:keyfn :translation/id}))
+
+(defsc Segment [this {:keys [segment/words segment/translations]}]
   {:ident :segment/id
    :initial-state (fn [_] {:segment/words (comp/get-initial-state Word {})})
-   :query [:segment/id :segment/start :segment/end {:segment/words (comp/get-query Word)}]}
-  (p (interleave (map ui-word words) (repeat " ")))) ;; space between words is language dependent may need to change to support eg. Asian languages.
+   :query [:segment/id :segment/start :segment/end {:segment/words (comp/get-query Word)} {:segment/translations (comp/get-query Translation)}]}
+  (div :.segment-transcription-and-translation
+       (p :.transcription (interleave (map ui-word words) (repeat " "))) ;; space between words is language dependent may need to change to support eg. Asian languages.
+       (map ui-translation translations))) 
 
 (def ui-segment (comp/factory Segment {:keyfn :segment/id}))
 

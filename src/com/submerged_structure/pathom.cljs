@@ -103,8 +103,15 @@
 (pco/defresolver segment-data
   [_ {:keys [segment/id]}]
   {::pco/input [:segment/id]
-   ::pco/output [:segment/words :segment/end :segment/start :segment/id]}
+   ::pco/output [:segment/words :segment/end :segment/start :segment/id :segment/translations]}
   (get mock-data/transcripts [:segment/id id]))
+
+(pco/defresolver translation-data
+  [_ {:keys [:translation/id]}]
+  {::pco/input [:translation/id]
+   ::pco/output [:translation/id :translation/lang :translation/text :translation/start :translation/end]}
+  (get mock-data/transcripts [:translation/id id]))
+
 
 (pco/defresolver word-data
   [_ {:keys [:word/id]}]
@@ -121,6 +128,7 @@
    #_person
    transcript-data
    segment-data
+   translation-data
    word-data
    current-transcript
    all-transcripts])
