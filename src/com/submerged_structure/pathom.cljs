@@ -109,8 +109,10 @@
 (pco/defresolver translation-data
   [_ {:keys [:translation/id]}]
   {::pco/input [:translation/id]
-   ::pco/output [:translation/id :translation/lang :translation/text :translation/start :translation/end]}
-  (get mock-data/transcripts [:translation/id id]))
+   ::pco/output [:translation/id :translation/lang :translation/text :translation/start :translation/end :translation/visible?]}
+  (-> 
+   (get mock-data/transcripts [:translation/id id])
+   (assoc :translation/visible? true)))
 
 
 (pco/defresolver word-data

@@ -29,15 +29,15 @@
 (defn all-words-with-word-and-segment-nos'
   [segment-word-tree]
   (into []
-   (map-indexed (fn [word-no-in-transcript word-noed] (assoc word-noed :transcript/word-no word-no-in-transcript))              
-   (for [segment-no (range (count segment-word-tree))
-         word-no (range (count (get-in segment-word-tree [segment-no :segment/words])))
-         :let [segment (get-in segment-word-tree [segment-no])
-               word (get-in segment [:segment/words word-no])]
-         :when (:word/start word)]
-    (assoc (select-keys word [:word/start :word/end :word/id])
-           :segment/no segment-no
-           :word/no word-no)))))
+        (map-indexed (fn [word-no-in-transcript word-noed] (assoc word-noed :transcript/word-no word-no-in-transcript))
+                     (for [segment-no (range (count segment-word-tree))
+                           word-no (range (count (get-in segment-word-tree [segment-no :segment/words])))
+                           :let [segment (get-in segment-word-tree [segment-no])
+                                 word (get-in segment [:segment/words word-no])]
+                           :when (:word/start word)]
+                       (assoc (select-keys word [:word/start :word/end :word/id])
+                              :segment/no segment-no
+                              :word/no word-no)))))
 
 
 (def all-words-with-word-and-segment-nos
@@ -45,7 +45,7 @@
    Return a list of words with all keys needed later.
        :segment/no, :word/no, :transcript/word-no.
    (memoized)"
-  (memoize all-words-with-word-and-segment-nos'))  
+  (memoize all-words-with-word-and-segment-nos'))
 
 (defn find-last-word-started-before-t-with-added-segment-and-word-no-of-word [segment-word-tree t]
   (let [segment-word-idxs (all-words-with-word-and-segment-nos segment-word-tree)]
@@ -69,7 +69,7 @@
                                           [#:word{:id "1d0a2f01-b3dd-45c1-a911-04e6aa7da3c6", :start 2.331, :end 2.491}
                                            #:word{:id "870e7926-6060-48ee-a5f2-336aecbfc71c"}
                                            #:word{:id "6c0aa568-869c-49d3-833f-fc9b637e4508", :start 3.091, :end 3.371}]}])
-                                           
+
 
   (all-words-with-word-and-segment-nos segment-word-tree-short)
   ;; => ({:word/id "fb663d8a-947e-4a60-80e9-44d95217d431",
@@ -127,8 +127,7 @@
   ;;     :segment/no 0,
   ;;     :word/no 2,
   ;;     :transcript/word-no 2}
-
-)
+  )
 
 (defn changes-to-make-to-transcript-keys-in-local-db-when-time-changes
   "Return the id of current word to highlight or nil if no word to highlight.
@@ -231,18 +230,17 @@
 
 
 
-  (changes-to-make-to-transcript-keys-in-local-db-when-time-changes state-deref 15.0)
-  )
+  (changes-to-make-to-transcript-keys-in-local-db-when-time-changes state-deref 15.0))
 
 (defmutation update-transcript-current-time
   "Sets the currently active word, if there is one, and also sets the start and end time of the time period that the word or pause covers."
-  
+
   [{:transcript/keys [current-time]}]
   (action [{:keys [state]}]
           (let [transcript-id (get-current-transcript-id-from-state @state)
                 transcript-keys-to-update (changes-to-make-to-transcript-keys-in-local-db-when-time-changes @state current-time)
                 last-current-word-id (get-in @state [:transcript/id transcript-id :transcript/current-word 1])]
-            (do 
+            (do
               (js/console.log "update-transcript-current-time" current-time last-current-word-id transcript-keys-to-update)
               (doall (map (fn [[k v]] (swap! state assoc-in (conj [:transcript/id transcript-id] k) v)) transcript-keys-to-update))
               ;; deactivate last word
@@ -253,7 +251,6 @@
                 (swap! state assoc-in [:word/id new-current-word-id :word/active] true)))))
   (remote [_] false))
 
-
 (defmutation hide-transcript-help [_]
   (action [{:keys [state]}]
           (swap! state assoc :ui/help-hidden true)))
@@ -262,22 +259,26 @@
   (action [{:keys [state]}]
           (swap! state assoc-in [:transcript/id (get-current-transcript-id-from-state @state) :ui-player/doing] doing)))
 
+(defmutation toggle-translation [{:keys [:translation/id]}]
+  (action [{:keys [state]}]
+          (swap! state update-in [:translation/id id :translation/visible?] not)))
+
 (defmutation update-transcript-duration [{:transcript/keys [duration]}]
   (action [{:keys [state]}]
           (swap! state assoc-in [:transcript/id (get-current-transcript-id-from-state @state) :transcript/duration] duration))
   (remote [_] false))
 
 
-(defmutation load-transcript [{:transcript/keys [id]}] 
-    (action [{:keys [app state]}]
-      (if id
-        (let [next-transcript-ident [:transcript/id id]]
-          (swap! state assoc-in [:root/current-transcript] next-transcript-ident)
-          (df/load! app next-transcript-ident ui/Transcript)
-          (swap! state assoc-in (concat next-transcript-ident [:ui-player/doing]) :loading)
-          (swap! state assoc :ui/help-hidden false))
-        
-        (df/load! app :root/current-transcript ui/Transcript)))
+(defmutation load-transcript [{:transcript/keys [id]}]
+  (action [{:keys [app state]}]
+          (if id
+            (let [next-transcript-ident [:transcript/id id]]
+              (swap! state assoc-in [:root/current-transcript] next-transcript-ident)
+              (df/load! app next-transcript-ident ui/Transcript)
+              (swap! state assoc-in (concat next-transcript-ident [:ui-player/doing]) :loading)
+              (swap! state assoc :ui/help-hidden false))
+
+            (df/load! app :root/current-transcript ui/Transcript)))
   (remote [_] false))
 
 (defmutation toggle-transcript-scroll-to-active [_]

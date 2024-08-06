@@ -13,9 +13,10 @@
             [com.fulcrologic.semantic-ui.collections.message.ui-message :refer [ui-message]]
             [com.fulcrologic.semantic-ui.collections.message.ui-message-header :refer [ui-message-header]]
             [com.fulcrologic.semantic-ui.elements.label.ui-label :refer [ui-label]]
+            [com.fulcrologic.semantic-ui.modules.popup.ui-popup :refer [ui-popup]]
             [com.submerged-structure.ui-player :as ui-player]
             [com.fulcrologic.semantic-ui.icons :as i]
-            [clojure.string :as s]))
+            [clojure.string :as str]))
 
 
 
@@ -31,23 +32,50 @@
 
 (def ui-word (comp/factory Word {:keyfn :word/id}))
 
-(defsc Translation [_this {:translation/keys [id text lang]}]
+(defsc Translation
+  "`visible?` is a boolean. css class makes the translation appear to the right of a segment when translation hidden or below when shown."
+  [this {:translation/keys [id text lang visible?]}]
   {:ident :translation/id
-   :query [:translation/id :translation/text :translation/start :translation/end :translation/lang]}
-  (ui-label {:onRemove (fn [_] (js/console.log "remove" id))
-             :pointing :above
-             :detail text
-             :content lang}))
+   :initial-state {}
+   :query [:translation/id :translation/text :translation/start :translation/end :translation/lang :translation/visible?]}
+  (span 
+   {:classes ["translation" (if visible? "translation-visible" "translation-hidden")]}
+   (let [translation-failed (= (str/lower-case (:segment/transcription-text (comp/get-computed this))) (str/lower-case text))
+         toggle-func (fn [e & args]
+                       (. e stopPropagation) ;; necessary to prevent the toggle from happening twice when both onRemove and onClick are called.
+                       (js/console.log "Toggle show translation:" e args id)
+                       (comp/transact!
+                        this
+                        `[(com.submerged-structure.mutations/toggle-translation {:translation/id ~id})]))]
+     (ui-popup
+      {:size "tiny"
+       :position "top center"
+       :hideOnScroll true
+       :header (str "\"" lang "\" translation")
+       :content (str 
+                 (if visible? "Click to hide translation" "Click to show translation")
+                 (when translation-failed " ... Sorry the AI failed to translate this."))
+       :trigger (ui-label {:onRemove (when visible? toggle-func)
+                           :color (when translation-failed "red")
+                           :onClick toggle-func
+                           :pointing (if visible? :above :left)
+                           :detail (when visible? text)
+                           :size :large
+                           :content lang})}))))
 
-(def ui-translation (comp/factory Translation {:keyfn :translation/id}))
+(def ui-translation (comp/computed-factory Translation {:keyfn :translation/id}))
 
-(defsc Segment [this {:keys [segment/words segment/translations]}]
+
+(defsc Segment [_this {:segment/keys [words translations text]}]
   {:ident :segment/id
    :initial-state (fn [_] {:segment/words (comp/get-initial-state Word {})})
-   :query [:segment/id :segment/start :segment/end {:segment/words (comp/get-query Word)} {:segment/translations (comp/get-query Translation)}]}
+   :query [:segment/id :segment/start :segment/end :segment/text
+           {:segment/words (comp/get-query Word)}
+           {:segment/translations (comp/get-query Translation)}]}
   (div :.segment-transcription-and-translation
-       (p :.transcription (interleave (map ui-word words) (repeat " "))) ;; space between words is language dependent may need to change to support eg. Asian languages.
-       (map ui-translation translations))) 
+       (p (span :.transcription (interleave (map ui-word words) (repeat " ")))
+          (map (fn [translation](ui-translation translation {:segment/transcription-text text})) translations)))) ;; space between words is language dependent may need to change to support eg. Asian languages.
+       
 
 (def ui-segment (comp/factory Segment {:keyfn :segment/id}))
 

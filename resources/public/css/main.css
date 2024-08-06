@@ -31,11 +31,12 @@ div.segment-transcription-and-translation {
     margin-bottom: 1.5em;
 }
 
-div.segment-transcription-and-translation p.transcription {
+
+.translation {
+    font-style: italic;
     margin: 0.0;
 }
 
-p.translation {
-    font-style: italic;
-    margin: 0.0;
+.translation.translation-visible {
+    display: block;
 }
