@@ -39,6 +39,12 @@
 
 (comment (filter (fn [[k _]] (= :transcript/id k)) mock-data/transcripts))
 
+(pco/defresolver translation-control-data [_ {:ui-translation-control/keys [language]}]
+  {::pco/input [:ui-translation-control/language]
+   ::pco/output [:ui-translation-control/language :ui-translation-control/visible-translations?]}
+  {:ui-translation-control/language language
+   :ui-translation-control/visible-translations? false})
+
 (pco/defresolver transcript-data
   [_ {:keys [transcript/id]}]
   {::pco/input  [:transcript/id]
@@ -47,7 +53,8 @@
   (->
    (get mock-data/transcripts [:transcript/id id])
    (assoc :ui-player/scroll-to-active true
-          :ui-player/doing :loading)))
+          :ui-player/doing :loading
+          :ui-translation-controls/languages [{:ui-translation-control/language "en"}])))
 
 #_(defn segment-data-from-tree [segment-id]
   (get mock-data/transcripts [:segment/id segment-id]))
@@ -112,7 +119,7 @@
    ::pco/output [:translation/id :translation/lang :translation/text :translation/start :translation/end :translation/visible?]}
   (-> 
    (get mock-data/transcripts [:translation/id id])
-   (assoc :translation/visible? true)))
+   (assoc :translation/visible? false)))
 
 
 (pco/defresolver word-data
@@ -129,6 +136,7 @@
    #_i-fail
    #_person
    transcript-data
+   translation-control-data
    segment-data
    translation-data
    word-data

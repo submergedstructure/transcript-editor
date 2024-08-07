@@ -4,7 +4,6 @@
              ["@wavesurfer/react" :default WavesurferPlayer]
              ["wavesurfer.js/dist/plugins/minimap.esm.js" :default Minimap]
              ["wavesurfer.js/dist/plugins/regions.esm.js" :default Regions]
-             ["wavesurfer.js/dist/plugins/timeline.esm.js" :default Timeline]
 
              [com.fulcrologic.fulcro.dom :as dom]
              [com.fulcrologic.semantic-ui.elements.button.ui-button-group :refer [ui-button-group]]
@@ -131,7 +130,8 @@
     :hideOnScroll true
     :header header
     :content content
-    :trigger trigger}))
+    :trigger trigger}
+   ))
 
 (defn ui-control-button [icon-name on-click & [options]]
   (ui-button
@@ -140,10 +140,63 @@
      :onClick on-click}
     options)))
 
-(defn ui-player-controls [transcript-comp doing scroll-to-active prev-word-start prev-segment-start word-start segment-start next-word-start next-segment-start]
+(defsc TranslationControl [this {:ui-translation-control/keys [language visible-translations?]}]
+  {:ident :ui-translation-control/language
+   :query [:ui-translation-control/language
+           :ui-translation-control/visible-translations?]}
+  (ui-popup-for-controls
+   (if visible-translations? (str "Hide ALL \"" language "\" translations.") (str "Show ALL \"" language "\" translations."))
+   (str "If any \"" language "\" translations for the transcript setences are shown clicking will hide them all, if none are clicking will reveal them all.")
+   (ui-control-button
+    i/language-icon
+    (fn [& _args]
+      (comp/transact!
+       this
+       `[(com.submerged-structure.mutations/toggle-visibility-of-all-translations-in-lang {:ui-translation-control/language ~language})]))
+    {:positive visible-translations?
+     :labelPosition "right"
+     :label {:pointing "left"
+             :content language}})))
+
+(def ui-translation-control (comp/factory TranslationControl {:keyfn :ui-translation-control/language}))
+
+(defsc TranslationControls [_this {:ui-translation-controls/keys [languages]}]
+  {:ident :transcript/id
+   :query [:transcript/id
+           {:ui-translation-controls/languages (comp/get-query TranslationControl)}]}
+  (ui-button-group
+   nil
+   (mapv ui-translation-control languages)))
+
+(def ui-translation-controls (comp/factory TranslationControls))
+
+(defsc PlayerControls [this {:ui-player/keys  [doing scroll-to-active]
+                             
+                             prev-segment-start :ui-prev-segment/start
+                             current-word-start  :ui-current-word/start
+                             current-segment-start  :ui-current-segment/start
+                             next-segment-start :ui-next-segment/start
+                             prev-word-start :ui-prev-word/start
+                             next-word-start :ui-next-word/start
+                             
+                             :>/keys [language-controls]}]
+  
+  {:ident :transcript/id
+   :query [:transcript/id
+           :ui-player/doing
+           :ui-player/scroll-to-active
+
+           :ui-prev-segment/start
+           :ui-current-word/start
+           :ui-current-segment/start
+           :ui-next-segment/start
+           :ui-prev-word/start
+           :ui-next-word/start
+           
+           {:>/language-controls (comp/get-query TranslationControls)}]}
   (if (or (= doing :loading) (nil? (get-player)))
     (ui-icon {:name "loading spinner"})
-    (dom/div
+    (dom/div {}
      (ui-button-group
       nil
       (ui-popup-for-controls
@@ -181,9 +234,9 @@
         i/reply-all-icon
         (fn [_]
           (when-let [player (get-player)]
-            (.setTime player segment-start)
+            (.setTime player current-segment-start)
             (.play player)))
-        {:disabled (nil? segment-start)}))
+        {:disabled (nil? current-segment-start)}))
       (ui-popup-for-controls
        "Back to start of word and play."
        ""
@@ -191,9 +244,9 @@
         i/reply-icon
         (fn [_]
           (when-let [player (get-player)]
-            (.setTime player word-start)
+            (.setTime player current-word-start)
             (.play player)))
-        {:disabled (nil? word-start)}))
+        {:disabled (nil? current-word-start)}))
       (ui-popup-for-controls
        "Play/Pause"
        ""
@@ -203,12 +256,11 @@
           (when (get-player)
             (if (= doing :playing) (.pause (get-player)) (.play (get-player)))))
         {:labelPosition "left"
-         :label (ui-label
-                 {:pointing "right"
-                  :content (dom/span
-                            (dom/span :#player-time (time-float-to-string 0 (.getDuration (get-player))))
-                            " of "
-                            (time-float-to-string (.getDuration (get-player)) (.getDuration (get-player))))})}))
+         :label {:pointing "right"
+                 :content (dom/span
+                           (dom/span :#player-time (time-float-to-string 0 (.getDuration (get-player))))
+                           " of "
+                           (time-float-to-string (.getDuration (get-player)) (.getDuration (get-player))))}}))
       (ui-popup-for-controls
        "Forward one word and play."
        ""
@@ -255,12 +307,14 @@
        (ui-control-button
         i/crosshairs-icon
         (fn [& _args]
-          (comp/transact! transcript-comp `[(com.submerged-structure.mutations/toggle-transcript-scroll-to-active {})]))
+          (comp/transact! this `[(com.submerged-structure.mutations/toggle-transcript-scroll-to-active {})]))
         {:positive scroll-to-active
          :labelPosition "right"
-         :label (ui-label
-                 {:pointing "left"
-                  :content (str "Auto scroll " (if scroll-to-active "on" "off"))})}))))))
+         :label {:pointing "left"
+                 :content (str "Auto scroll " (if scroll-to-active "on" "off"))}})))
+      (ui-translation-controls language-controls))))
+(def ui-player-controls (comp/factory PlayerControls))
+
 
 (comment (get-player)
          (js/console.log (:player @player-local))

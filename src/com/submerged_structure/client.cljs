@@ -31,12 +31,11 @@
   (df/load! app :>/transcript-switcher ui/TranscriptSwitcher)
   (app/force-root-render! app)
   (app/current-state app)
-  (com.fulcrologic.fulcro.components/get-initial-state com.submerged-structure.ui/Root)
+  (com.fulcrologic.fulcro.components/get-query com.submerged-structure.ui/Root)
 
   (let [state (app/current-state app)]
     (fdn/db->tree
-     [{[:transcript/id "71f28d76-ba2e-46da-be47-8d2162b20803"]
-       [:transcript/id
+     [{:root/current-transcript[
         #:transcript{:segments
                      [:segment/id :segment/start :segment/end #:segment{:words [:word/id :word/start :word/end]}]}]}] ; or any component
           ;; Starting entity, state itself for Root
