@@ -20,9 +20,9 @@
 
 
 
-(defsc Word [this {:word/keys [word active score start]}]
+(defsc Word [_this {:word/keys [word active score start]}]
   {:ident :word/id
-   :initial-state {:word/active false}
+   :initial-state {}
    :query [:word/id :word/word :word/start :word/end :word/active :word/score]}
   (span {:data-c score
          :classes [(when active "active") "word"]
@@ -46,14 +46,14 @@
                        (js/console.log "Toggle show translation:" e args id)
                        (comp/transact!
                         this
-                        `[(com.submerged-structure.mutations/toggle-translation {:translation/id ~id})]))]
+                        `[(com.submerged-structure.mutations/toggle-visibility-of-translation {:translation/id ~id})]))]
      (ui-popup
       {:size "tiny"
        :position "top center"
        :hideOnScroll true
        :header (str "\"" lang "\" translation")
        :content (str 
-                 (if visible? "Click to hide translation" "Click to show translation")
+                 (if visible? "Click to hide translation" "Click to show translation of this setence. You can also use the button above to the right of the player controls to show or hide all translations.")
                  (when translation-failed " ... Sorry the AI failed to translate this."))
        :trigger (ui-label {:onRemove (when visible? toggle-func)
                            :color (when translation-failed "red")
@@ -68,13 +68,14 @@
 
 (defsc Segment [_this {:segment/keys [words translations text]}]
   {:ident :segment/id
-   :initial-state (fn [_] {:segment/words (comp/get-initial-state Word {})})
+   :initial-state (fn [_] {:segment/words (comp/get-initial-state Word {})
+                           :segment/translations (comp/get-initial-state Translation {})})
    :query [:segment/id :segment/start :segment/end :segment/text
            {:segment/words (comp/get-query Word)}
            {:segment/translations (comp/get-query Translation)}]}
   (div :.segment-transcription-and-translation
-       (p (span :.transcription (interleave (map ui-word words) (repeat " ")))
-          (map (fn [translation](ui-translation translation {:segment/transcription-text text})) translations)))) ;; space between words is language dependent may need to change to support eg. Asian languages.
+       (span :.transcription (interleave (map ui-word words) (repeat " ")))
+       (map (fn [translation] (ui-translation translation {:segment/transcription-text text})) translations))) ;; space between words is language dependent may need to change to support eg. Asian languages.
        
 
 (def ui-segment (comp/factory Segment {:keyfn :segment/id}))
@@ -132,11 +133,10 @@
 
 (defsc TranscriptSwitcherOption
   "db only, for normalisation"
-  [this {:transcript/keys [id label]}]
+  [_this {}]
   {:ident :transcript/id
    :query [:transcript/id :transcript/label]
-   :initial-state {:transcript/id nil
-                   :transcript/label ""}})
+   :initial-state {}})
 
 #_(def ui-transcript-switcher-option (comp/computed-factory TranscriptSwitcherOption {:keyfn :transcript/id}))
 
@@ -162,36 +162,20 @@
 
 (def ui-transcript-switcher (comp/computed-factory TranscriptSwitcher))
 
-(defsc Transcript [this {prev-segment-start :ui-prev-segment/start
-                         current-word-start  :ui-current-word/start
-                         current-segment-start  :ui-current-segment/start
-                         next-segment-start :ui-next-segment/start
-                         prev-word-start :ui-prev-word/start
-                         next-word-start :ui-next-word/start
-
-                         :ui/keys [help-hidden]
-                         
+(defsc Transcript [this {:ui/keys [help-hidden]
                          :transcript/keys [id
                                            segments]
-                         :ui-player/keys  [doing scroll-to-active]
                          :>/keys          [player
-                                           transcript-switcher]}]
+                                           transcript-switcher
+                                           player-controls]}]
   {:ident :transcript/id
-   :initial-state (fn [_] {:transcript/current-word [:word/id nil]
-                           :ui-period/start 0
-                           :ui-period/end nil
-                           :ui-current-segment/start nil
-                           :ui-player/doing :loading
-
-                           :ui-player/scroll-to-active true
-                           :transcript/segments (comp/get-initial-state Segment {})
+   :initial-state (fn [_] {:transcript/segments (comp/get-initial-state Segment {})
                            :>/transcript-switcher (comp/get-initial-state TranscriptSwitcher {})
-                           :>/player (comp/get-initial-state ui-player/PlayerComponent {})})
+                           :>/player (comp/get-initial-state ui-player/PlayerComponent {})
+                           :>/player-controls (comp/get-initial-state ui-player/PlayerControls {})})
    :query [:transcript/id
            :transcript/label
            :transcript/duration
-
-           :ui-player/doing
 
            [:ui/help-hidden '_]
 
@@ -200,19 +184,15 @@
            :ui-period/start
            :ui-period/end
 
-           :ui-prev-segment/start
-           :ui-current-word/start
-           :ui-current-segment/start
-           :ui-next-segment/start
-           :ui-prev-word/start
-           :ui-next-word/start
 
+           
            {:transcript/current-word [:word/id
                                       :word/word]}
 
            {:transcript/segments (comp/get-query Segment)}
            {:>/transcript-switcher (comp/get-query TranscriptSwitcher)}
-           {:>/player (comp/get-query ui-player/PlayerComponent)}]}
+           {:>/player (comp/get-query ui-player/PlayerComponent)}
+           {:>/player-controls (comp/get-query ui-player/PlayerControls)}]}
   (div :.ui.container
        (ui-transcript-switcher transcript-switcher {:current-transcript id})
        (ui-sticky
@@ -227,7 +207,7 @@
           (semantic-ui-segment/ui-segment
            {:basic true
             :textAlign "center"}
-           (ui-player/ui-player-controls this doing scroll-to-active  prev-word-start prev-segment-start current-word-start current-segment-start next-word-start next-segment-start)))})
+           (ui-player/ui-player-controls player-controls)))})
        (when-not
         help-hidden
          (ui-message
