@@ -17,15 +17,12 @@
   (comp/transact! app `[(com.submerged-structure.mutations/load-transcript {:transcript/id ~(mock-data/nth-transcript-id 2)})])
   (app/mount! app (app/root-class app) "app"))
 
-(defn ^:export refresh 
+(defn ^:export refresh
   "Called by shadow-cljs upon hot code reload, see shadow-cljs.edn"
   []
   (println "Refreshing after a hot code reload...")
-  (comp/transact! app `[(com.submerged-structure.mutations/load-transcript)])
-  (app/mount! app (app/root-class app) "app")
-  
-  
-  )
+  (comp/transact! app `[(com.submerged-structure.mutations/load-transcript {:transcript/id ~(mock-data/nth-transcript-id 2)})])
+  (app/mount! app (app/root-class app) "app"))
 
 (comment
   (df/load! app :>/transcript-switcher ui/TranscriptSwitcher)
