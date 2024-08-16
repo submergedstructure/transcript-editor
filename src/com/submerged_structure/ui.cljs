@@ -29,7 +29,7 @@
   "More than one link for when word is two space separated lemmas."
   [word]
   (for [w (str/split word #" ")]
-    (span (a {:href (str "https://en.wiktionary.org/wiki/" w "#Polish")
+    (span (a {:href (str "https://www.diki.pl/slownik-angielskiego?q=" w)
               :target "_blank"}
              w) " ")))
 
@@ -252,7 +252,21 @@
                 (li "You can click on any word in the transcript to skip forward or backward to that word and begin playing.")
                 (li "You can also click on the audio waveform itself to skip to that point in the audio.")
                 (li "The top of the waveform visualisation is a zoomed in view of the currently playing audio. Below this is a zoomed out view of the entire audio. You can click on either to skip to that point in the audio.")
-                (li "Hover over playback control buttons below the waveform with your cursor for more information about what they do."))))))
+                (li "Hover over playback control buttons below the waveform with your cursor for more information about what they do.")))
+           (li (b "Translations: ")
+               (ul
+                (li "Click on the button next to a sentence to see a translation of that sentence. You can also click on the translation to hide it again.")
+                (li "You can also click on the button to the right of the player controls to show or hide all translations at once."))
+               )
+           (li (b "Grammar Analysis:")
+               (ul
+                (li "Hover over any word to see the root word it is derived from and the grammatical features of that word.")
+                )
+               )
+           (li (b "Links to dictionary for individual words:")
+               (ul
+                (li "Click on linked root word and / or the declined word itself in the grammatical analysis pop up to see the definition of the word on "(a {:href "https://www.diki.pl/" :target "_blank"} "diki.pl")"."))
+               ))))
        (confidence-key)
        (div :.transcript
             {:id (str "transcript-" id)}
