@@ -1,9 +1,8 @@
 (ns com.submerged-structure.ui
-  (:require [com.fulcrologic.fulcro.dom :as dom  :refer [div h1 h2 h3 li p ul span i b]]
+  (:require [com.fulcrologic.fulcro.dom :as dom  :refer [div h1 h2 h3 li p ul span i b a]]
             [com.fulcrologic.fulcro.algorithms.normalize :as fn]
             
             [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-            [com.submerged-structure.mock-data :as mock-data]
             [goog.functions :as gf]
             [com.submerged-structure.confidence-to-color :as c-to-c]
             [com.fulcrologic.semantic-ui.modules.sticky.ui-sticky :refer [ui-sticky]]
@@ -14,21 +13,51 @@
             [com.fulcrologic.semantic-ui.collections.message.ui-message-header :refer [ui-message-header]]
             [com.fulcrologic.semantic-ui.elements.label.ui-label :refer [ui-label]]
             [com.fulcrologic.semantic-ui.modules.popup.ui-popup :refer [ui-popup]]
+            [com.fulcrologic.semantic-ui.modules.popup.ui-popup-content :refer [ui-popup-content]]
+            [com.fulcrologic.semantic-ui.modules.popup.ui-popup-header :refer [ui-popup-header]]
             [com.submerged-structure.ui-player :as ui-player]
             [com.fulcrologic.semantic-ui.icons :as i]
-            [clojure.string :as str]))
+            [com.fulcrologic.semantic-ui.elements.icon.ui-icon :refer [ui-icon]]
+            
+            [clojure.string :as str]
+            
+            [com.submerged-structure.mock-data :as mock-data]
+            [com.submerged-structure.spacy-morph :as spacy-morph]))
 
 
+(defn dict-link
+  "More than one link for when word is two space separated lemmas."
+  [word]
+  (for [w (str/split word #" ")]
+    (span (a {:href (str "https://en.wiktionary.org/wiki/" w "#Polish")
+              :target "_blank"}
+             w) " ")))
 
-(defsc Word [_this {:word/keys [word active score start]}]
+(defsc Word [_this {:word/keys [word active score start lemma pos_explained is_morphed norm]
+                    :>/keys [morphological-features]}]
   {:ident :word/id
    :initial-state {}
-   :query [:word/id :word/word :word/start :word/end :word/active :word/score]}
-  (span {:data-c score
-         :classes [(when active "active") "word"]
-         :onClick (fn [ws] (ui-player/on-word-click ws start))
-         :style (c-to-c/confidence-to-style score)}
-        word))
+   :query [:word/id :word/word :word/start :word/end :word/active :word/score :word/morph :word/lemma :word/pos :word/pos_explained :word/is_morphed :word/norm
+           {:>/morphological-features (comp/get-query spacy-morph/MorphologicalFeaturesPopupContent)}]}
+  (ui-popup
+   {:size "tiny"
+    :hoverable true
+    :position "bottom center"
+    :hideOnScroll true
+    :trigger (span {:data-c score
+                    :classes [(when active "active") "word"]
+                    :onClick (fn [ws] (ui-player/on-word-click ws start))
+                    :style (c-to-c/confidence-to-style score)}
+                   word)}
+   (ui-popup-header
+    {}
+    (span
+     (when is_morphed
+       (span nil (dict-link lemma) "  " (ui-icon {:name i/arrow-right-icon}) " "))
+     (dict-link norm)
+     (span nil " (" pos_explained ")")))
+   (spacy-morph/ui-morphological-features-popup-content morphological-features)
+   ))
 
 (def ui-word (comp/factory Word {:keyfn :word/id}))
 
