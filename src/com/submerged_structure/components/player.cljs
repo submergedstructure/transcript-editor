@@ -1,4 +1,4 @@
-(ns com.submerged-structure.ui-player
+(ns com.submerged-structure.components.player
    (:require [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
              [com.fulcrologic.fulcro.algorithms.react-interop :as interop]
              ["@wavesurfer/react" :default WavesurferPlayer]
@@ -11,7 +11,6 @@
              [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
              [com.fulcrologic.semantic-ui.elements.icon.ui-icon :refer [ui-icon]]
              [com.fulcrologic.semantic-ui.icons :as i]
-             [com.fulcrologic.semantic-ui.elements.label.ui-label :refer [ui-label]]
 
              [goog.string :as gstring]))
 

@@ -1,4 +1,4 @@
-(ns com.submerged-structure.spacy-morph
+(ns com.submerged-structure.components.morphological-features-popup-content
   (:require
    [com.fulcrologic.fulcro.dom :as dom  :refer [div p]]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]

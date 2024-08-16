@@ -1,0 +1,20 @@
+(ns com.submerged-structure.components.segment
+  (:require [com.fulcrologic.fulcro.dom :as dom  :refer [div span]]
+            [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+            [com.submerged-structure.components.translation :as translation]
+            [com.submerged-structure.components.word :as word]))
+
+
+(defsc Segment [_this {:segment/keys [words translations text]}]
+  {:ident :segment/id
+   :initial-state (fn [_] {:segment/words (comp/get-initial-state word/Word {})
+                           :segment/translations (comp/get-initial-state translation/Translation {})})
+   :query [:segment/id :segment/start :segment/end :segment/text
+           {:segment/words (comp/get-query word/Word)}
+           {:segment/translations (comp/get-query translation/Translation)}]}
+  (div :.segment-transcription-and-translation
+       (span :.transcription (interleave (map word/ui-word words) (repeat " ")))
+       (map (fn [translation] (translation/ui-translation translation {:segment/transcription-text text})) translations))) ;; space between words is language dependent may need to change to support eg. Asian languages.
+
+
+(def ui-segment (comp/factory Segment {:keyfn :segment/id}))

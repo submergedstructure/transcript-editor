@@ -8,7 +8,8 @@
    [com.fulcrologic.fulcro.mutations :refer [defmutation]]
    [com.fulcrologic.fulcro.algorithms.denormalize :as fdn]
    [com.fulcrologic.fulcro.data-fetch :as df]
-   [com.submerged-structure.ui :as ui]))
+   
+   [com.submerged-structure.components.transcript :as transcript]))
 
 (defn get-current-transcript-id-from-state
   [state-deref]
@@ -339,11 +340,11 @@
           (if id
             (let [next-transcript-ident [:transcript/id id]]
               (swap! state assoc-in [:root/current-transcript] next-transcript-ident)
-              (df/load! app next-transcript-ident ui/Transcript)
+              (df/load! app next-transcript-ident transcript/Transcript)
               (swap! state assoc-in (concat next-transcript-ident [:ui-player/doing]) :loading)
               (swap! state assoc :ui/help-hidden false))
 
-            (df/load! app :root/current-transcript ui/Transcript)))
+            (df/load! app :root/current-transcript transcript/Transcript)))
   (remote [_] false))
 
 (defmutation toggle-transcript-scroll-to-active [_]
