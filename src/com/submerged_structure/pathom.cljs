@@ -125,7 +125,7 @@
 (pco/defresolver word-data
   [_ {:keys [:word/id]}]
   {::pco/input [:word/id]
-   ::pco/output [:word/start :word/end :word/id :word/word :word/score]}
+   ::pco/output [:word/start :word/end :word/id :word/word :word/score  :word/active :word/morph :word/lemma :word/pos :word/pos_explained :word/is_morphed :word/norm]}
   (->(get mock-data/transcripts [:word/id id])
    (assoc :word/active false)))
 
