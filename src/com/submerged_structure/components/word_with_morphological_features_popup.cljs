@@ -1,21 +1,22 @@
 (ns com.submerged-structure.components.word-with-morphological-features-popup
   (:require
-   [com.fulcrologic.fulcro.dom :as dom  :refer [h3 div p span a iframe]]
+   [com.fulcrologic.fulcro.dom :as dom  :refer [h3 h4 div p span a iframe]]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc fragment]]
+   
    [com.fulcrologic.semantic-ui.modules.popup.ui-popup-content :refer [ui-popup-content]]
    [com.fulcrologic.semantic-ui.elements.label.ui-label :refer [ui-label]]
    [com.fulcrologic.semantic-ui.elements.label.ui-label-detail :refer [ui-label-detail]]
-
-
-
-   [com.submerged-structure.confidence-to-color :as c-to-c]
    [com.fulcrologic.semantic-ui.modules.popup.ui-popup :refer [ui-popup]]
    [com.fulcrologic.semantic-ui.modules.popup.ui-popup-header :refer [ui-popup-header]]
-   [com.submerged-structure.components.player :as player]
    [com.fulcrologic.semantic-ui.icons :as i]
    [com.fulcrologic.semantic-ui.elements.icon.ui-icon :refer [ui-icon]]
+   [com.fulcrologic.semantic-ui.elements.divider.ui-divider :refer [ui-divider]]
    
-   [clojure.string :as str]))
+   [clojure.string]
+   
+   [com.submerged-structure.confidence-to-color :as c-to-c]
+   [com.submerged-structure.components.player :as player]
+   [com.submerged-structure.spacy-explain :as spacy-explain]))
 
 ;; from https://spacy.io/models/pl Morphologizer section
 #_(def morph_tree_str  (spit "resources/spacy_morph_tree.txt"))
@@ -45,11 +46,11 @@
   {["Abbr" "Yes"] "abbreviation"
    ["AdpType" "Post"] "postposition"
    ["AdpType" "Prep"] "preposition"
-   ["Animacy" "Hum"] "human"
-   ["Animacy" "Inan"] "inanimate"
-   ["Animacy" "Nhum"] "non-human"
+   ["Animacy" "Hum"] "(human)" ;;modifies Gender, we will put it in brackets
+   ["Animacy" "Inan"] "(inanimate)"
+   ["Animacy" "Nhum"] "(non-human)"
    ["Aspect" "Imp"] "imperfective"
-   ["Aspect" "Imp,Perf"] "imperf and perf identical"
+   ["Aspect" "Imp,Perf"] "*imperf and perf identical*"
    ["Aspect" "Perf"] "perfective"
    ["Case" "Acc"] "accusative"
    ["Case" "Dat"] "dative"
@@ -69,13 +70,13 @@
    ["Foreign" "Yes"] "foreign"
    ["Gender" "Fem"] "feminine"
    ["Gender" "Masc"] "masculine"
-   ["Gender" "Neut"] "neuter"
+   ["Gender" "Neut"] "neutral"
    ["Hyph" "Yes"] "hyphenated"
    ["Mood" "Imp"] "imperative"
    ["Mood" "Ind"] "indicative"
    ["Number" "Plur"] "plural"
-   ["Number" "Plur,Sing"] "plural and singular identical"
-   ["Number" "Ptan"] "always plural"
+   ["Number" "Plur,Sing"] "*plural and singular identical*"
+   ["Number" "Ptan"] "*always plural*"
    ["Number" "Sing"] "singular"
    ["Number[psor] " "Plur"] "plural possessor"
    ["Number[psor]" "Sing"] "singular possessor"
@@ -85,8 +86,8 @@
    ["NumType" "Card"] "cardinal numeral"
    ["NumType" "Ord"] "ordinal numeral"
    ["NumType" "Sets"] "refers to a set"
-   ["PartType" "Int"] "interjectional particle"
-   ["PartType" "Mod"] "modal particle"
+   ["PartType" "Int"] "interjectional"
+   ["PartType" "Mod"] "modal"
    ["Person" "0"] "impersonal"
    ["Person" "1"] "1st person"
    ["Person" "1,2"] "1st or 2nd person"
@@ -108,21 +109,20 @@
    ["Pun" "No"] "no punctuation"
    ["Pun" "Yes"] "punctuation"
    ["Reflex" "Yes"] "reflexive"
-   ["Tense" "Fut"] "future"
-   ["Tense" "Past"] "past"
-   ["Tense" "Pres"] "present"
+   ["Tense" "Fut"] "future tense"
+   ["Tense" "Past"] "past tense"
+   ["Tense" "Pres"] "present tense"
    ["Variant" "Long"] "long"
    ["Variant" "Short"] "short"
    ["VerbForm" "Conv"] "converb"
-   ["VerbForm" "Fin"] "finite verb"
+   ["VerbForm" "Fin"] "finitive" ;; no need to display, verbs are assumed to be finitive if not marked otherwise
    ["VerbForm" "Inf"] "infinitive"
    ["VerbForm" "Part"] "participle"
    ["VerbForm" "Vnoun"] "verbal noun"
    ["VerbType" "Mod"] "modal verb"
-   ["VerbType" "Quasi"] "quasi-verb (no person, aspect, number)"
+   ["VerbType" "Quasi"] "quasi-verb (no declination)"
    ["Voice" "Act"] "active"
    ["Voice" "Pass"] "passive"})
-
 
 
 (defn human-readable-attribute-name
@@ -139,128 +139,211 @@
     hr-name
     attribute-value)))
 
-
 (defn morphological-features-str-to-map [morph-string]
   (into {}
-        (for [kv (str/split morph-string #"\|")
-              :let [[k v] (str/split kv #"=")]]
+        (for [kv (clojure.string/split morph-string #"\|")
+              :let [[k v] (clojure.string/split kv #"=")]
+              :when (seq k)]
           [k v])))
 
 (comment
   (morphological-features-str-to-map "Animacy=Inan|Case=Nom|Gender=Masc|Number=Sing")
   ;; => {"Animacy" "Inan", "Case" "Nom", "Gender" "Masc", "Number" "Sing"}
+  )
+
+(def redundant-attribute-values
+  "Some attribute values are redundant, since they are the most common they are assumed."
+  #{["VerbForm" "Fin"]
+   ["Mood" "Ind"]
+   ["Voice" "Act"]
+    ["Degree" "Pos"]
+    ["Polarity" "Neg"]
+    ["Polarity" "Pos"]
+    ["Number" "Sing"]})
+
+(defn non-redundant-morphological-features [morph]
+  (let [morph-map (morphological-features-str-to-map morph)]
+    (into {} (remove redundant-attribute-values morph-map))))
+
+(comment
+  (non-redundant-morphological-features "Animacy=Hum|Aspect=Imp,Perf|Clitic=Yes|Gender=Masc|Mood=Ind|Number=Sing|Person=1|Tense=Past|Variant=Long|VerbForm=Fin|Voice=Act"))
+
+(def attributes-that-are-subtypes-of-other-attributes
+  "Some attributes are subtypes of other attributes, so they are displayed in the same label as the parent category."
+  {"Gender" "Animacy"})
+
+(defn morph-label [morph-map attribute-name & {:keys [detail-options]}]
+  (when-not ((into #{} (vals attributes-that-are-subtypes-of-other-attributes))  attribute-name)
+    (let [subtype (get attributes-that-are-subtypes-of-other-attributes attribute-name)]
+      (ui-label
+       (if detail-options detail-options {})
+       (human-readable-attribute-name attribute-name)
+       (ui-label-detail {}
+                        (human-readable-attribute-value morph-map attribute-name)
+                        (when subtype
+                          (fragment " " (human-readable-attribute-value morph-map subtype))))))))
+
+(def attribute-names-that-inflect-word
+  "Only some of the attributes are relevant for inflection, some are properties of the word itself.
+   In a sensible order to display. Hopefully good for all word classes.
+   Will be followed by human readable part of speech."
+  ["Tense" "Case" "Mood" "Number" "Person" "Gender" "Animacy" "Voice" "VerbForm"])
+
+(comment attribute-names-that-inflect-word)
+
+(defn human-readable-pos
+  "For some parts of speech, an attribute is more human readable than the part of speech itself."
+  [morph-map pos]
+  (let [pos-explained' (spacy-explain/explain pos)]
+    (case pos
+      "ADP" (human-readable-attribute-value morph-map "AdpType")
+      "X" (cond  (get morph-map "Foreign") (human-readable-attribute-value morph-map "Foreign")
+                 (get morph-map "Abbr") (human-readable-attribute-value morph-map "Abbr")
+                 :else "X")
+      pos-explained')))
+
+(comment (human-readable-pos {"Abbr" "Yes", "Pun" "Yes"} "X")
 )
 
-(defn morph-label [morph-map attribute-name & {:keys [detail-options postfix prefix]}]
-  (ui-label
-   (if detail-options detail-options {})
-   (human-readable-attribute-name attribute-name)
-   (ui-label-detail {} (human-readable-attribute-value morph-map attribute-name))))
+(defn word-form-description [morph-map pos]
+  (let [word-class-description
+        (clojure.string/join " "
+                  (keep (fn [attribute-name]
+                          (when (get morph-map attribute-name) (human-readable-attribute-value morph-map attribute-name)))
+                        attribute-names-that-inflect-word))]
+    (str (when word-class-description
+           (str (clojure.string/capitalize word-class-description) " "))
+       (clojure.string/upper-case (human-readable-pos morph-map pos)))))
 
 
-(defn label-list-from-morphological-features-map-noun [{:strs [Animacy Case Gender Number NumType Aspect VerbForm Polarity Polite] :as morph-map}]
-  (div
-   (when Polite (morph-label morph-map "Polite" {:detail-options {:color "red"}}))
-   (morph-label morph-map "Case")
-   (ui-label {}
-             "Gender"
-             (ui-label-detail {} (str (human-readable-attribute-value "Gender" Gender)
-                                      (when Animacy (str " (" (human-readable-attribute-value "Animacy" Animacy) ")" )))))
-   (ui-label {}
-             "Number"
-             (ui-label-detail
-              {} Number
-              (when NumType (str " (" (human-readable-attribute-value "NumType" NumType) ")"))))
-   (when VerbForm
-     (ui-label {}
-               "VerbForm"
-               (ui-label-detail
-                {}
-                (str (str (human-readable-attribute-value "VerbForm" VerbForm)
-                          " ("
-                          (human-readable-attribute-value "Aspect" Aspect)
-                          " - "
-                          (human-readable-attribute-value "Polarity" Polarity)
-                          ")")))))))
 
-
-(defn ui-morphological-features [pos {:as morph-map}]
-  (map (fn [[attribute-name _]] (morph-label morph-map attribute-name)) morph-map))
-
-(comment (ui-morphological-features "NOUN" "Animacy=Inan|Case=Nom|Gender=Masc|Number=Sing")
-)
-
-(defn human-readable-parts-with-spacing [morph-map attribute-names]
-  (str/join " "
-            (for [attr attribute-names
-                  :let [value (get morph-map attr)]
-                  :when value]
-              (human-readable-attribute-value morph-map attr))))
-
-(defn case-gender-number [{:strs [Animacy Case Gender] :as morph-map}]
-  (str/capitalize
-   (str (when Case (str (human-readable-attribute-value morph-map "Case") " "))
-        
-        (when Gender (human-readable-attribute-value morph-map "Gender"))
-
-        (when Animacy (str " (" (human-readable-attribute-value morph-map "Animacy") ")"))
-        " "
-        (when Case (human-readable-attribute-value morph-map "Number")))))
-
-(defn word-class [pos pos_explained morph-map]
-  (case pos
-    ("NOUN" "PROPN" "ADJ" "PRON") (str (case-gender-number morph-map) " " pos_explained)
-    "ADP" (str (human-readable-attribute-value morph-map "AdpType"))
-    (str pos_explained)))
 
 (defn ui-dict-link-and-popup
   "More than one link for when word is two space separated lemmas."
   [word]
-  (for [w (str/split word #" ")]
+  (for [w (clojure.string/split word #" ")]
     (fragment
      (ui-popup
       {:trigger
-
        (a {:href (str "https://www.diki.pl/slownik-angielskiego?q=" w)
            :target "_blank"}
           w)}
       (ui-popup-content
        {}
-       (str "Click to open dictionary entry for \"" w "\".")))
-     " ")))
+       (str "Click to open dictionary entry for \"" w "\"."))))))
 
-(defsc WordWithMorphPopup [_this {:word/keys [word active score start
-                                morph lemma pos pos_explained is_morphed norm]}]
+(defn ui-morph-properties [morph-map lemma norm is-morphed]
+  (let [word-attributes-that-inflect-word
+        (filter (set (keys morph-map)) attribute-names-that-inflect-word)
+        word-attributes-that-are-properties-of-the-word-itself
+        (remove (set attribute-names-that-inflect-word) (keys morph-map))]
+    
+    (div {}
+         (if (not-empty word-attributes-that-inflect-word)
+           (fragment {}
+            (if is-morphed 
+              (h4 {} "The root word \"" (ui-dict-link-and-popup lemma) "\" becomes \"" (ui-dict-link-and-popup norm) "\" here, because it is:")
+              (h4 {} "The root word \"" (ui-dict-link-and-popup lemma) "\" does not change here! It is:"))
+            (div {} (mapv (partial morph-label morph-map) word-attributes-that-inflect-word)))
+           (h4 {} "The root word \"" (ui-dict-link-and-popup lemma) "\" never changes! Yay!!"))
+         (when (not-empty word-attributes-that-are-properties-of-the-word-itself)
+           (fragment {}
+            (h4 {} "The root word itself, \"" (ui-dict-link-and-popup lemma) "\" has the following grammatical properties:")
+            (div {} (mapv (partial morph-label morph-map) word-attributes-that-are-properties-of-the-word-itself)))))))
+
+(comment 
+  (def word #:word{:start 0.15999999999999998,
+                   :is_morphed false,
+                   :active false,
+                   :id "305f1411-6472-4996-9c66-9a72e2f49f42",
+                   :word "Właśnie",
+                   :score 0.69,
+                   :lemma "właśnie",
+                   :norm "właśnie",
+                   :morph "",
+                   :end 1.3599999999999999,
+                   :pos "ADV"})
+  (def morph-map (morphological-features-str-to-map (:word/morph word)))
+
+  (let [
+               
+               lemma (:word/lemma word)
+               norm (:word/norm word)
+               is-morphed (:word/is_morphed word)
+               word-attributes-that-inflect-word (keep (fn [attribute-name] (when (get (morphological-features-str-to-map (:word/morph word)) attribute-name)
+                                                                              (morph-label morph-map attribute-name))))
+               word-attributes-that-are-properties-of-the-word-itself (keep (fn [attribute-name] (when (not (attribute-names-that-inflect-word attribute-name))
+                                                                                                    (morph-label morph-map attribute-name)))
+                                                                          (keys morph-map))]
+                   
+           #_(keep (fn [attribute-name] (when (get (morphological-features-str-to-map (:word/morph word)) attribute-name)
+                                        (morph-label morph-map attribute-name))
+                   attribute-names-that-inflect-word))
+           #_(keep (fn [attribute-name] (when (not (attribute-names-that-inflect-word attribute-name))
+                                        (morph-label morph-map attribute-name)))
+                 (keys morph-map))
+           #_(if is-morphed
+             (ui-divider {:content (str "The word " lemma " becomes " norm " because it is:")})
+             (ui-divider {:content (str "The word " lemma " does not change because it is already:")}))
+           (ui-divider {:content (str "The word " lemma " becomes " norm " because it is:")} )
+           (fragment {}
+                     (if is-morphed
+                       (ui-divider {} (str "The word " lemma " becomes " norm " because it is:"))
+                       (ui-divider {:content (str "The word " lemma " does not change because it is already:")}))
+                     (div {} word-attributes-that-inflect-word))
+           #_(ui-morph-properties morph-map (:word/lemma word) (:word/norm word) (:word/is_morphed word))
+           (when (not-empty word-attributes-that-are-properties-of-the-word-itself)
+             (fragment {}
+                       (ui-divider {:content (str "The word " lemma " has the following grammatical properties:")})
+                       (div {} word-attributes-that-are-properties-of-the-word-itself))))
+         
+         )
+           
+         
+
+
+
+(defsc WordWithMorphPopup [_this {:word/keys [id word active score start
+                                morph lemma pos is_morphed norm] :as whole-word}]
   {:ident :word/id
    :initial-state {}
    :query [:word/id :word/word :word/start :word/end :word/active :word/score
-           :word/morph :word/lemma :word/pos :word/pos_explained :word/is_morphed :word/norm]}
-  (ui-popup
-   {:hoverable true
-
-    :popperModifiers #js [#js {"name" "preventOverflow"
-                               "options" #js {"padding" 8
-                                              "RootBoundary" "viewport"}}]
-    :position "bottom right"
-    :hideOnScroll true
-    :trigger (span {:data-c score
-                    :classes [(when active "active") "word"]
-                    :onClick (fn [ws] (player/on-word-click ws start))
-                    :style (c-to-c/confidence-to-style score)}
-                   word)}
+           :word/morph :word/lemma :word/pos :word/is_morphed :word/norm]}
   
+  (let [word-html (span {:data-c score
+                         :classes [(when active "active") "word"]
+                         :onClick (fn [ws] (player/on-word-click ws start))
+                         :style (c-to-c/confidence-to-style score)}
+                        word)]
+    (if (not-empty pos)
+      (ui-popup
+       {:hoverable true
 
-   (ui-popup-content
-    {}
-    (div :.ui.red.ribbon.label (word-class pos pos_explained (morphological-features-str-to-map morph)))
-    (h3 nil
-        (when is_morphed
-          (fragment {} (ui-dict-link-and-popup lemma) "  " (ui-icon {:name i/arrow-right-icon}) " "))
-        (ui-dict-link-and-popup norm))
+        :popperModifiers #js [#js {"name" "preventOverflow"
+                                   "options" #js {"padding" 8
+                                                  "RootBoundary" "viewport"}}]
+        :position "bottom right"
+        :positionFixed true
+        :hideOnScroll true
+        :trigger word-html}
 
-    (div
-     (if (not-empty morph)
-       (ui-morphological-features pos (morphological-features-str-to-map morph))
-       "This word only has one form! No inflection! Phew!!")))))
+
+       (let [morph-map (non-redundant-morphological-features morph)]
+         (ui-popup-content
+          {}
+          (div :.ui.red.ribbon.label (word-form-description morph-map pos))
+          (h3 nil
+              (when is_morphed
+                (fragment {} (ui-dict-link-and-popup lemma) "  " (ui-icon {:name i/arrow-right-icon}) " "))
+              (ui-dict-link-and-popup norm))
+
+          (ui-morph-properties morph-map lemma norm is_morphed))))
+      word-html)))
+
+         
+         
+         #_"This word only has one form! No inflection! Phew!!"
 
 (def ui-word-with-morph-popup (comp/factory WordWithMorphPopup {:keyfn :word/id}))
+         
+

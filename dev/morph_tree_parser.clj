@@ -59,5 +59,14 @@
   (keys *2)
 
   (morph-tree-attributes-and-values-per-pos-groups-with-same-attributes)
+
+  (for [[pos arr-of-names->poss-values-map] (morph-tree-attributes-and-values-per-pos-groups-with-same-attributes)]
+    (for [names->poss-values-map arr-of-names->poss-values-map]
+      (let  [type-key (filter #(re-matches #".*Type" %) (keys names->poss-values-map))]
+        (if (not-empty type-key)
+          (prn pos type-key)
+          (prn pos "no type key")))))
   )
+
+
 
