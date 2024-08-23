@@ -34,8 +34,8 @@
 
 (comment 
   (-> (app/current-state app)
-   :transcript/id
-   (get "2221f28c-0f2d-479b-b4a7-80924c80721c"))
+   :word/id
+   (get "8f62adcc-df04-4adc-a3b3-aa12d702c03a"))
   ;; => nil
 
   (:root/current-transcript (app/current-state app))

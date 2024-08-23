@@ -139,7 +139,7 @@
                (ul
                 (li "Click on linked root word and / or the declined word itself in the grammatical analysis pop up to see the definition of the word on " (a {:href "https://www.diki.pl/" :target "_blank"} "diki.pl") "."))))))
        (confidence-key)
-       (div :.transcript
+       (div :.transcript.ui.container
             {:id (str "transcript-" id)}
             (map segment/ui-segment segments))))
 

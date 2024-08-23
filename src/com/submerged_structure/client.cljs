@@ -2,6 +2,7 @@
   (:require
    [com.submerged-structure.app :refer [app]]
    [com.submerged-structure.ui :as ui]
+   
    [com.fulcrologic.fulcro.application :as app]
    [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.fulcro.algorithms.denormalize :as fdn]
@@ -32,15 +33,20 @@
 
   (let [state (app/current-state app)]
     (fdn/db->tree
-     [{:root/current-transcript[
-        #:transcript{:segments
-                     [:segment/id :segment/start :segment/end #:segment{:words [:word/id :word/start :word/end]}]}]}] ; or any component
+     [{:root/current-transcript [#:transcript{:segments
+                                              [:segment/id :segment/start :segment/end #:segment{:words [:word/id :word/start :word/end]}]}]}] ; or any component
           ;; Starting entity, state itself for Root
           ;; otherwise st. like (get-in state-map [:thing/id 1]):
      state
      state))
   ;; => #:root{:current-transcript {}}
-
-  ;; => nil
-
+  (require '[com.submerged-structure.components.word-with-morphological-features-popup :as word-with-morphological-features-popup])
+  (let [state (app/current-state app)]
+    (fdn/db->tree
+     (comp/get-query ui/Root
+                     )
+            ;; Starting entity, state itself for Root
+            ;; otherwise st. like (get-in state-map [:thing/id 1]):
+     state
+     state))
   )
