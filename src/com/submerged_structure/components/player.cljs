@@ -66,7 +66,7 @@
 
 (comment (player-on-current-word-update 5 15 "test"))
 
-(defsc PlayerComponent [this {:transcript/keys [audio-filename]}]
+(defsc PlayerComponent [this {:transcript/keys [id audio-filename]}]
   {:ident :transcript/id
    :initial-state {}
    :query [:transcript/id

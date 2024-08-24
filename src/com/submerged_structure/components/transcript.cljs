@@ -1,17 +1,21 @@
 (ns com.submerged-structure.components.transcript
   (:require [com.fulcrologic.fulcro.dom :as dom  :refer [div h1 h2 h3 li p ul span i b a]]
-            
             [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-            [goog.functions :as gf]
-            [com.submerged-structure.confidence-to-color :as c-to-c]
+
             [com.fulcrologic.semantic-ui.modules.sticky.ui-sticky :refer [ui-sticky]]
             [com.fulcrologic.semantic-ui.elements.segment.ui-segment :as semantic-ui-segment]
             [com.fulcrologic.semantic-ui.collections.message.ui-message :refer [ui-message]]
             [com.fulcrologic.semantic-ui.collections.message.ui-message-header :refer [ui-message-header]]
+            [com.fulcrologic.semantic-ui.elements.icon.ui-icon :refer [ui-icon]]
+            [com.fulcrologic.semantic-ui.icons :as i]
+
+
             [com.submerged-structure.components.player :as player]
-  
+            [com.submerged-structure.confidence-to-color :as c-to-c]
             [com.submerged-structure.components.segment :as segment]
-            [com.submerged-structure.components.transcript-switcher :as transcript-switcher]))
+            [com.submerged-structure.components.transcript-switcher :as transcript-switcher]
+
+            [goog.functions :as gf]))
 
 
 
@@ -66,8 +70,17 @@
       (update-current-word-throttled this current-time id)
       (player/player-on-timeupdate ws))))
 
+(defn change-display-type [this id type & js-args]
+  (js/console.log "Menu item Confidence clicked" this id type js-args)
+  (comp/transact!
+     this
+     `[(com.submerged-structure.mutations/transcript-display-type-menu
+        {:transcript/id ~id
+         :transcript/display-type ~type})]))
+
 (defsc Transcript [this {:ui/keys [help-hidden]
                          :transcript/keys [id
+                                           display-type
                                            segments]
                          :>/keys          [player
                                            transcript-switcher
@@ -88,7 +101,7 @@
            :ui-period/start
            :ui-period/end
 
-
+           :transcript/display-type
 
            {:transcript/current-word [:word/id
                                       :word/word]}
@@ -138,9 +151,17 @@
            (li (b "Links to dictionary for individual words:")
                (ul
                 (li "Click on linked root word and / or the declined word itself in the grammatical analysis pop up to see the definition of the word on " (a {:href "https://www.diki.pl/" :target "_blank"} "diki.pl") "."))))))
-       (confidence-key)
-       (div :.transcript.ui.container
-            {:id (str "transcript-" id)}
-            (map segment/ui-segment segments))))
+       (div :.ui.pointing.menu
+            (a {:classes [(when (= display-type :confidence) "active") "item"]
+                :onClick (partial change-display-type this id :confidence)}
+               (ui-icon {:name i/braille-icon}) "AI's Confidence of Each Word")
+            (a {:classes [(when (= display-type :grammar) "active") "item"]
+                :onClick (partial change-display-type this id :grammar)}
+               (ui-icon {:name i/low-vision-icon}) "Grammar X-Ray"))
+       (div {:classes [(when (= display-type :grammar) "grammar_highlighting") "ui" "segment" "big"]}
+            (when (= display-type :confidence) (confidence-key))
+            (div :.transcript.ui.container
+                 {:id (str "transcript-" id)}
+                 (map #(segment/ui-segment % {:transcript/display-type display-type}) segments)))))
 
 (def ui-transcript (comp/factory Transcript {:keyfn :transcript/id}))

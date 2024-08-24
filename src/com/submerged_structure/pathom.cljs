@@ -54,6 +54,7 @@
    (get mock-data/transcripts [:transcript/id id])
    (assoc :ui-player/scroll-to-active true
           :ui-player/doing :loading
+          :transcript/display-type :grammar
           :ui-translation-controls/languages [{:ui-translation-control/language "en"}])))
 
 #_(defn segment-data-from-tree [segment-id]

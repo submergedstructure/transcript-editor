@@ -1,0 +1,97 @@
+
+.grammar_highlighting:not(.disable_gender_highlights) .Gender_Fem::after {
+    content: " ♀";
+    color: darksalmon;
+    font-weight: 900;
+
+    background-color:white;
+}
+.grammar_highlighting:not(.disable_gender_highlights) .Gender_Masc::after {
+    content: " ♂";
+    color: blue;
+    background-color:white;
+}
+.grammar_highlighting:not(.disable_gender_highlights) .Gender_Neut::after {
+  content: " ⚧";
+  color: black;
+  background-color:white;
+
+}
+/* .grammar_highlighting:not(.disable_animacy_highlights) .Animacy_Inan::after,
+.grammar_highlighting:not(.disable_animacy_highlights)  .Animacy_Hum::after,
+.grammar_highlighting:not(.disable_animacy_highlights)  .Animacy_Nhum::after {opacity:70%} */
+
+.grammar_highlighting:not(.disable_animacy_highlights)  .Animacy_Inan::after {
+    content: "⚙️♂";
+    color: black;
+    background-color:white;
+    padding-left:3px;
+}
+
+.grammar_highlighting:not(.disable_animacy_highlights)  .Animacy_Hum::after {
+    content: "🙎‍♂️♂";
+    color: black;
+    background-color:white;
+    padding-left:3px;
+}
+.grammar_highlighting:not(.disable_animacy_highlights)  .Animacy_Nhum::after {
+    content: "🐶♂";
+    color: black;
+    background-color:white;
+    padding-left:3px;
+}
+
+.grammar_highlighting:not(.disable_number_highlights) .Number_Ptan,
+.grammar_highlighting:not(.disable_number_highlights) .Number_Plur {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: black;
+}
+.grammar_highlighting:not(.disable_number_highlights)  .Number_Ptan {
+    text-decoration-style: dashed;
+}
+.grammar_highlighting:not(.disable_case_highlights)  .Case_Nom {
+  color: #006400a6; 
+  background-color: #90ee905c;
+}
+.grammar_highlighting:not(.disable_case_highlights)  .Case_Ins {
+  color: #FF8C00; 
+}
+.grammar_highlighting:not(.disable_case_highlights) .Case_Acc {
+    color: yellow; 
+    background-color:lightgray;
+    
+}
+.grammar_highlighting:not(.disable_case_highlights) .Case_Gen {
+    color: #DC143C; 
+}
+.grammar_highlighting:not(.disable_case_highlights) .Case_Loc {
+    color: #9400D3; 
+}
+.grammar_highlighting:not(.disable_case_highlights)  .Case_Dat {
+    color: #ff149385; 
+    background-color:#ffb6c17d;
+}
+.grammar_highlighting:not(.disable_case_highlights)  .Case_Voc {
+    color: white;
+    background-color:black;
+}
+
+.grammar_highlighting:not(.disable_person_highlights) .Person_1::after,
+.grammar_highlighting:not(.disable_person_highlights) .Person_2::after,
+.grammar_highlighting:not(.disable_person_highlights) .Person_3::after {
+  font-size: smaller;
+  font-weight: bold;
+  vertical-align: super; /* This makes it appear as a superscript */
+}
+
+.grammar_highlighting:not(.disable_person_highlights) .Person_1::after {
+  content: "1"; 
+}
+.grammar_highlighting:not(.disable_person_highlights) .Person_2::after {
+  content: "2"; 
+}
+.grammar_highlighting:not(.disable_person_highlights) .Person_3::after {
+  content: "3"; 
+}
+
