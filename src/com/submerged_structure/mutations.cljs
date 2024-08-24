@@ -260,6 +260,12 @@
   (action [{:keys [state]}]
           (swap! state assoc-in [:transcript/id (get-current-transcript-id-from-state @state) :ui-player/doing] doing)))
 
+(defmutation transcript-display-type-menu [#:transcript{:keys [id display-type]}]
+  (action [{:keys [state]}]
+          (swap! state assoc-in [:transcript/id id :transcript/display-type] display-type)))
+
+
+
 (defn get-current-transcript-tree [state-deref]
   (fdn/db->tree
    [{:root/current-transcript [#:transcript{:segments
