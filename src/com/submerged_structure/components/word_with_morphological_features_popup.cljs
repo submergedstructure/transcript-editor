@@ -1,19 +1,14 @@
 (ns com.submerged-structure.components.word-with-morphological-features-popup
   (:require
-   [com.fulcrologic.fulcro.dom :as dom  :refer [h3 h4 div p span a iframe]]
+   [com.fulcrologic.fulcro.dom :as dom  :refer [h3 h4 div span a]]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc fragment]]
 
    [com.fulcrologic.semantic-ui.modules.popup.ui-popup-content :refer [ui-popup-content]]
 
    [com.fulcrologic.semantic-ui.modules.popup.ui-popup :refer [ui-popup]]
-   [com.fulcrologic.semantic-ui.modules.popup.ui-popup-header :refer [ui-popup-header]]
    [com.fulcrologic.semantic-ui.icons :as i]
    [com.fulcrologic.semantic-ui.elements.icon.ui-icon :refer [ui-icon]]
    [com.fulcrologic.semantic-ui.elements.divider.ui-divider :refer [ui-divider]]
-
-   [com.fulcrologic.semantic-ui.elements.label.ui-label :refer [ui-label]]
-   [com.fulcrologic.semantic-ui.elements.label.ui-label-detail :refer [ui-label-detail]]
-   
 
    [clojure.string]
 
@@ -230,7 +225,7 @@
   "Some attributes are subtypes of other attributes, so they are displayed in the same label as the parent category."
   {"Gender" "Animacy"})
 
-(defn morph-label [morph-map attribute-name & {:keys [detail-options]}]
+(defn ui-morph-attribute [morph-map attribute-name & {:keys [detail-options]}]
   (when-not ((into #{} (vals attributes-that-are-subtypes-of-other-attributes))  attribute-name)
     (let [subtype (get attributes-that-are-subtypes-of-other-attributes attribute-name)]
       (div :.item
@@ -249,7 +244,7 @@
                        (fragment " " (human-readable-attribute-value-html-with-grammar-styling morph-map subtype))))))))
 
 
-(defn ui-morph-properties [morph-map lemma norm is-morphed]
+(defn ui-all-a-words-morph-properties [morph-map lemma norm is-morphed]
   (let [word-attributes-that-inflect-word
         (filter (set (keys morph-map)) attribute-names-that-inflect-word)
         word-attributes-that-are-properties-of-the-word-itself
@@ -261,14 +256,14 @@
             (if is-morphed 
               (h4 {} "The root word \"" (ui-dict-link-and-popup lemma) "\" becomes \"" (ui-dict-link-and-popup norm) "\" here, because it is:")
               (h4 {} "The root word \"" (ui-dict-link-and-popup lemma) "\" does not change here! It is:"))
-            (div :.ui.list.animated.large {} (mapv (partial morph-label morph-map) word-attributes-that-inflect-word)))
+            (div :.ui.list.animated.large {} (mapv (partial ui-morph-attribute morph-map) word-attributes-that-inflect-word)))
            (h4 {} "The root word \"" (ui-dict-link-and-popup lemma) "\" never changes! Yay!!"))
          
          (when (not-empty word-attributes-that-are-properties-of-the-word-itself)
            (fragment {}
             (ui-divider)
             (h4 {} "The root word itself, \"" (ui-dict-link-and-popup lemma) "\" has the following grammatical properties:")
-            (div :.ui.list.animated.large {} (mapv (partial morph-label morph-map) word-attributes-that-are-properties-of-the-word-itself)))))))
+            (div :.ui.list.animated.large {} (mapv (partial ui-morph-attribute morph-map) word-attributes-that-are-properties-of-the-word-itself)))))))
 
 (comment 
   (def word #:word{:start 0.15999999999999998,
@@ -290,9 +285,9 @@
                norm (:word/norm word)
                is-morphed (:word/is_morphed word)
                word-attributes-that-inflect-word (keep (fn [attribute-name] (when (get (morphological-features-str-to-map (:word/morph word)) attribute-name)
-                                                                              (morph-label morph-map attribute-name))))
+                                                                              (ui-morph-attribute morph-map attribute-name))))
                word-attributes-that-are-properties-of-the-word-itself (keep (fn [attribute-name] (when (not (attribute-names-that-inflect-word attribute-name))
-                                                                                                    (morph-label morph-map attribute-name)))
+                                                                                                    (ui-morph-attribute morph-map attribute-name)))
                                                                           (keys morph-map))]
                    
            #_(keep (fn [attribute-name] (when (get (morphological-features-str-to-map (:word/morph word)) attribute-name)
@@ -359,7 +354,7 @@
                 (fragment {} (ui-dict-link-and-popup lemma) "  " (ui-icon {:name i/arrow-right-icon}) " "))
               (ui-dict-link-and-popup norm))
 
-          (ui-morph-properties morph-map lemma norm is_morphed))))
+          (ui-all-a-words-morph-properties morph-map lemma norm is_morphed))))
       word-html)))
 
          
