@@ -183,7 +183,8 @@
           w)}
       (ui-popup-content
        {}
-       (str "Click to open dictionary entry for \"" w "\"."))))))
+       (str "Click to open dictionary entry for \"" w "\".")))
+     " ")))
 
 
 (comment
