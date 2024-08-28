@@ -75,6 +75,9 @@
   color: #1E90FF; /* Dodger Blue */
 }
 
+.grammar_highlighting .inflected_word a {
+  color: inherit;
+}
 
 .grammar_highlighting .Person_1::after,
 .grammar_highlighting .Person_2::after,
