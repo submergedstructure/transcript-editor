@@ -38,7 +38,7 @@
    (fn []
      (when-let [active-word (js/document.querySelector ".word.active")]
        (player/player-on-current-word-update (:ui-period/start (comp/props this)) (:ui-period/end (comp/props this)) (get-in (comp/props this) [:transcript/current-word :word/word]))
-       (when (:player/scroll-to-active (comp/props this))
+       (when (:ui-player/scroll-to-active (comp/props this))
          (scroll-element-to-middle-of-visible-area-below-player active-word id))))
    0))
 
