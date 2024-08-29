@@ -71,7 +71,7 @@
       (player/player-on-timeupdate ws))))
 
 (defn change-display-type [this id type & js-args]
-  (js/console.log "Menu item Confidence clicked" this id type js-args)
+  (js/console.log "Menu item clicked" this id type js-args)
   (comp/transact!
      this
      `[(com.submerged-structure.mutations/transcript-display-type-menu
@@ -152,6 +152,9 @@
                (ul
                 (li "Click on linked root word and / or the declined word itself in the grammatical analysis pop up to see the definition of the word on " (a {:href "https://www.diki.pl/" :target "_blank"} "diki.pl") "."))))))
        (div :.ui.pointing.menu
+            (a {:classes [(when (= display-type :plain) "active") "item"]
+                :onClick (partial change-display-type this id :plain)}
+               (ui-icon {:name i/eye-icon}) "Plain Transcript - No Colouring")
             (a {:classes [(when (= display-type :confidence) "active") "item"]
                 :onClick (partial change-display-type this id :confidence)}
                (ui-icon {:name i/braille-icon}) "AI's Confidence of Each Word")
