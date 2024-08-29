@@ -1,5 +1,6 @@
 (ns com.submerged-structure.confidence-to-color
-  (:require [goog.color :as color]))
+  (:require [goog.color :as color]
+            [com.fulcrologic.fulcro.dom :as dom  :refer [div p span]]))
 
 (def color-transitions [0.0 0.5 0.8 1.0]); expected to be in ascending order
 (def colors ["#FF0000" ; light red
@@ -35,6 +36,13 @@
   [confidence]
   {:color (confidence-to-color confidence)})
 
+(defn confidence-key []
+  (div
+   (p :.ui.center.aligned.container "AI's confidence of each word: ")
+   (p :.ui.justified.container#confidence-key
+      (for [c (map #(js/Number.parseFloat (.toFixed % 2)) (range 1.0 -0.05 -0.05))] ; make sure that we get floats to 2 decimal places
+        (span {:style (confidence-to-style c)} (str c "  "))))
+   (p :.ui.center.aligned.container "(1.0 = very high 0.0 = none)")))
 
 (comment
   ;; Confidence at 0 (expected to be dark red)

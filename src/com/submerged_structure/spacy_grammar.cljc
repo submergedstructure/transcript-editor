@@ -1,4 +1,5 @@
-(ns com.submerged-structure.spacy-explain)
+(ns com.submerged-structure.spacy-grammar
+  (:require [clojure.string]))
 
 (def glossary 
   {
@@ -348,3 +349,229 @@
     (do (println "No explanation found for term" term)
         term)))
 
+
+;; from https://spacy.io/models/pl Morphologizer section
+#_(def morph_tree_str  (spit "resources/spacy_morph_tree.txt"))
+;; see also https://universaldependencies.org/pl/index.html for more information
+
+(def map-of-attribute-names-to-human-readable-name
+  {"AdpType" "adposition type"
+   "VerbForm" "verb form"
+   "PunctType" "punctuation type"
+   "PronType" "pronoun type"
+   "NumForm" "numeral form"
+   "PrepCase" "prepositional case"
+   "Reflex" "reflexive"
+   "NumType" "numeral type"
+   "Hyph" "hyphenated"
+   "Poss" "possessive"
+   "ConjType" "conjunction type"
+   "VerbType" "verb type"
+   "Number[psor]" "possessor's number"
+   "PartType" "particle type"
+   "Abbr" "abbreviation"
+   "Pun" "punctuation"
+   "PunctSide" "punctuation side"
+   "Polite" "politeness"})
+
+(def map-of-attribute-name-and-value-to-human-readable-value
+  {["Abbr" "Yes"] "abbreviation"
+   ["AdpType" "Post"] "postposition"
+   ["AdpType" "Prep"] "preposition"
+   ["Animacy" "Hum"] "(human)" ;;modifies Gender, we will put it in brackets
+   ["Animacy" "Inan"] "(inanimate)"
+   ["Animacy" "Nhum"] "(non-human)"
+   ["Aspect" "Imp"] "imperfective"
+   ["Aspect" "Imp,Perf"] "*imperf and perf identical*"
+   ["Aspect" "Perf"] "perfective"
+   ["Case" "Acc"] "accusative"
+   ["Case" "Dat"] "dative"
+   ["Case" "Gen"] "genitive"
+   ["Case" "Ins"] "instrumental"
+   ["Case" "Loc"] "locative"
+   ["Case" "Nom"] "nominative"
+   ["Case" "Voc"] "vocative"
+   ["Clitic" "Yes"] "clitic"
+   ["ConjType" "Comp"] "complementizer"
+   ["ConjType" "Oper"] "operative"
+   ["ConjType" "Pred"] "predicate"
+   ["Degree" "Cmp"] "comparative"
+   ["Degree" "Pos"] "positive"
+   ["Degree" "Sup"] "superlative"
+   ["Emphatic" "Yes"] "emphatic"
+   ["Foreign" "Yes"] "foreign"
+   ["Gender" "Fem"] "feminine"
+   ["Gender" "Masc"] "masculine"
+   ["Gender" "Neut"] "neutral"
+   ["Hyph" "Yes"] "hyphenated"
+   ["Mood" "Imp"] "imperative"
+   ["Mood" "Ind"] "indicative"
+   ["Number" "Plur"] "plural"
+   ["Number" "Plur,Sing"] "*plural and singular identical*"
+   ["Number" "Ptan"] "*always plural*"
+   ["Number" "Sing"] "singular"
+   ["Number[psor] " "Plur"] "plural possessor"
+   ["Number[psor]" "Sing"] "singular possessor"
+   ["NumForm" "Digit"] "digits"
+   ["NumForm" "Roman"] "roman numerals"
+   ["NumForm" "Word"] "word"
+   ["NumType" "Card"] "cardinal numeral"
+   ["NumType" "Ord"] "ordinal numeral"
+   ["NumType" "Sets"] "refers to a set"
+   ["PartType" "Int"] "interjectional"
+   ["PartType" "Mod"] "modal"
+   ["Person" "0"] "impersonal"
+   ["Person" "1"] "1st person"
+   ["Person" "1,2"] "1st or 2nd person"
+   ["Person" "2"] "2nd person"
+   ["Person" "3"] "3rd person"
+   ["Polarity" "Neg"] "negative"
+   ["Polarity" "Pos"] "positive"
+   ["Polite" "Depr"] "derogatory"
+   ["Poss" "Yes"] "possessive"
+   ["PrepCase" "Npr"] "non-prepositional"
+   ["PrepCase" "Pre"] "prepositional"
+   ["PronType" "Dem"] "demonstrative"
+   ["PronType" "Ind"] "indefinite"
+   ["PronType" "Int"] "interrogative"
+   ["PronType" "Neg"] "negative"
+   ["PronType" "Prs"] "personal"
+   ["PronType" "Rel"] "relative"
+   ["PronType" "Tot"] "total"
+   ["Pun" "No"] "no punctuation"
+   ["Pun" "Yes"] "punctuation"
+   ["Reflex" "Yes"] "reflexive"
+   ["Tense" "Fut"] "future tense"
+   ["Tense" "Past"] "past tense"
+   ["Tense" "Pres"] "present tense"
+   ["Variant" "Long"] "long"
+   ["Variant" "Short"] "short"
+   ["VerbForm" "Conv"] "converb"
+   ["VerbForm" "Fin"] "finitive" ;; no need to display, verbs are assumed to be finitive if not marked otherwise
+   ["VerbForm" "Inf"] "infinitive"
+   ["VerbForm" "Part"] "participle"
+   ["VerbForm" "Vnoun"] "verbal noun"
+   ["VerbType" "Mod"] "modal verb"
+   ["VerbType" "Quasi"] "quasi-verb (no declination)"
+   ["Voice" "Act"] "active"
+   ["Voice" "Pass"] "passive"})
+
+
+(defn human-readable-attribute-name
+  [attribute-name]
+  (if-let [hr-name (get map-of-attribute-names-to-human-readable-name attribute-name)]
+    hr-name
+    attribute-name))
+
+(defn human-readable-attribute-value [attribute-name attribute-value]
+  (if-let [hr-value (get map-of-attribute-name-and-value-to-human-readable-value [attribute-name attribute-value])]
+    hr-value
+    attribute-value))
+
+(defn human-readable-attribute-value-from-morph-map
+  "need attribute name as context"
+  [morph-map attribute-name]
+  (let [attribute-value (get morph-map attribute-name)]
+    (human-readable-attribute-value attribute-name attribute-value)))
+
+
+(defn morphological-features-str-to-map [morph-string]
+  (into {}
+        (for [kv (clojure.string/split morph-string #"\|")
+              :let [[k v] (clojure.string/split kv #"=")]
+              :when (seq k)]
+          [k v])))
+
+
+(comment
+  (morphological-features-str-to-map "Animacy=Inan|Case=Nom|Gender=Masc|Number=Sing")
+  ;; => {"Animacy" "Inan", "Case" "Nom", "Gender" "Masc", "Number" "Sing"}
+  )
+
+(def redundant-attribute-values
+  "Some attribute values are redundant, since they are the most common they are assumed."
+  #{["VerbForm" "Fin"]
+    ["Mood" "Ind"]
+    ["Voice" "Act"]
+    ["Degree" "Pos"]
+    ["Polarity" "Neg"]
+    ["Polarity" "Pos"]
+    ["Number" "Sing"]})
+
+(defn non-redundant-morphological-features [morph]
+  (let [morph-map (morphological-features-str-to-map morph)]
+    (into {} (remove redundant-attribute-values morph-map))))
+
+
+
+(comment
+  (non-redundant-morphological-features "Animacy=Hum|Aspect=Imp,Perf|Clitic=Yes|Gender=Masc|Mood=Ind|Number=Sing|Person=1|Tense=Past|Variant=Long|VerbForm=Fin|Voice=Act"))
+
+
+(def attribute-names-that-affect-word-ending
+  "Only some of the attributes affect word ending, some are properties of the word itself.
+   In a sensible order to display. Hopefully good for all word classes.
+   Will be followed by human readable part of speech."
+  ["Tense" "Case" "Mood" "Number" "Person" "Gender" "Animacy" "Voice" "VerbForm" "Variant"])
+
+(defn human-readable-pos
+  "For some parts of speech, an attribute is more human readable than the part of speech itself."
+  [morph-map pos]
+  (let [pos-explained' (explain pos)]
+    (case pos
+      "ADP" (human-readable-attribute-value-from-morph-map morph-map "AdpType")
+      "X" (cond  (get morph-map "Foreign") (human-readable-attribute-value-from-morph-map morph-map "Foreign")
+                 (get morph-map "Abbr") (human-readable-attribute-value-from-morph-map morph-map "Abbr")
+                 :else "X")
+      pos-explained')))
+
+(comment (human-readable-pos {"Abbr" "Yes", "Pun" "Yes"} "X"))
+
+(defn lemma-morph-map-of-attributes-that-affect-word-ending [pos morph-map]
+  (for [attribute-name attribute-names-that-affect-word-ending
+        :let [attribute-value (get morph-map attribute-name)]
+        :when attribute-value]
+    [attribute-name attribute-value]))
+
+
+(defn word-form-description [morph-map pos]
+  (let [word-class-description
+        (clojure.string/join " "
+                             (keep (fn [attribute-name]
+                                     (when (get morph-map attribute-name) (human-readable-attribute-value-from-morph-map morph-map attribute-name)))
+                                   attribute-names-that-affect-word-ending))]
+    (str (when word-class-description
+           (str (clojure.string/capitalize word-class-description) " "))
+         (clojure.string/upper-case (human-readable-pos morph-map pos)))))
+
+
+(def attributes-that-are-subtypes-of-other-attributes
+  "Some attributes are subtypes of other attributes, so they are displayed in the same label as the parent category."
+  {"Gender" "Animacy"})
+
+;; <h3>Key 🔑</h3>
+    ;; <ul>
+    ;;   <li>Number: <span class="Number_Plur">Plur</span> <span class="Number_Ptan">Ptan</span></li>
+    ;;   <li>Gender: <span class="Gender_Masc">Masc</span> <span class="Gender_Fem">Fem</span> <span
+    ;;           class="Gender_Neut">Neut</span></li>
+    ;;   <li>Case:</li>
+    ;;     <ul>
+    ;;         <li><span class="Case_Nom">Nominative (Mianownik)</span></li>
+    ;;         <li><span class="Case_Acc">Accusative (Biernik)</span></li>
+    ;;         <li><span class="Case_Ins">Instrumental (Narzędnik)</span></li>
+    ;;         <li><span class="Case_Gen">Genitive (Dopełniacz)</span></li>
+    ;;         <li><span class="Case_Loc">Locative (Miejscownik)</span></li>
+    ;;         <li><span class="Case_Dat">Dative (Celownik)</span></li>
+    ;;         <li><span class="Case_Voc">Vocative (Wołacz)</span></li>
+    ;;     </ul>
+    ;;   <li>Animacy: <span class="Animacy_Inan">Inan</span> <span class="Animacy_Nhum">Nhum</span> 
+    ;;       <span class="Animacy_Hum">Hum</span>
+    ;;   </li>
+    ;; </ul>
+;; (defn grammar-key []
+;;   (div 
+;;    (p :.ui.center.aligned.container "Grammar key:")
+;;    (ul :.ui.center.aligned.container
+;;        (li "Number: " (span :.Number_Plur (human-readable-attribute-value {} "Plur")) " " (span :.Number_Ptan "Ptan"))
+;;        (li "Gender: " (span :.Gender_Masc "Masc") " " (span :.)
+;;   )
