@@ -198,7 +198,7 @@
   "Only some of the attributes affect word ending, some are properties of the word itself.
    In a sensible order to display. Hopefully good for all word classes.
    Will be followed by human readable part of speech."
-  ["Tense" "Case" "Mood" "Number" "Person" "Gender" "Animacy" "Voice" "VerbForm"])
+  ["Tense" "Case" "Mood" "Number" "Person" "Gender" "Animacy" "Voice" "VerbForm" "Variant"])
 
 (comment attribute-names-that-affect-word-ending)
 
