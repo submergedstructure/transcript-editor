@@ -1,5 +1,7 @@
 (ns com.submerged-structure.spacy-grammar
-  (:require [clojure.string]))
+  (:require [clojure.string]
+            [com.fulcrologic.fulcro.dom :refer [div li p ul span h3 h4]]
+            [com.fulcrologic.fulcro.components :as comp :refer [fragment]]))
 
 (def glossary 
   {
@@ -325,7 +327,7 @@
     "PERCENT" "Percentage, including \"%\"",
     "MONEY" "Monetary values, including unit",
     "QUANTITY" "Measurements, as of weight or distance",
-    "ORDINAL" "\"first\", \"second\", etc.",
+    "ORDINAL" "Ordinal \"first\", \"second\", etc.",
     "CARDINAL" "Numerals that do not fall under another type",
     ; Named Entity Recognition
     ; Wikipedia
@@ -447,7 +449,7 @@
    ["Variant" "Long"] "long"
    ["Variant" "Short"] "short"
    ["VerbForm" "Conv"] "converb"
-   ["VerbForm" "Fin"] "finitive" ;; no need to display, verbs are assumed to be finitive if not marked otherwise
+   ["VerbForm" "Fin"] "finitive"
    ["VerbForm" "Inf"] "infinitive"
    ["VerbForm" "Part"] "participle"
    ["VerbForm" "Vnoun"] "verbal noun"
@@ -549,29 +551,42 @@
   "Some attributes are subtypes of other attributes, so they are displayed in the same label as the parent category."
   {"Gender" "Animacy"})
 
-;; <h3>Key 🔑</h3>
-    ;; <ul>
-    ;;   <li>Number: <span class="Number_Plur">Plur</span> <span class="Number_Ptan">Ptan</span></li>
-    ;;   <li>Gender: <span class="Gender_Masc">Masc</span> <span class="Gender_Fem">Fem</span> <span
-    ;;           class="Gender_Neut">Neut</span></li>
-    ;;   <li>Case:</li>
-    ;;     <ul>
-    ;;         <li><span class="Case_Nom">Nominative (Mianownik)</span></li>
-    ;;         <li><span class="Case_Acc">Accusative (Biernik)</span></li>
-    ;;         <li><span class="Case_Ins">Instrumental (Narzędnik)</span></li>
-    ;;         <li><span class="Case_Gen">Genitive (Dopełniacz)</span></li>
-    ;;         <li><span class="Case_Loc">Locative (Miejscownik)</span></li>
-    ;;         <li><span class="Case_Dat">Dative (Celownik)</span></li>
-    ;;         <li><span class="Case_Voc">Vocative (Wołacz)</span></li>
-    ;;     </ul>
-    ;;   <li>Animacy: <span class="Animacy_Inan">Inan</span> <span class="Animacy_Nhum">Nhum</span> 
-    ;;       <span class="Animacy_Hum">Hum</span>
-    ;;   </li>
-    ;; </ul>
-;; (defn grammar-key []
-;;   (div 
-;;    (p :.ui.center.aligned.container "Grammar key:")
-;;    (ul :.ui.center.aligned.container
-;;        (li "Number: " (span :.Number_Plur (human-readable-attribute-value {} "Plur")) " " (span :.Number_Ptan "Ptan"))
-;;        (li "Gender: " (span :.Gender_Masc "Masc") " " (span :.)
-;;   )
+
+
+(def css-styled-grammar-attributes
+  {"Case" ["Nom"
+           "Acc"
+           "Ins"
+           "Gen"
+           "Loc"
+           "Dat"
+           "Voc"]
+   "Gender" ["Masc"
+             "Fem"
+             "Neut"]
+   "Animacy" ["Inan"
+              "Nhum"
+              "Hum"]
+   "Number" ["Plur"
+             "Ptan"]
+   "Person" ["1"
+             "2"
+             "3"]})
+
+(defn grammar-key-item [[attribute-name attribute-values]]
+  (div :.column
+   (h4 (str (human-readable-attribute-name attribute-name) ":"))
+   (div :.ui.animated.list
+    (mapv
+     (fn [attribute-value]
+       (div :.item
+        (span {:className (str attribute-name "_" attribute-value)} (human-readable-attribute-value attribute-name attribute-value))))
+     attribute-values))))
+
+
+(defn grammar-key []
+  (div
+   (h3 :.ui.center.aligned.header "\"Grammar X-Ray\" Key")
+   (p "The following grammatical features of words are indicated by symbols after the word, colors or underlining:")
+   (div :.ui.five.column.doubling.grid
+    (mapv grammar-key-item css-styled-grammar-attributes))))
