@@ -347,8 +347,7 @@
             (let [next-transcript-ident [:transcript/id id]]
               (swap! state assoc-in [:root/current-transcript] next-transcript-ident)
               (df/load! app next-transcript-ident transcript/Transcript)
-              (swap! state assoc-in (concat next-transcript-ident [:ui-player/doing]) :loading)
-              (swap! state assoc :ui/help-hidden false))
+              (swap! state assoc-in (concat next-transcript-ident [:ui-player/doing]) :loading))
 
             (df/load! app :root/current-transcript transcript/Transcript)))
   (remote [_] false))
