@@ -1,41 +1,140 @@
 
 .grammar_highlighting .Gender_Fem::after {
-    content: " ♀";
+    content: "♀";
     color: darksalmon;
     font-weight: 900;
+    padding-left:3px;
 
-    background-color:white;
+    
 }
 .grammar_highlighting .Gender_Masc::after {
-    content: " ♂";
+    content: "♂";
     color: blue;
-    background-color:white;
+    
+    padding-left:3px;
 }
 .grammar_highlighting .Gender_Neut::after {
-  content: " ⚧";
+  content: "⚧";
   color: black;
-  background-color:white;
+  
+  padding-left:3px;
 
 }
 
 .grammar_highlighting  .Animacy_Inan::after {
     content: "⚙️♂";
-    color: black;
-    background-color:white;
+    color: blue;
+    
     padding-left:3px;
 }
 
 .grammar_highlighting  .Animacy_Hum::after {
     content: "🙎‍♂️♂";
-    color: black;
-    background-color:white;
+    color: blue;
+    
     padding-left:3px;
 }
 .grammar_highlighting  .Animacy_Nhum::after {
     content: "🐶♂";
-    color: black;
-    background-color:white;
+    color: blue;
+    
     padding-left:3px;
+}
+
+
+.grammar_highlighting .Person_1::after,
+.grammar_highlighting .Person_2::after,
+.grammar_highlighting .Person_3::after {
+  font-size: smaller;
+  font-weight: bold;
+  vertical-align: super; /* This makes it appear as a superscript */
+}
+
+.grammar_highlighting .Person_1::after {
+  content: "1"; 
+}
+.grammar_highlighting .Person_2::after {
+  content: "2"; 
+}
+.grammar_highlighting .Person_3::after {
+  content: "3"; 
+}
+
+.grammar_highlighting .Gender_Fem.Person_1::after {
+  content: "1 ♀";
+  color: darksalmon;
+
+}
+.grammar_highlighting .Gender_Fem.Person_2::after {
+  content: "2 ♀";
+  color: darksalmon;
+}
+.grammar_highlighting .Gender_Fem.Person_3::after {
+  content: "3 ♀";
+  color: darksalmon;
+}
+
+.grammar_highlighting .Gender_Masc.Person_1::after {
+  content: "1 ♂";
+  color: blue; 
+}
+.grammar_highlighting .Gender_Masc.Person_2::after {
+  content: "2 ♂";
+  color: blue;
+}
+.grammar_highlighting .Gender_Masc.Person_3::after {
+  content: "3 ♂";
+  color: blue;   
+}
+
+.grammar_highlighting .Gender_Neut.Person_1::after {
+  content: "1 ⚧"; 
+}
+.grammar_highlighting .Gender_Neut.Person_2::after {
+  content: "2 ⚧"; 
+}
+.grammar_highlighting .Gender_Neut.Person_3::after {
+  content: "3 ⚧"; 
+}
+
+
+.grammar_highlighting .Animacy_Inan.Person_1::after {
+  content: "1 ⚙️♂";
+  color: blue;
+}
+.grammar_highlighting .Animacy_Inan.Person_2::after {
+  content: "2 ⚙️♂";
+  color: blue;
+}
+.grammar_highlighting .Animacy_Inan.Person_3::after {
+  content: "3 ⚙️♂";
+  color: blue;
+}
+
+.grammar_highlighting .Animacy_Hum.Person_1::after {
+  content: "1 🙎‍♂️♂";
+  color: blue; 
+}
+.grammar_highlighting .Animacy_Hum.Person_2::after {
+  content: "2 🙎‍♂️♂";
+  color: blue; 
+}
+.grammar_highlighting .Animacy_Hum.Person_3::after {
+  content: "3 🙎‍♂️♂";
+  color: blue; 
+}
+
+.grammar_highlighting .Animacy_Nhum.Person_1::after {
+  content: "1 🐶♂";
+  color: blue; 
+}
+.grammar_highlighting .Animacy_Nhum.Person_2::after {
+  content: "2 🐶♂";
+  color: blue; 
+}
+.grammar_highlighting .Animacy_Nhum.Person_3::after {
+  content: "3 🐶♂";
+  color: blue;
 }
 
 .grammar_highlighting .Number_Ptan,
@@ -75,25 +174,15 @@
   color: #1E90FF; /* Dodger Blue */
 }
 
-.grammar_highlighting .inflected_word a {
-  color: inherit;
+@keyframes fadeOutline {
+  0% {
+    outline: 2px solid grey;
+  }
+  100% {
+    outline: 2px solid transparent;
+  }
 }
 
-.grammar_highlighting .Person_1::after,
-.grammar_highlighting .Person_2::after,
-.grammar_highlighting .Person_3::after {
-  font-size: smaller;
-  font-weight: bold;
-  vertical-align: super; /* This makes it appear as a superscript */
+.flash-highlight-outline {
+  animation: fadeOutline 3s forwards;
 }
-
-.grammar_highlighting .Person_1::after {
-  content: "1"; 
-}
-.grammar_highlighting .Person_2::after {
-  content: "2"; 
-}
-.grammar_highlighting .Person_3::after {
-  content: "3"; 
-}
-

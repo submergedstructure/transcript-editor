@@ -573,20 +573,32 @@
              "2"
              "3"]})
 
+(defn apply-highlight [target-class]
+  (let [elements (.querySelectorAll js/document (str "." target-class))]
+    (doseq [el elements]
+      (let [class-list (.-classList el)]
+        (.remove class-list "flash-highlight-outline")
+        (js/setTimeout #(.add class-list "flash-highlight-outline") 0)))))
+
 (defn grammar-key-item [[attribute-name attribute-values]]
   (div :.column
    (h4 (str (human-readable-attribute-name attribute-name) ":"))
    (div :.ui.animated.list
     (mapv
      (fn [attribute-value]
-       (div :.item
-        (span {:className (str attribute-name "_" attribute-value)} (human-readable-attribute-value attribute-name attribute-value))))
+       (let [attribute-name-value-classname (str attribute-name "_" attribute-value)]
+         (div :.item
+              (span {:className attribute-name-value-classname
+                     :onClick (fn [e]
+                                (apply-highlight attribute-name-value-classname))}
+                    (human-readable-attribute-value attribute-name attribute-value)))))
      attribute-values))))
 
 
 (defn grammar-key []
   (div
    (h3 :.ui.center.aligned.header "\"Grammar X-Ray\" Key")
-   (p "The following grammatical features of words are indicated by symbols after the word, colors or underlining:")
+   (p "The following grammatical features of words are indicated by symbols after the word, colors or underlining.")
+   (p "Click any item of the key to see the words with that feature flash highlighted.")
    (div :.ui.five.column.doubling.grid
     (mapv grammar-key-item css-styled-grammar-attributes))))
