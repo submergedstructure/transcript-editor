@@ -22,7 +22,7 @@
   "Called by shadow-cljs upon hot code reload, see shadow-cljs.edn"
   []
   (println "Refreshing after a hot code reload...")
-  (comp/transact! app `[(com.submerged-structure.mutations/load-transcript {:transcript/id ~(mock-data/nth-transcript-id 2)})])
+  #_(comp/transact! app `[(com.submerged-structure.mutations/load-transcript {:transcript/id ~(mock-data/nth-transcript-id 2)})])
   (app/mount! app (app/root-class app) "app"))
 
 (comment

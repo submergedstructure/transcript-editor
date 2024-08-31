@@ -343,13 +343,9 @@
 
 (defmutation load-transcript [{:transcript/keys [id]}]
   (action [{:keys [app state]}]
-          (if id
-            (let [next-transcript-ident [:transcript/id id]]
-              (swap! state assoc-in [:root/current-transcript] next-transcript-ident)
-              (df/load! app next-transcript-ident transcript/Transcript)
-              (swap! state assoc-in (concat next-transcript-ident [:ui-player/doing]) :loading))
-
-            (df/load! app :root/current-transcript transcript/Transcript)))
+          (let [next-transcript-ident [:transcript/id id]]
+            (swap! state assoc-in [:root/current-transcript] next-transcript-ident)
+            (df/load! app next-transcript-ident transcript/Transcript)))
   (remote [_] false))
 
 (defmutation toggle-transcript-scroll-to-active [_]
