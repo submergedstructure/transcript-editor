@@ -1,6 +1,6 @@
 (ns com.submerged-structure.components.transcript
   (:require [com.fulcrologic.fulcro.dom :as dom  :refer [div h1 h2 h3 li p ul span i b a]]
-            [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+            [com.fulcrologic.fulcro.components :as comp :refer [defsc fragment]]
 
             [com.fulcrologic.semantic-ui.modules.sticky.ui-sticky :refer [ui-sticky]]
             [com.fulcrologic.semantic-ui.elements.segment.ui-segment :as semantic-ui-segment]
@@ -8,6 +8,7 @@
             [com.fulcrologic.semantic-ui.collections.message.ui-message-header :refer [ui-message-header]]
             [com.fulcrologic.semantic-ui.elements.icon.ui-icon :refer [ui-icon]]
             [com.fulcrologic.semantic-ui.icons :as i]
+            [com.fulcrologic.semantic-ui.elements.divider.ui-divider :refer [ui-divider]]
 
 
             [com.submerged-structure.components.player :as player]
@@ -125,8 +126,7 @@
          (ui-message
           {:info true
            :onDismiss (fn [_] (comp/transact! this `[(com.submerged-structure.mutations/hide-transcript-help {})]))}
-          app-help/app-help
-          ))
+          app-help/app-help))
        (div :.ui.pointing.menu
             (a {:classes [(when (= display-type :plain) "active") "item"]
                 :onClick (partial change-display-type this id :plain)}
@@ -137,13 +137,14 @@
             (a {:classes [(when (= display-type :grammar) "active") "item"]
                 :onClick (partial change-display-type this id :grammar)}
                (ui-icon {:name i/low-vision-icon}) "Grammar X-Ray"))
-       (when-let [key-for-display-type (case display-type
-                                         :confidence (c-to-c/confidence-key)
-                                         :grammar (spacy-grammar/grammar-key)
-                                         nil)]
-         (div {:classes [(when (= display-type :grammar) "grammar_highlighting") "ui" "segment" "big"]}
-              key-for-display-type))
+       
        (div {:classes [(when (= display-type :grammar) "grammar_highlighting") "ui" "segment" "big"]}
+            (when-let [key-for-display-type (case display-type
+                                              :confidence (c-to-c/confidence-key)
+                                              :grammar (spacy-grammar/grammar-key)
+                                              nil)]
+              (fragment (div :.key key-for-display-type)
+                        (ui-divider)))
             (div :.transcript.ui.container
                  {:id (str "transcript-" id)}
                  (map #(segment/ui-segment % {:transcript/display-type display-type}) segments)))))
