@@ -122,14 +122,15 @@
   (comp/computed-factory PlayerComponent {:keyfn :transcript/id}))
 
 
-(defn ui-popup-for-controls [header content trigger]
+(defn ui-popup-for-controls [header content trigger & [options]]
   (ui-popup
-   {:size "tiny"
-    :position "bottom center"
-    :hideOnScroll true
-    :header header
-    :content content
-    :trigger trigger}
+   (merge {:size "tiny"
+           :position "bottom center"
+           :hideOnScroll true
+           :header header
+           :content content
+           :trigger trigger}
+          options)
    ))
 
 (defn ui-control-button [icon-name on-click & [options]]
@@ -194,124 +195,127 @@
            
            {:>/language-controls (comp/get-query TranslationControls)}]}
   (if (or (= doing :loading) (nil? (get-player)))
-    (ui-icon {:name "loading spinner"})
-    (dom/div {}
-     (ui-button-group
-      nil
-      (ui-popup-for-controls
-       "Rewind 15 seconds."
-       "Or press the left arrow key."
-       (ui-control-button
-        i/chevron-left-icon
-        (fn [_]
-          (when-let [player (get-player)]
-            (.skip player -15)))
-        ;only gets updated when the ui-period changes but that's OK
-        {:disabled (< (.getCurrentTime (get-player)) 15)}))
-      (ui-popup-for-controls
-       "Back one line."
-       ""
-       (ui-control-button
-        i/angle-double-left-icon
-        (fn [_]
-          (when-let [player (get-player)]
-            (.setTime player prev-segment-start)))
-        {:disabled (nil? prev-segment-start)}))
-      (ui-popup-for-controls
-       "Back one word."
-       ""
-       (ui-control-button
-        i/angle-left-icon
-        (fn [_]
-          (when-let [player (get-player)]
-            (.setTime player prev-word-start)))
-        {:disabled (nil? prev-word-start)}))
-      (ui-popup-for-controls
-       "Back to start of line and play."
-       ""
-       (ui-control-button
-        i/reply-all-icon
-        (fn [_]
-          (when-let [player (get-player)]
-            (.setTime player current-segment-start)
-            (.play player)))
-        {:disabled (nil? current-segment-start)}))
-      (ui-popup-for-controls
-       "Back to start of word and play."
-       ""
-       (ui-control-button
-        i/reply-icon
-        (fn [_]
-          (when-let [player (get-player)]
-            (.setTime player current-word-start)
-            (.play player)))
-        {:disabled (nil? current-word-start)}))
-      (ui-popup-for-controls
-       "Play/Pause"
-       ""
-       (ui-control-button
-        (if (= doing :playing) i/pause-icon i/play-icon)
-        (fn [_]
-          (when (get-player)
-            (if (= doing :playing) (.pause (get-player)) (.play (get-player)))))
-        {:labelPosition "left"
-         :label {:pointing "right"
-                 :content (dom/span
-                           (dom/span :#player-time (time-float-to-string 0 (.getDuration (get-player))))
-                           " of "
-                           (time-float-to-string (.getDuration (get-player)) (.getDuration (get-player))))}}))
-      (ui-popup-for-controls
-       "Forward one word and play."
-       ""
-       (ui-control-button
-        i/share-icon
-        (fn [_]
-          (when-let [player (get-player)]
-            (.setTime player next-word-start)
-            (.play player)))
-        {:disabled (nil? next-word-start)}))
-      (ui-popup-for-controls
-       "Forward one word."
-       ""
-       (ui-control-button
-        i/angle-right-icon
-        (fn [_]
-          (when-let [player (get-player)]
-            (.setTime player next-word-start)))
-        {:disabled (nil? next-word-start)}))
-      (ui-popup-for-controls
-       "Forward one line."
-       ""
-       (ui-control-button
-        i/angle-double-right-icon
-        (fn [_]
-          (when-let [player (get-player)]
-            (.setTime player next-segment-start)))
-        {:disabled (nil? next-segment-start)}))
-      (ui-popup-for-controls
-       "Fast forward 15 seconds."
-       ""
-       (ui-control-button
-        i/chevron-right-icon
-        (fn [_]
-          (when-let [player (get-player)]
-            (.skip player 15)))
-        ;only gets updated when the ui-period changes but that's OK
-        {:disabled (let [time-remaining (- (.getDuration (get-player)) (.getCurrentTime (get-player)))] (< time-remaining 15))})))
-     (ui-button-group
-      nil
-      (ui-popup-for-controls
-       nil
-       "Toggle the transcript automatically scrolling to current spoken word."
-       (ui-control-button
-        i/crosshairs-icon
-        (fn [& _args]
-          (comp/transact! this `[(com.submerged-structure.mutations/toggle-transcript-scroll-to-active {})]))
-        {:positive scroll-to-active
-         :labelPosition "right"
-         :label {:pointing "left"
-                 :content (str "Auto scroll " (if scroll-to-active "on" "off"))}})))
-      (ui-translation-controls language-controls))))
+    (ui-icon {:name "spinner"})
+    (dom/div :.ui.container.grid.centered.padded
+             {:text-align "center"}
+             (dom/span :.item
+              {}
+              (ui-popup-for-controls
+               "Rewind 15 seconds."
+               "Or press the left arrow key."
+               (ui-control-button
+                i/chevron-left-icon
+                (fn [_]
+                  (when-let [player (get-player)]
+                    (.skip player -15)))
+            ;only gets updated when the ui-period changes but that's OK
+                {:disabled (< (.getCurrentTime (get-player)) 15)}))
+              (ui-popup-for-controls
+               "Back one line."
+               ""
+               (ui-control-button
+                i/angle-double-left-icon
+                (fn [_]
+                  (when-let [player (get-player)]
+                    (.setTime player prev-segment-start)))
+                {:disabled (nil? prev-segment-start)}))
+              (ui-popup-for-controls
+               "Back one word."
+               ""
+               (ui-control-button
+                i/angle-left-icon
+                (fn [_]
+                  (when-let [player (get-player)]
+                    (.setTime player prev-word-start)))
+                {:disabled (nil? prev-word-start)}))
+              (ui-popup-for-controls
+               "Back to start of line and play."
+               ""
+               (ui-control-button
+                i/reply-all-icon
+                (fn [_]
+                  (when-let [player (get-player)]
+                    (.setTime player current-segment-start)
+                    (.play player)))
+                {:disabled (nil? current-segment-start)}))
+              (ui-popup-for-controls
+               "Back to start of word and play."
+               ""
+               (ui-control-button
+                i/reply-icon
+                (fn [_]
+                  (when-let [player (get-player)]
+                    (.setTime player current-word-start)
+                    (.play player)))
+                {:disabled (nil? current-word-start)})))
+             (ui-popup-for-controls
+              "Play/Pause"
+              ""
+              (ui-control-button
+               (if (= doing :playing) i/pause-icon i/play-icon)
+               (fn [_]
+                 (when (get-player)
+                   (if (= doing :playing) (.pause (get-player)) (.play (get-player)))))
+               {:labelPosition "left"
+                :label {:pointing "right"
+                        :content (dom/span
+                                  (dom/span :#player-time (time-float-to-string 0 (.getDuration (get-player))))
+                                  " of "
+                                  (time-float-to-string (.getDuration (get-player)) (.getDuration (get-player))))}}))
+             (dom/span :.item
+              {}
+              (ui-popup-for-controls
+               "Forward one word and play."
+               ""
+               (ui-control-button
+                i/share-icon
+                (fn [_]
+                  (when-let [player (get-player)]
+                    (.setTime player next-word-start)
+                    (.play player)))
+                {:disabled (nil? next-word-start)}))
+              (ui-popup-for-controls
+               "Forward one word."
+               ""
+               (ui-control-button
+                i/angle-right-icon
+                (fn [_]
+                  (when-let [player (get-player)]
+                    (.setTime player next-word-start)))
+                {:disabled (nil? next-word-start)}))
+              (ui-popup-for-controls
+               "Forward one line."
+               ""
+               (ui-control-button
+                i/angle-double-right-icon
+                (fn [_]
+                  (when-let [player (get-player)]
+                    (.setTime player next-segment-start)))
+                {:disabled (nil? next-segment-start)}))
+              (ui-popup-for-controls
+               "Fast forward 15 seconds."
+               ""
+               (ui-control-button
+                i/chevron-right-icon
+                (fn [_]
+                  (when-let [player (get-player)]
+                    (.skip player 15)))
+            ;only gets updated when the ui-period changes but that's OK
+                {:disabled (let [time-remaining (- (.getDuration (get-player)) (.getCurrentTime (get-player)))] (< time-remaining 15))})))
+             (dom/div :.item
+              {}
+              (ui-popup-for-controls
+               nil
+               "Toggle the transcript automatically scrolling to current spoken word."
+               (ui-control-button
+                i/crosshairs-icon
+                (fn [& _args]
+                  (comp/transact! this `[(com.submerged-structure.mutations/toggle-transcript-scroll-to-active {})]))
+                {:positive scroll-to-active
+                 :labelPosition "right"
+                 :label {:pointing "left"
+                         :content (str "Auto scroll " (if scroll-to-active "on" "off"))}}))
+              (ui-translation-controls language-controls)))))
 (def ui-player-controls (comp/factory PlayerControls))
 
 

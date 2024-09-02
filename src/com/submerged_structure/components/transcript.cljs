@@ -117,17 +117,14 @@
           (player/ui-player
            player
            {:onTimeupdate (transcript-on-timeupdate this id)})
-          (semantic-ui-segment/ui-segment
-           {:basic true
-            :textAlign "center"}
-           (player/ui-player-controls player-controls)))})
+          (player/ui-player-controls player-controls))})
        (when-not
         help-hidden
          (ui-message
           {:info true
            :onDismiss (fn [_] (comp/transact! this `[(com.submerged-structure.mutations/hide-transcript-help {})]))}
           app-help/app-help))
-       (div :.ui.pointing.menu
+       (div :.ui.pointing.menu.stackable
             (a {:classes [(when (= display-type :plain) "active") "item"]
                 :onClick (partial change-display-type this id :plain)}
                (ui-icon {:name i/eye-icon}) "Plain Transcript - No Coloring")
