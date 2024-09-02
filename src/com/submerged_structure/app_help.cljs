@@ -29,4 +29,6 @@
    (h3 "Grammar Analysis Popups:")
    (p "Hover over any word to see the root word it is derived from and the grammatical features of that word.")
    (h3 "Links to dictionary for individual words:")
-   (p "Click on linked root word and / or the declined word itself in the grammatical analysis pop up to see the definition of the word on " (a {:href "https://www.diki.pl/" :target "_blank"} "Diki.pl") ".")))
+   (p "Click on linked root word and / or the declined word itself in the grammatical analysis pop up to see the definition of the word on " (a {:href "https://www.diki.pl/" :target "_blank"} "Diki.pl") ".")
+   (h3 "Works on moble devices:")
+   (p "This player is designed to work on mobile devices as well as desktops. On devices with touch screens clicking on a word shows the grammatical analysis pop up, rather than playing the transcript from that point on.")))

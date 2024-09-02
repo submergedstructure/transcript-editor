@@ -76,8 +76,8 @@
               (h4 {} "The root word \"" (ui-dict-link-and-popup lemma) "\" does not change here! It is:"))
             (div :.ui.list.animated.large {} (mapv (partial ui-morph-attribute morph-map) word-attributes-that-inflect-word)))
            (if is-morphed
-             (h4 {} "The root word \"" (ui-dict-link-and-popup lemma) "\" becomes \"" (ui-dict-link-and-popup norm) "\" here, it is changed for easier pronunciation with the following word and not grammatical reasons.")
-             (h4 {} "The root word \"" (ui-dict-link-and-popup lemma) "\" never changes! Yay!!")))
+             (h4 {} "Root word \"" (ui-dict-link-and-popup lemma) "\" becomes \"" (ui-dict-link-and-popup norm) "\" here, it is changed for easier pronunciation with the following word and not grammatical reasons.")
+             (h4 {} "Root word \"" (ui-dict-link-and-popup lemma) "\" never changes! Yay!!")))
          
          (when (not-empty (word-attributes-that-are-properties-of-the-word-itself morph-map))
            (fragment {}
@@ -157,8 +157,16 @@
    (mapv 
     (fn [[attribute-name attribue-value]] (str attribute-name "_" attribue-value))
     (if pos (morph-map-for-lemma pos relevant-morph-map) relevant-morph-map))))
-
-
+(comment 
+  js/Window
+  (.matchMedia js/window "(pointer: coarse)")
+  (.-matches (.matchMedia js/window "(pointer: coarse)"))
+  (.-ontouchstart js/window)
+  (.-maxTouchPoints js/navigator))
+(defn is-touch-device []
+  (or (.-ontouchstart js/window)
+      (> (.-maxTouchPoints js/navigator) 0)
+      (.-matches (.matchMedia js/window "(pointer: coarse)"))))
 
 (defsc WordWithMorphPopup [_this {:word/keys [id word active score start
                                 morph lemma pos is_morphed norm]}
@@ -169,7 +177,7 @@
            :word/morph :word/lemma :word/pos :word/is_morphed :word/norm]}
   
   (let [word-html (span {:classes (concat [(when active "active") "word"] (morph-html-classes morph))
-                         :onClick (fn [ws] (player/on-word-click ws start))
+                         :onClick (when-not (is-touch-device) (fn [ws] (player/on-word-click ws start)))
                          :style (when (= display-type :confidence) (c-to-c/confidence-to-style score))
                          }
                         word)]
@@ -180,9 +188,10 @@
         :popperModifiers #js [#js {"name" "preventOverflow"
                                    "options" #js {"padding" 8
                                                   "RootBoundary" "viewport"}}]
-        :position "bottom right"
-        :positionFixed true
+        :position "top left"
         :hideOnScroll true
+        :on [(if (is-touch-device) "click" "hover")]
+
         :trigger word-html}
 
 
