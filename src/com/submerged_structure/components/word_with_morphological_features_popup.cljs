@@ -37,7 +37,7 @@
 (defn ui-dict-links-and-popup
   "More than one link for when word is two space separated lemmas."
   [word]
-  (let [[w1 & w2] (clojure.string/split word #" ")]
+  (let [[w1 & [w2]] (clojure.string/split word #" ")]
     (fragment
      (ui-dict-link-and-popup w1)
      (when w2
@@ -72,17 +72,17 @@
          (if (not-empty word-attributes-that-inflect-word)
            (fragment {}
             (if is-morphed 
-              (h4 {} "The root word \"" (ui-dict-link-and-popup lemma) "\" becomes \"" (ui-dict-link-and-popup norm) "\" here, \"" (ui-dict-link-and-popup norm) "\" is:")
-              (h4 {} "The root word \"" (ui-dict-link-and-popup lemma) "\" does not change here! It is:"))
+              (h4 {} "The root word \"" (ui-dict-links-and-popup lemma) "\" becomes \"" (ui-dict-links-and-popup norm) "\" here, \"" (ui-dict-links-and-popup norm) "\" is:")
+              (h4 {} "The root word \"" (ui-dict-links-and-popup lemma) "\" does not change here! It is:"))
             (div :.ui.list.animated.large {} (mapv (partial ui-morph-attribute morph-map) word-attributes-that-inflect-word)))
            (if is-morphed
-             (h4 {} "Root word \"" (ui-dict-link-and-popup lemma) "\" becomes \"" (ui-dict-link-and-popup norm) "\" here, it is changed for easier pronunciation with the following word and not grammatical reasons.")
-             (h4 {} "Root word \"" (ui-dict-link-and-popup lemma) "\" never changes! Yay!!")))
+             (h4 {} "Root word \"" (ui-dict-links-and-popup lemma) "\" becomes \"" (ui-dict-links-and-popup norm) "\" here, it is changed for easier pronunciation with the following word and not grammatical reasons.")
+             (h4 {} "Root word \"" (ui-dict-links-and-popup lemma) "\" never changes! Yay!!")))
          
          (when (not-empty (word-attributes-that-are-properties-of-the-word-itself morph-map))
            (fragment {}
             (ui-divider)
-            (h4 {} "The root word itself, \"" (ui-dict-link-and-popup lemma) "\" is or has:")
+            (h4 {} "The root word itself, \"" (ui-dict-links-and-popup lemma) "\" is or has:")
             (div :.ui.list.animated.large {} (mapv (partial ui-morph-attribute morph-map) (word-attributes-that-are-properties-of-the-word-itself morph-map))))))))
 
 (comment 
@@ -202,11 +202,11 @@
           (h3 :.grammar_highlighting
               (when is_morphed
                 (fragment
-                 (span :.inflected_word {:classes (morph-html-classes morph {:pos pos})} (ui-dict-link-and-popup lemma))
+                 (span :.inflected_word {:classes (morph-html-classes morph {:pos pos})} (ui-dict-links-and-popup lemma))
                  {}
                  "  "
                  (ui-icon {:name i/arrow-right-icon}) " "))
-              (span :.inflected_word {:classes (morph-html-classes morph)} (ui-dict-link-and-popup norm)))
+              (span :.inflected_word {:classes (morph-html-classes morph)} (ui-dict-links-and-popup norm)))
 
           (ui-all-a-words-morph-properties pos morph-map lemma norm is_morphed))))
       word-html)))
