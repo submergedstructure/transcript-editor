@@ -145,8 +145,11 @@
                                               nil)]
               (fragment (div :.key key-for-display-type)
                         (ui-divider)))
-            (div :.transcript.ui.container
-                 {:id (str "transcript-" id)}
-                 (map #(segment/ui-segment % {:transcript/display-type display-type}) segments)))))
+            (if-not (empty? segments)
+              (div :.transcript.ui.container
+                   {:id (str "transcript-" id)}
+                   (map #(segment/ui-segment % {:transcript/display-type display-type}) segments))
+              (div :.ui.placeholder
+                   (mapv (fn [_] (div :.line)) (range 20)))))))
 
 (def ui-transcript (comp/factory Transcript {:keyfn :transcript/id}))
