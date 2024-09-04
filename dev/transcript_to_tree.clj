@@ -5,11 +5,7 @@
             ;[fulcrologic.client.primitives :as fp]
             [clojure.walk :refer [postwalk]]
             [clojure.core :as clj]
-            [clojure.set :as set]
-            [com.fulcrologic.fulcro.mutations :as m]
-            [com.fulcrologic.fulcro.algorithms.normalize :as fn]
-            [com.fulcrologic.fulcro.components :as comp]
-            [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]))
+            [clojure.set :as set]))
 
 ;; Code to be run in the clj repl to convert the transcript data returned by my 
 ;; web service to edn.
@@ -19,8 +15,6 @@
 ;; Later this will be done on the server side and immediately put in the db.
 
 (def filepath "resources/public/audio_and_transcript/")
-
-
 
 (defn add-id [m]
   (assoc m "id" (str (java.util.UUID/randomUUID))))
@@ -284,24 +278,17 @@
       (cheshire/parse-string false)))
 
 
-(defn file-translated-segments-to-tree [translations]
-  (into
-   []
-   (for [[lang segments] translations
-         segment segments]
-     (->
-      segment
-      (select-keys ["start_time" "end_time" "text"])
-      (assoc "lang" lang)
-      (set/rename-keys {"start_time" "start" "end_time" "end"})))))
 
-(defn file-transcribed-segments-to-tree [transcription]
-  (mapv
-   (fn [segment]
-     (->
-      (set/rename-keys segment {"word_timestamps" "words" "start_time" "start" "end_time" "end"})
-      (update "words" (fn [words] (mapv (fn [word] (set/rename-keys word {"prob" "score"})) words)))))
-   transcription))
+(defn whispers2t-keys-to-open-ai-standard-keys
+  "Converts keys from whispers2t to open-ai standard keys.
+   `lang` is added to each segment if provided, useful for translations."
+  [segments]
+    (mapv
+     (fn [segment]
+       (->
+        (set/rename-keys segment {"word_timestamps" "words" "start_time" "start" "end_time" "end"})
+        (update "words" (fn [words] (mapv (fn [word] (set/rename-keys word {"prob" "score"})) words)))))
+     segments))
 
 
 (comment 
@@ -315,40 +302,94 @@
 
   )
 
-(defn find-translations-within-timestamp-range [start end translations]
-  (filterv
-   (fn [translation]
-     (and
-      (< start (get translation "start"))
-      (< (get translation "end") end)))
-   translations))
 
-;;Detect any translations before the transcription segment starts 
-;; and that ends before the transcription segment ending.
-;;Must be long enough to detect translations with differing time stamps but not too long to detect translations 
-;; of other segments.
-;;If no translations found expand window by 0.1 seconds, each side, and try again.
-(defn find-translations-for-segment [segment translations]
-  (loop [allowed-translation-transcription-timestamp-difference 0.0]
-   (let [start (- (get segment "start") allowed-translation-transcription-timestamp-difference)
-         end (+ (get segment "end") allowed-translation-transcription-timestamp-difference)
-         translations (find-translations-within-timestamp-range start end translations)]
-    (if-not (empty? translations)
-      translations
-      (recur (+ allowed-translation-transcription-timestamp-difference 0.1))))))
+(defn within-time-window [{:strs [start end]} time]
+  (<= start time end))
 
-(defn get-segment-data-with-translation [filename transcripts-and-translations]
-  (let [transcribed (file-transcribed-segments-to-tree (get-in transcripts-and-translations [filename "transcription"]))
-        translations (file-translated-segments-to-tree (get-in transcripts-and-translations [filename "translations"]))]
-    (mapv (fn [segment]
-            (assoc segment "translations" (find-translations-for-segment segment translations)))
-          transcribed)))
+(defn score-for-translation-fit-to-segment
+  "Small score is better."
+  [{segment-start "start" segment-end "end" :as segment} {translation-start "start" translation-end "end"}]
+  
+  (+ (if (within-time-window segment translation-start)
+       0
+       (Math/abs (- segment-start translation-start)))
+     (if (within-time-window segment translation-end)
+       0
+       (Math/abs (- segment-end translation-end)))))
+
+(defn add-item-to-vector [v item]
+  (if (nil? v)
+    [item]
+    (conj v item)))
+
+(comment 
+  (update-in {} [:a] add-item-to-vector 1)
+  ;; => {:a [1]}
+)
+
+(defn get-segment-data-with-translation [transcribed translations]
+  (loop [currently-checking-transcription-no 0
+         currently-checking-translation-no 0
+         transcribed-with-translations transcribed]
+    (let [current-transcription (get transcribed currently-checking-transcription-no)]
+      (cond  (> currently-checking-transcription-no (count transcribed))
+             transcribed-with-translations
+             (> currently-checking-translation-no (count translations))
+             (do (prn "No more translations to check. next-transcription-to-check: " currently-checking-transcription-no " current-transcription text " (get current-transcription "text"))
+                 transcribed-with-translations)
+             :else
+             (let [current-translation (get translations currently-checking-translation-no)]
+               (if-let [next-transcription (get transcribed (inc currently-checking-transcription-no))]
+                 (if (< (score-for-translation-fit-to-segment current-transcription current-translation)
+                        (score-for-translation-fit-to-segment next-transcription current-translation))
+                     ;found a fit
+                   (recur currently-checking-transcription-no
+                          (inc currently-checking-translation-no)
+                          (update-in transcribed-with-translations [currently-checking-transcription-no "translations"] add-item-to-vector current-translation))
+                     ;translation fits better with next transcription
+                   (recur (inc currently-checking-transcription-no)
+                          currently-checking-translation-no
+                          transcribed-with-translations))
+                   ;no more transcriptions to check - translation fits best with last transcription
+                 (update-in transcribed-with-translations [currently-checking-transcription-no "translations"] add-item-to-vector current-translation)))))))
+
+(defn get-segment-data-with-translation-all-langs [transcripts translations]
+  (reduce (fn [transcripts-interim lang]
+            (get-segment-data-with-translation transcripts-interim (get translations lang)))
+          transcripts
+          (keys translations)))
+
+(comment
+  
+  
+  (let [filename "Freediving.mp3"
+        transcripts-and-translations (transcripts_all_files)]
+    (->> (get-in transcripts-and-translations [filename "transcription"])
+         #_(mapv (fn [segment]
+                 (->
+                  (select-keys segment ["text" "start" "end"]))))))
+  (let [filename "Freediving.mp3"
+        transcripts-and-translations (transcripts_all_files)]
+    (->> (get-in transcripts-and-translations [filename "translations"])
+         #_(mapv (fn [segment]
+                   (->
+                    (select-keys segment ["text" "start" "end"]))))))
+
+  )
 
 (defn transcript-tree [filename full-filepath-without-extension]
-  (let [transcripts-and-translations (transcripts_all_files)]
+  (let [transcripts-and-translations (transcripts_all_files)
+        transcripts (whispers2t-keys-to-open-ai-standard-keys (get-in transcripts-and-translations [filename "transcription"]))
+        translations-all-langs
+        (into {} (map
+                  (fn [[lang translations-for-one-lang]]
+                    [lang (->>
+                           (whispers2t-keys-to-open-ai-standard-keys translations-for-one-lang)
+                           (mapv #(assoc % "lang" lang)))])
+                  (get-in transcripts-and-translations [filename "translations"])))]
     (-> {"audio-filename" (str (subs full-filepath-without-extension (count "resources/public")) ".mp3")
          "label" filename
-         "segments" (get-segment-data-with-translation filename transcripts-and-translations)}
+         "segments" (get-segment-data-with-translation-all-langs transcripts translations-all-langs)}
         add-ids
         (add-ns-and-keywordize-keys-in-m "transcript"))))
 
