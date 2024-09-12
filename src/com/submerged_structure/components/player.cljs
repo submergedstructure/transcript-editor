@@ -1,68 +1,43 @@
 (ns com.submerged-structure.components.player
-   (:require [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-             [com.fulcrologic.fulcro.algorithms.react-interop :as interop]
-             ["@wavesurfer/react" :default WavesurferPlayer]
-             ["wavesurfer.js/dist/plugins/minimap.esm.js" :default Minimap]
-             ["wavesurfer.js/dist/plugins/regions.esm.js" :default Regions]
+  (:require [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+            [com.fulcrologic.fulcro.algorithms.react-interop :as interop]
+            ["@wavesurfer/react" :default WavesurferPlayer]
+            ["wavesurfer.js/dist/plugins/minimap.esm.js" :default Minimap]
+            ["wavesurfer.js/dist/plugins/regions.esm.js" :default Regions]
 
-             [com.fulcrologic.fulcro.dom :as dom]
-             [com.fulcrologic.semantic-ui.elements.button.ui-button-group :refer [ui-button-group]]
-             [com.fulcrologic.semantic-ui.modules.popup.ui-popup :refer [ui-popup]]
-             [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
-             [com.fulcrologic.semantic-ui.elements.icon.ui-icon :refer [ui-icon]]
-             [com.fulcrologic.semantic-ui.icons :as i]
+            [com.submerged-structure.player-atom :as player-atom]))
 
-             [goog.string :as gstring]))
 
- (defonce player-local (atom {:player nil}))
+(defn ^js get-player-regions-plugin [& [^js ws-player]]
+  (-> (or ws-player (player-atom/get-player))
+      (.getActivePlugins)
+      (.find #(instance? Regions %))))
 
- (defn ^js get-player []
-   (:player @player-local))
 
- (defn ^js get-player-regions-plugin [& [^js ws-player]]
-   (-> (or ws-player (get-player))
-       (.getActivePlugins)
-       (.find #(instance? Regions %))))
- 
- 
+(comment (get-player-regions-plugin)
+         (js/console.log "get-player-regions-plugin" (get-player-regions-plugin)))
 
- (comment (get-player-regions-plugin)
-          (js/console.log "get-player-regions-plugin" (get-player-regions-plugin)))
 
- (defn set-player! [player]
-   (swap! player-local assoc :player player))
+(defn player-height [transcript-id] (.-clientHeight (js/document.querySelector (str "#player-" transcript-id))))
 
- (defn player-height [transcript-id] (.-clientHeight (js/document.querySelector (str "#player-" transcript-id))))
+(defn on-word-click [_ start]
+  (let [player (player-atom/get-player)]
+    (when player
+      (.setTime player start)
+      (.play player))))
 
- (defn on-word-click [_ start]
-   (let [player (get-player)]
-     (when player
-       (.setTime player start)
-       (.play player))))
+(def ui-wavesurfer-player (interop/react-factory WavesurferPlayer))
 
- (def ui-wavesurfer-player (interop/react-factory WavesurferPlayer))
-
- (defn time-float-to-string [t duration]
-   (let [max-t-minutes-length (count (str (quot duration 60)))
-         t-2dp (.toFixed t 2)]
-     (str  (gstring/padNumber (quot t-2dp 60) max-t-minutes-length 0)
-           ":" (gstring/padNumber (mod t-2dp 60) 2 1))))
-
- (defn player-on-timeupdate [^js ws]
-   (let [current-time (.getCurrentTime ws)
-         player-time-el (js/document.querySelector "span#player-time")]
-     (set! (.-textContent player-time-el) (time-float-to-string current-time (.getDuration ws)))))
-
- (defn player-on-current-word-update [start-current-word end-current-word current-word]
-   (let [rp (get-player-regions-plugin)]
-       (.clearRegions rp)
-       (.addRegion rp
-        #js {:content current-word
-             :start start-current-word
-             :end end-current-word
-             :drag true
-             :resize true
-             :color "rgba(0, 0, 128, 0.5)"})))
+(defn player-on-current-word-update [start-current-word end-current-word current-word]
+  (let [rp (get-player-regions-plugin)]
+    (.clearRegions rp)
+    (.addRegion rp
+                #js {:content current-word
+                     :start start-current-word
+                     :end end-current-word
+                     :drag true
+                     :resize true
+                     :color "rgba(0, 0, 128, 0.5)"})))
 
 (comment (player-on-current-word-update 5 15 "test"))
 
@@ -89,7 +64,7 @@
 
 
     :onDecode (fn [^js ws]
-                (set-player! ws))
+                (player-atom/set-player! ws))
 
     :onReady (fn [^js player]
                (js/console.log "onReady" player)
@@ -113,7 +88,7 @@
 
     :plugins [(.create Minimap
                        #js {:height 40,
-                        :normalize? true})
+                            :normalize? true})
               (.create Regions
                        #js {:on (fn [& args] (js/console.log "Regions event" args))})]}))
 
@@ -122,209 +97,6 @@
   (comp/computed-factory PlayerComponent {:keyfn :transcript/id}))
 
 
-(defn common-options-for-popup-for-controls [header content trigger & [options]]
-  (merge {:size "tiny"
-          :position "bottom center"
-          :hideOnScroll true
-          :header header
-          :content content
-          :trigger trigger}
-         options))
-
-(defsc TranslationControl [this {:ui-translation-control/keys [language visible-translations?]}]
-  {:ident :ui-translation-control/language
-   :query [:ui-translation-control/language
-           :ui-translation-control/visible-translations?]}
-  (ui-popup
-    (common-options-for-popup-for-controls
-     (if visible-translations? (str "Hide ALL \"" language "\" translations.") (str "Show ALL \"" language "\" translations."))
-     (str "If any \"" language "\" translations for the transcript setences are shown clicking will hide them all, if none are clicking will reveal them all.")
-     (ui-button 
-      {:icon i/language-icon
-       :onClick
-       (fn [& _args]
-         (comp/transact!
-          this
-          `[(com.submerged-structure.mutations/toggle-visibility-of-all-translations-in-lang {:ui-translation-control/language ~language})]))
-       :positive visible-translations?
-       :labelPosition "right"
-       :label {:pointing "left"
-               :content language}}))))
-
-(def ui-translation-control (comp/factory TranslationControl {:keyfn :ui-translation-control/language}))
-
-(defsc TranslationControls [_this {:ui-translation-controls/keys [languages]}]
-  {:ident :transcript/id
-   :query [:transcript/id
-           {:ui-translation-controls/languages (comp/get-query TranslationControl)}]}
-  (ui-button-group
-   nil
-   (mapv ui-translation-control languages)))
-
-(def ui-translation-controls (comp/factory TranslationControls))
-
-(defsc PlayerControls [this {:ui-player/keys  [doing scroll-to-active]
-                             :ui-player-controls/keys [prev-segment-start current-segment-start next-segment-start
-                                                       prev-word-start current-word-start next-word-start]
-
-                             :>/keys [language-controls]}]
-  
-  {:ident :transcript/id
-   :query [:transcript/id
-           :ui-player/doing
-           :ui-player/scroll-to-active
-
-           :ui-player-controls/prev-word-start
-           :ui-player-controls/prev-segment-start
-           
-           :ui-player-controls/current-word-start
-           :ui-player-controls/current-segment-start
-           
-           :ui-player-controls/next-word-start
-           :ui-player-controls/next-segment-start
-           
-           {:>/language-controls (comp/get-query TranslationControls)}]}
-  (if (or (= doing :loading) (nil? (get-player)))
-    (ui-icon {:name "spinner"})
-    (dom/div
-     :.ui.container.grid.centered.padded
-     {:text-align "center"}
-     (dom/span
-      :.item
-      {}
-      (ui-popup
-       (common-options-for-popup-for-controls
-        "Rewind 15 seconds."
-        "Or press the left arrow key."
-        (ui-button
-         {:icon i/chevron-left-icon
-          :onClick (fn [_]
-                     (when-let [player (get-player)]
-                       (.skip player -15)))
-                 ;only gets updated when the ui-period changes but that's OK
-          :disabled (< (.getCurrentTime (get-player)) 15)})))
-      (ui-popup
-       (common-options-for-popup-for-controls
-        "Back one line."
-        ""
-        (ui-button
-         {:icon i/angle-double-left-icon
-          :onClick (fn [_]
-                     (when-let [player (get-player)]
-                       (.setTime player prev-segment-start)))
-          :disabled (nil? prev-segment-start)})))
-      (ui-popup
-       (common-options-for-popup-for-controls
-        "Back one word."
-        ""
-        (ui-button
-         {:icon i/angle-left-icon
-          :onClick (fn [_]
-                     (when-let [player (get-player)]
-                       (.setTime player prev-word-start)))
-          :disabled (nil? prev-word-start)})))
-      (ui-popup
-       (common-options-for-popup-for-controls
-        "Back to start of line and play."
-        ""
-        (ui-button
-         {:icon i/reply-all-icon
-          :onClick (fn [_]
-                     (when-let [player (get-player)]
-                       (.setTime player current-segment-start)
-                       (.play player)))
-          :disabled (nil? current-segment-start)})))
-      (ui-popup
-       (common-options-for-popup-for-controls
-        "Back to start of word and play."
-        ""
-        (ui-button
-         {:icon i/reply-icon
-          :onClick
-          (fn [_]
-            (when-let [player (get-player)]
-              (.setTime player current-word-start)
-              (.play player)))
-          :disabled (nil? current-word-start)}))))
-     (ui-popup
-      (common-options-for-popup-for-controls
-       "Play/Pause"
-       ""
-       (ui-button
-        {:icon (if (= doing :playing) i/pause-icon i/play-icon)
-         :onClick (fn [_]
-                    (when (get-player)
-                      (if (= doing :playing) (.pause (get-player)) (.play (get-player)))))
-         :labelPosition "left"
-         :label {:pointing "right"
-                 :content (dom/span
-                           (dom/span :#player-time (time-float-to-string 0 (.getDuration (get-player))))
-                           " of "
-                           (time-float-to-string (.getDuration (get-player)) (.getDuration (get-player))))}})))
-     (dom/span
-      :.item
-      {}
-      (ui-popup
-       (common-options-for-popup-for-controls
-        "Forward one word and play."
-        ""
-        (ui-button
-         {:icon i/share-icon
-          :onClick (fn [_]
-                     (when-let [player (get-player)]
-                       (.setTime player next-word-start)
-                       (.play player)))
-          :disabled (nil? next-word-start)})))
-      (ui-popup
-       (common-options-for-popup-for-controls
-        "Forward one word."
-        ""
-        (ui-button
-         {:icon i/angle-right-icon
-          :onClick (fn [_]
-                     (when-let [player (get-player)]
-                       (.setTime player next-word-start)))
-          :disabled (nil? next-word-start)})))
-      (ui-popup
-       (common-options-for-popup-for-controls
-        "Forward one line."
-        ""
-        (ui-button
-         {:icon i/angle-double-right-icon
-          :onClick (fn [_]
-                     (when-let [player (get-player)]
-                       (.setTime player next-segment-start)))
-          :disabled (nil? next-segment-start)})))
-      (ui-popup
-       (common-options-for-popup-for-controls
-        "Fast forward 15 seconds."
-        ""
-        (ui-button
-         {:icon i/chevron-right-icon
-          :onClick (fn [_]
-                     (when-let [player (get-player)]
-                       (.skip player 15)))
-                 ;only gets updated when the ui-period changes but that's OK
-          :disabled (let [time-remaining (- (.getDuration (get-player)) (.getCurrentTime (get-player)))] (< time-remaining 15))}))))
-     (dom/div
-      :.item
-      {}
-      (ui-popup
-       (common-options-for-popup-for-controls
-        nil
-        "Toggle the transcript automatically scrolling to current spoken word."
-        (ui-button
-         {:icon i/crosshairs-icon
-          :onClick (fn [& _args]
-                     (comp/transact! this `[(com.submerged-structure.mutations/toggle-transcript-scroll-to-active {})]))
-          :positive scroll-to-active
-          :labelPosition "right"
-          :label {:pointing "left"
-                  :content (str "Auto scroll " (if scroll-to-active "on" "off"))}})))
-      (ui-translation-controls language-controls)))))
-(def ui-player-controls (comp/factory PlayerControls))
-
-
-(comment (get-player)
-         (js/console.log (:player @player-local))
+(comment (player-atom/get-player)
+         (js/console.log (player-atom/get-player))
          (player-on-current-word-update 10, 15, "hello"))

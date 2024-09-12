@@ -1,17 +1,16 @@
 (ns com.submerged-structure.components.transcript
-  (:require [com.fulcrologic.fulcro.dom :as dom  :refer [div h1 h2 h3 li p ul span i b a]]
+  (:require [com.fulcrologic.fulcro.dom :as dom  :refer [div a]]
             [com.fulcrologic.fulcro.components :as comp :refer [defsc fragment]]
 
             [com.fulcrologic.semantic-ui.modules.sticky.ui-sticky :refer [ui-sticky]]
-            [com.fulcrologic.semantic-ui.elements.segment.ui-segment :as semantic-ui-segment]
             [com.fulcrologic.semantic-ui.collections.message.ui-message :refer [ui-message]]
-            [com.fulcrologic.semantic-ui.collections.message.ui-message-header :refer [ui-message-header]]
             [com.fulcrologic.semantic-ui.elements.icon.ui-icon :refer [ui-icon]]
             [com.fulcrologic.semantic-ui.icons :as i]
             [com.fulcrologic.semantic-ui.elements.divider.ui-divider :refer [ui-divider]]
 
 
             [com.submerged-structure.components.player :as player]
+            [com.submerged-structure.components.controls.player-controls :as player-controls]
             [com.submerged-structure.confidence-to-color :as c-to-c]
             [com.submerged-structure.spacy-grammar :as spacy-grammar]
             [com.submerged-structure.components.segment :as segment]
@@ -64,7 +63,7 @@
   (fn [^js ws]
     (let [current-time (.getCurrentTime ws)]
       (update-current-word-throttled this current-time id)
-      (player/player-on-timeupdate ws))))
+      (player-controls/player-on-timeupdate ws))))
 
 (defn change-display-type [this id type & js-args]
   (js/console.log "Menu item clicked" this id type js-args)
@@ -85,7 +84,7 @@
    :initial-state (fn [_] {:transcript/segments (comp/get-initial-state segment/Segment {})
                            :>/transcript-switcher (comp/get-initial-state transcript-switcher/TranscriptSwitcher {})
                            :>/player (comp/get-initial-state player/PlayerComponent {})
-                           :>/player-controls (comp/get-initial-state player/PlayerControls {})})
+                           :>/player-controls (comp/get-initial-state player-controls/PlayerControls {})})
    :query [:transcript/id
            :transcript/label
            :transcript/duration
@@ -105,7 +104,7 @@
            {:transcript/segments (comp/get-query segment/Segment)}
            {:>/transcript-switcher (comp/get-query transcript-switcher/TranscriptSwitcher)}
            {:>/player (comp/get-query player/PlayerComponent)}
-           {:>/player-controls (comp/get-query player/PlayerControls)}]}
+           {:>/player-controls (comp/get-query player-controls/PlayerControls)}]}
   (div :.ui.container
        (transcript-switcher/ui-transcript-switcher transcript-switcher {:current-transcript id})
        (ui-sticky
@@ -117,7 +116,7 @@
           (player/ui-player
            player
            {:onTimeupdate (transcript-on-timeupdate this id)})
-          (player/ui-player-controls player-controls))})
+          (player-controls/ui-player-controls player-controls))})
        (when-not
         help-hidden
          (ui-message
