@@ -126,13 +126,13 @@
        (div :.ui.pointing.menu.stackable
             (a {:classes [(when (= display-type :plain) "active") "item"]
                 :onClick (partial change-display-type this id :plain)}
-               (ui-icon {:name i/eye-icon}) "Plain Transcript - No Coloring")
+               (ui-icon {:name i/low-vision-icon}) "Plain Transcript - No Coloring")
             (a {:classes [(when (= display-type :confidence) "active") "item"]
                 :onClick (partial change-display-type this id :confidence)}
                (ui-icon {:name i/braille-icon}) "AI's Confidence of Each Word")
             (a {:classes [(when (= display-type :grammar) "active") "item"]
                 :onClick (partial change-display-type this id :grammar)}
-               (ui-icon {:name i/low-vision-icon}) "Grammar X-Ray"))
+               (ui-icon {:name i/eye-icon}) "Grammar X-Ray"))
        
        (div {:classes [(when (= display-type :grammar) "grammar_highlighting") "ui" "segment" "big"]}
             (when-let [key-for-display-type (case display-type
