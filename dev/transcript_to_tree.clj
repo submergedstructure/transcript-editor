@@ -5,7 +5,10 @@
             ;[fulcrologic.client.primitives :as fp]
             [clojure.walk :refer [postwalk]]
             [clojure.core :as clj]
-            [clojure.set :as set]))
+            [clojure.set :as set]
+            
+            [clojure.math :refer [round]]
+            [clojure.pprint :as pp]))
 
 ;; Code to be run in the clj repl to convert the transcript data returned by my 
 ;; web service to edn.
@@ -16,23 +19,13 @@
 
 (def filepath "resources/public/audio_and_transcript/")
 
-(defn add-id [m]
-  (assoc m "id" (str (java.util.UUID/randomUUID))))
-  
-(defn add-ids [tree]
-  (postwalk (fn [node]
-              (if (map? node)
-                (add-id node)
-                node))
-            tree))
-
-
-(declare add-ns-and-keywordize-keys-in-vec)
 
 (defn singular-from-plural
   "All plural keys are simply the singular key with an 's' appended."
   [s]
   (subs s 0 (dec (count s))))
+
+(declare add-ns-and-keywordize-keys-in-vec)
 
 (defn add-ns-and-keywordize-keys-in-m [m ns]
   (into {} (for [[k v] m]
@@ -41,10 +34,22 @@
                 (add-ns-and-keywordize-keys-in-vec v (singular-from-plural k))
                 v)])))
 
+
+(defn add-ns-and-keywordize-keys-in-vec [v ns]
+  (into [] (for [m v]
+             (add-ns-and-keywordize-keys-in-m m ns))))
+
+(comment
+  (add-ns-and-keywordize-keys-in-vec [{"a" 1 "b" 2} {"c" 3 "d" 4}] "segment")
+  ;; => [#:segment{:a 1, :b 2} #:segment{:c 3, :d 4}]
+  )
+
+
 (defn namespace-of-map
   "For a map with common namespace for all keys."
   [m]
   (namespace (first (keys m))))
+
 
 (defn replace-all-vectors-in-maps-with-ids-of-submaps [m]
   (apply merge m
@@ -261,15 +266,6 @@
   )
 
 
-(defn add-ns-and-keywordize-keys-in-vec [v ns]
-  (into [] (for [m v]
-             (add-ns-and-keywordize-keys-in-m m ns))))
-
-(comment
-  (add-ns-and-keywordize-keys-in-vec [{"a" 1 "b" 2} {"c" 3 "d" 4}] "segment")
-  ;; => [#:segment{:a 1, :b 2} #:segment{:c 3, :d 4}]
-)
-
 
 
 (defn transcripts_all_files []
@@ -278,6 +274,21 @@
       (cheshire/parse-string false)))
 
 
+(comment
+
+
+  (let [filename "Freediving.mp3"
+        transcripts-and-translations (transcripts_all_files)]
+    (->> (get-in transcripts-and-translations [filename "transcription"])
+         #_(mapv (fn [segment]
+                   (->
+                    (select-keys segment ["text" "start" "end"]))))))
+  (let [filename "Freediving.mp3"
+        transcripts-and-translations (transcripts_all_files)]
+    (->> (get-in transcripts-and-translations [filename "translations"])
+         #_(mapv (fn [segment]
+                   (->
+                    (select-keys segment ["text" "start" "end"])))))))
 
 (defn whispers2t-keys-to-open-ai-standard-keys
   "Converts keys from whispers2t to open-ai standard keys.
@@ -317,13 +328,13 @@
        0
        (Math/abs (- segment-end translation-end)))))
 
-(defn add-item-to-vector [v item]
+(defn add-item-to-vector-create-vector-if-necessary [v item]
   (if (nil? v)
     [item]
     (conj v item)))
 
 (comment 
-  (update-in {} [:a] add-item-to-vector 1)
+  (update-in {} [:a] add-item-to-vector-create-vector-if-necessary 1)
   ;; => {:a [1]}
 )
 
@@ -345,13 +356,19 @@
                      ;found a fit
                    (recur currently-checking-transcription-no
                           (inc currently-checking-translation-no)
-                          (update-in transcribed-with-translations [currently-checking-transcription-no "translations"] add-item-to-vector current-translation))
+                          (update-in transcribed-with-translations
+                                     [currently-checking-transcription-no "translations"]
+                                     add-item-to-vector-create-vector-if-necessary
+                                     current-translation))
                      ;translation fits better with next transcription
                    (recur (inc currently-checking-transcription-no)
                           currently-checking-translation-no
                           transcribed-with-translations))
                    ;no more transcriptions to check - translation fits best with last transcription
-                 (update-in transcribed-with-translations [currently-checking-transcription-no "translations"] add-item-to-vector current-translation)))))))
+                 (update-in transcribed-with-translations
+                            [currently-checking-transcription-no "translations"]
+                            add-item-to-vector-create-vector-if-necessary
+                            current-translation)))))))
 
 (defn get-segment-data-with-translation-all-langs [transcripts translations]
   (reduce (fn [transcripts-interim lang]
@@ -359,23 +376,46 @@
           transcripts
           (keys translations)))
 
-(comment
-  
-  
-  (let [filename "Freediving.mp3"
-        transcripts-and-translations (transcripts_all_files)]
-    (->> (get-in transcripts-and-translations [filename "transcription"])
-         #_(mapv (fn [segment]
-                 (->
-                  (select-keys segment ["text" "start" "end"]))))))
-  (let [filename "Freediving.mp3"
-        transcripts-and-translations (transcripts_all_files)]
-    (->> (get-in transcripts-and-translations [filename "translations"])
-         #_(mapv (fn [segment]
-                   (->
-                    (select-keys segment ["text" "start" "end"]))))))
 
+(defn add-id [m]
+  (assoc m "id" (str (java.util.UUID/randomUUID))))
+
+(defn add-ids [tree]
+  (postwalk (fn [node]
+              (if (map? node)
+                (add-id node)
+                node))
+            tree))
+
+(defn round-to-three-decimals [n]
+  (/ (round (* 1000.0 n)) 1000.0))
+
+
+(defn round-start-and-end-if-exists [{:strs [start] :as m}]
+  (if start
+    (-> m
+      (update "start" round-to-three-decimals)
+      (update "end" round-to-three-decimals))
+    m))
+
+(comment 
+  (round-start-and-end-if-exists {"start" 589.0799999999998 "end" 0})
+  ;; => {"start" 589.08, "end" 0.0}
+  (round-start-and-end-if-exists {})
+  ;; => {}
   )
+
+(defn round-all-starts-and-ends [tree]
+  (postwalk (fn [node]
+              (if (map? node)
+                (round-start-and-end-if-exists node)
+                node))
+            tree))
+
+
+(comment
+  (update {} :start round-to-three-decimals))
+
 
 (defn transcript-tree [filename full-filepath-without-extension]
   (let [transcripts-and-translations (transcripts_all_files)
@@ -391,8 +431,12 @@
          "label" filename
          "segments" (get-segment-data-with-translation-all-langs transcripts translations-all-langs)}
         add-ids
+        round-all-starts-and-ends
         (add-ns-and-keywordize-keys-in-m "transcript"))))
 
+(comment 
+  (transcript-tree "Freediving.mp3" "resources/public/audio_and_transcript/whispers2t/Freediving.mp3")
+  )
 
 (defn find-mp3-files-at-path [path]
   (->> (java.io.File. path)

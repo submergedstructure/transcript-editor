@@ -27,6 +27,12 @@
     state-deref state-deref)
    [:root/current-transcript :transcript/segments]))
 
+(defn words-with-unique-time-stamps [segment-word-tree]
+  (->>
+   segment-word-tree
+   (mapcat :segment/words)
+   (filter #(not= (:word/start %) (:word/end %))))) ;; where start times are the same take the last one.
+
 (defn changes-to-make-to-transcript-keys-in-local-db-when-time-changes
   "Return the id of current word to highlight or nil if no word to highlight.
    And return the period for t outside which this function should be called again."
@@ -36,7 +42,7 @@
         
         segment-word-tree (get-current-segment-word-tree-from-state state-deref)
         
-        all-words (filter :word/start (mapcat :segment/words segment-word-tree))
+        all-words (words-with-unique-time-stamps segment-word-tree) 
         words-started-before-t (filter #(<= (:word/start %) t) all-words)
         words-starting-after-t (filter #(> (:word/start %) t) all-words)
         last-started-word (last words-started-before-t)
@@ -163,6 +169,7 @@
   ;; => true
   (get-in state-deref [:ui-translation-control/language language :ui-translation-control/visible-translations?])
   (languages-in-current-transcript state-deref))
+
 (defmutation toggle-visibility-of-translation [{:keys [:translation/id]}]
   (action [{:keys [state]}]
           (swap! state update-in [:translation/id id :translation/visible?] not)

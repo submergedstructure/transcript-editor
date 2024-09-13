@@ -99,4 +99,5 @@
 
 (comment (player-atom/get-player)
          (js/console.log (player-atom/get-player))
-         (player-on-current-word-update 10, 15, "hello"))
+         (player-on-current-word-update 10, 15, "hello")
+         (.getCurrentTime (player-atom/get-player)))
