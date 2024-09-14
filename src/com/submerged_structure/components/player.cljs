@@ -41,13 +41,11 @@
 
 (comment (player-on-current-word-update 5 15 "test"))
 
-(defsc PlayerComponent [this {:transcript/keys [id audio-filename]}]
+(defsc PlayerComponent [this {:transcript/keys [audio-filename]}]
   {:ident :transcript/id
    :initial-state {}
    :query [:transcript/id
-           :transcript/audio-filename
-           :ui-period/end
-           :ui-period/start]
+           :transcript/audio-filename]
    :shouldComponentUpdate
    (fn [this next-props next-state]
      (js/setTimeout (js/console.log "shouldComponentUpdate" this next-props next-state) 0)

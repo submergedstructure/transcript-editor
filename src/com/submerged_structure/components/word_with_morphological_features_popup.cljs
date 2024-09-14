@@ -150,7 +150,7 @@
     {}))
 
 
-(defn morph-html-classes
+(defn morph-html-css-classes
   "`pos` is passed when we want to display the morph classes in the context of the *dictionary form* of the part of speech."
   [morph & {:keys [pos]}]
   (let [relevant-morph-map (select-keys (spacy-grammar/non-redundant-morphological-features morph) html-classes-to-display)]
@@ -168,18 +168,40 @@
       (> (.-maxTouchPoints js/navigator) 0)
       (.-matches (.matchMedia js/window "(pointer: coarse)"))))
 
-(defsc WordWithMorphPopup [_this {:word/keys [id word active score start
-                                morph lemma pos is_morphed norm]}
-                           {:transcript/keys [display-type]}]
+(defsc WordMorphologicalInfo [_this {:word/keys [active morph lemma pos is_morphed norm]}]
   {:ident :word/id
    :initial-state {}
-   :query [:word/id :word/word :word/start :word/end :word/active :word/score
+   :query [:word/id :word/active
            :word/morph :word/lemma :word/pos :word/is_morphed :word/norm]}
+  (let [morph-map (spacy-grammar/non-redundant-morphological-features morph)]
+    (fragment
+     nil
+     (div :.ui.red.ribbon.label (spacy-grammar/word-form-description morph-map pos))
+     (h3 :.grammar_highlighting
+         (when is_morphed
+           (fragment
+            (span :.inflected_word {:classes (morph-html-css-classes morph {:pos pos})} (ui-dict-links-and-popup lemma))
+            "  "
+            (ui-icon {:name i/arrow-right-icon})
+            " "))
+         (span :.inflected_word {:classes (morph-html-css-classes morph)} (ui-dict-links-and-popup norm)))
+
+     (ui-all-a-words-morph-properties pos morph-map lemma norm is_morphed))))
+
+(def ui-word-morphological-info (comp/factory WordMorphologicalInfo {:keyfn :word/id}))
+
+(defsc WordWithMorphPopup [_this {:word/keys [word active score start morph pos]}
+                           {:transcript/keys [display-type]}
+                           {:>/keys [morphological-info]}]
+  {:ident :word/id
+   :initial-state (fn [_] {:>/morphological-info (comp/get-initial-state WordMorphologicalInfo {})})
+   :query [:word/id :word/word :word/start :word/end :word/active :word/score
+           :word/morph :word/lemma :word/pos :word/is_morphed :word/norm
+           {:>/morphological-info (comp/get-query WordMorphologicalInfo)}]}
   
-  (let [word-html (span {:classes (concat [(when active "active") "word"] (morph-html-classes morph))
+  (let [word-html (span {:classes (concat [(when active "active") "word"] (morph-html-css-classes morph))
                          :onClick (when-not (is-touch-device) (fn [ws] (player/on-word-click ws start)))
-                         :style (when (= display-type :confidence) (c-to-c/confidence-to-style score))
-                         }
+                         :style (when (= display-type :confidence) (c-to-c/confidence-to-style score))}
                         word)]
     (if (not-empty pos)
       (ui-popup
@@ -194,26 +216,11 @@
 
         :trigger word-html}
 
-
-       (let [morph-map (spacy-grammar/non-redundant-morphological-features morph)]
-         (ui-popup-content
-          {}
-          (div :.ui.red.ribbon.label (spacy-grammar/word-form-description morph-map pos))
-          (h3 :.grammar_highlighting
-              (when is_morphed
-                (fragment
-                 (span :.inflected_word {:classes (morph-html-classes morph {:pos pos})} (ui-dict-links-and-popup lemma))
-                 {}
-                 "  "
-                 (ui-icon {:name i/arrow-right-icon}) " "))
-              (span :.inflected_word {:classes (morph-html-classes morph)} (ui-dict-links-and-popup norm)))
-
-          (ui-all-a-words-morph-properties pos morph-map lemma norm is_morphed))))
+       (ui-popup-content
+        {}
+        (ui-word-morphological-info morphological-info)))
       word-html)))
 
-         
-         
-         #_"This word only has one form! No inflection! Phew!!"
 
 (def ui-word-with-morph-popup (comp/computed-factory WordWithMorphPopup {:keyfn :word/id}))
          
