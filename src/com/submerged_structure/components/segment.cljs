@@ -5,18 +5,23 @@
             [com.submerged-structure.components.word-with-morphological-features-popup :as word-with-morphological-features-popup]))
 
 
-(defsc Segment [_this {:segment/keys [words translations text]} computed]
+(defsc Segment [_this {:segment/keys [words translations text] :>/keys [morphological-info-grid]} computed]
   {:ident :segment/id
    :initial-state (fn [_] {:segment/words (comp/get-initial-state word-with-morphological-features-popup/WordWithMorphPopup {})
-                           :segment/translations (comp/get-initial-state translation/Translation {})})
+                           :segment/translations (comp/get-initial-state translation/Translation {})
+                           :>/morphological-info-grid (comp/get-initial-state word-with-morphological-features-popup/WordMorphologicalInfoGrid {})})
    :query [:segment/id :segment/start :segment/end :segment/text
            {:segment/words (comp/get-query word-with-morphological-features-popup/WordWithMorphPopup)}
-           {:segment/translations (comp/get-query translation/Translation)}]}
+           {:segment/translations (comp/get-query translation/Translation)}
+           {:>/morphological-info-grid (comp/get-query word-with-morphological-features-popup/WordMorphologicalInfoGrid)}]}
   (div :.segment-transcription-and-translation
        (span :.transcription
              (interleave
               (map #(word-with-morphological-features-popup/ui-word-with-morph-popup % computed) words) (repeat " ")))
-       (map (fn [translation] (translation/ui-translation translation {:segment/transcription-text text})) translations))) ;; space between words is language dependent may need to change to support eg. Asian languages.
+       (map (fn [translation] (translation/ui-translation translation {:segment/transcription-text text})) translations)
+       (word-with-morphological-features-popup/ui-word-morphological-info-grid morphological-info-grid)
+       )) ;; space between words is language dependent may need to change to support eg. Asian languages.
+
 
 
 (def ui-segment (comp/computed-factory Segment {:keyfn :segment/id}))

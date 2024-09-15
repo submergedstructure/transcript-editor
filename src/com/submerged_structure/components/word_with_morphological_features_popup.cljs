@@ -66,24 +66,7 @@
 
 
 (defn ui-all-a-words-morph-properties [pos morph-map lemma norm is-morphed]
-  (let [word-attributes-that-inflect-word
-        (filter (set (keys morph-map)) spacy-grammar/attribute-names-that-affect-word-ending)]
-    (div :.grammar_highlighting {}
-         (if (not-empty word-attributes-that-inflect-word)
-           (fragment {}
-            (if is-morphed 
-              (h4 {} "The root word \"" (ui-dict-links-and-popup lemma) "\" becomes \"" (ui-dict-links-and-popup norm) "\" here, \"" (ui-dict-links-and-popup norm) "\" is:")
-              (h4 {} "The root word \"" (ui-dict-links-and-popup lemma) "\" does not change here! It is:"))
-            (div :.ui.list.animated.large {} (mapv (partial ui-morph-attribute morph-map) word-attributes-that-inflect-word)))
-           (if is-morphed
-             (h4 {} "Root word \"" (ui-dict-links-and-popup lemma) "\" becomes \"" (ui-dict-links-and-popup norm) "\" here, it is changed for easier pronunciation with the following word and not grammatical reasons.")
-             (h4 {} "Root word \"" (ui-dict-links-and-popup lemma) "\" never changes! Yay!!")))
-         
-         (when (not-empty (word-attributes-that-are-properties-of-the-word-itself morph-map))
-           (fragment {}
-            (ui-divider)
-            (h4 {} "The root word itself, \"" (ui-dict-links-and-popup lemma) "\" is or has:")
-            (div :.ui.list.animated.large {} (mapv (partial ui-morph-attribute morph-map) (word-attributes-that-are-properties-of-the-word-itself morph-map))))))))
+  )
 
 (comment 
   (def word #:word{:start 0.15999999999999998,
@@ -99,26 +82,19 @@
                    :pos "ADV"})
   (def morph-map (spacy-grammar/morphological-features-str-to-map (:word/morph word)))
 
-  (let [
-               
-               lemma (:word/lemma word)
-               norm (:word/norm word)
-               is-morphed (:word/is_morphed word)
-               word-attributes-that-inflect-word (keep (fn [attribute-name] (when (get (spacy-grammar/morphological-features-str-to-map (:word/morph word)) attribute-name)
-                                                                              (ui-morph-attribute morph-map attribute-name))))
-               word-attributes-that-are-properties-of-the-word-itself (keep (fn [attribute-name] (when (not (spacy-grammar/attribute-names-that-affect-word-ending attribute-name))
-                                                                                                    (ui-morph-attribute morph-map attribute-name)))
-                                                                          (keys morph-map))]
-                   
-           #_(keep (fn [attribute-name] (when (get (morphological-features-str-to-map (:word/morph word)) attribute-name)
-                                        (morph-label morph-map attribute-name))
-                   attribute-names-that-inflect-word))
-           #_(keep (fn [attribute-name] (when (not (attribute-names-that-inflect-word attribute-name))
-                                        (morph-label morph-map attribute-name)))
-                 (keys morph-map))
-           #_(if is-morphed
-             (ui-divider {:content (str "The word " lemma " becomes " norm " because it is:")})
-             (ui-divider {:content (str "The word " lemma " does not change because it is already:")}))
+  (let [lemma (:word/lemma word)
+        norm (:word/norm word)
+        is-morphed (:word/is_morphed word)
+        word-attributes-that-inflect-word
+        (keep (fn [attribute-name]
+                (when (get (spacy-grammar/morphological-features-str-to-map (:word/morph word)) attribute-name)
+                                     (ui-morph-attribute morph-map attribute-name))))
+        word-attributes-that-are-properties-of-the-word-itself
+        (keep (fn [attribute-name]
+                (when (not (spacy-grammar/attribute-names-that-affect-word-ending attribute-name))
+                  (ui-morph-attribute morph-map attribute-name)))
+              (keys morph-map))]
+                  
            (ui-divider {:content (str "The word " lemma " becomes " norm " because it is:")} )
            (fragment {}
                      (if is-morphed
@@ -135,7 +111,9 @@
 (def html-classes-to-display ["Case" "Number" "Person" "Gender" "Animacy"])
 
 (defn morph-map-for-lemma
-  "For dictionary form if it is a noun gender and animacy do not change.
+  "Given morph map of an inflected word, return morph map for the dictionary form of the word.
+   
+   For dictionary form if it is a noun gender and animacy do not change.
    Otherwise no person, no number; nominative case, masculine gender for words that have case."
   [pos {:strs [Case Number Gender Animacy]}]
   (if Case ;either adjective type word or noun
@@ -173,53 +151,72 @@
    :initial-state {}
    :query [:word/id :word/active
            :word/morph :word/lemma :word/pos :word/is_morphed :word/norm]}
-  (let [morph-map (spacy-grammar/non-redundant-morphological-features morph)]
-    (fragment
-     nil
-     (div :.ui.red.ribbon.label (spacy-grammar/word-form-description morph-map pos))
-     (h3 :.grammar_highlighting
-         (when is_morphed
-           (fragment
-            (span :.inflected_word {:classes (morph-html-css-classes morph {:pos pos})} (ui-dict-links-and-popup lemma))
-            "  "
-            (ui-icon {:name i/arrow-right-icon})
-            " "))
-         (span :.inflected_word {:classes (morph-html-css-classes morph)} (ui-dict-links-and-popup norm)))
+  (when (not-empty pos)
+    (let [morph-map (spacy-grammar/non-redundant-morphological-features morph)
+          word-attributes-that-inflect-word
+          (filter (set (keys morph-map)) spacy-grammar/attribute-names-that-affect-word-ending)]
+      (div
+       :.ui.column.grammar_highlighting
+       nil
+       (div
+        :.ui.message
+        nil
+        (ui-icon {:name i/close-icon})
+        (div :.grammar_highlighting.header
+             (when is_morphed
+               (fragment
+                (span {:classes (concat ["inflected_word"] (morph-html-css-classes morph :pos pos))} (ui-dict-links-and-popup lemma))
+                "  "
+                (ui-icon {:name i/arrow-right-icon})
+                " "))
+             (span {:classes (concat ["inflected_word"] (morph-html-css-classes morph))} (ui-dict-links-and-popup norm)))
+        (div {:classes (concat ["ui" "label" "pointing" "big"] (morph-html-css-classes (str "Case=" (get morph-map "Case"))))}
+             (spacy-grammar/word-form-description morph-map pos))
+        (when (empty? word-attributes-that-inflect-word)
+          (h4 {} "Root word \"" (ui-dict-links-and-popup lemma) "\" never changes! Yay!!"))
 
-     (ui-all-a-words-morph-properties pos morph-map lemma norm is_morphed))))
+
+        (div
+         :.grammar_highlighting {}
+         (when (not-empty word-attributes-that-inflect-word)
+           (fragment {}
+                     (if is_morphed
+                       (if (re-find #" " lemma)
+                         (h4 {} "The root words \"" (ui-dict-links-and-popup lemma) "\" become \"" (ui-dict-links-and-popup norm) "\" here, \"" (ui-dict-links-and-popup norm) "\" is:")
+                         (h4 {} "The root word \"" (ui-dict-links-and-popup lemma) "\" becomes \"" (ui-dict-links-and-popup norm) "\" here, \"" (ui-dict-links-and-popup norm) "\" is:"))
+                       (h4 {} "The root word \"" (ui-dict-links-and-popup lemma) "\" does not change here! It is:"))
+                     (div :.ui.list.animated.tiny {} (mapv (partial ui-morph-attribute morph-map) word-attributes-that-inflect-word)))
+           )
+        
+         (when (not-empty (word-attributes-that-are-properties-of-the-word-itself morph-map))
+           (fragment {}
+                     (ui-divider)
+                     (h4 {} "The root word itself, \"" (ui-dict-links-and-popup lemma) "\" is or has:")
+                     (div :.ui.list.animated.tiny {} (mapv (partial ui-morph-attribute morph-map) (word-attributes-that-are-properties-of-the-word-itself morph-map)))))))))))
 
 (def ui-word-morphological-info (comp/factory WordMorphologicalInfo {:keyfn :word/id}))
 
-(defsc WordWithMorphPopup [_this {:word/keys [word active score start morph pos]}
-                           {:transcript/keys [display-type]}
-                           {:>/keys [morphological-info]}]
+(defsc WordMorphologicalInfoGrid [_this {:segment/keys [words]}]
+  {:ident :segment/id
+   :query [:segment/id :segment/words {:segment/words (comp/get-query WordMorphologicalInfo)}]}
+  (div :.ui.grid.relaxed.centered
+       (div :.three.column.row
+            (map (fn [morphological-info] (ui-word-morphological-info morphological-info)) words))))
+
+(def ui-word-morphological-info-grid (comp/factory WordMorphologicalInfoGrid {:keyfn :segment/id}))
+
+(defsc WordWithMorphPopup [_this {:word/keys [word active score start morph]}
+                           {:transcript/keys [display-type]}]
   {:ident :word/id
-   :initial-state (fn [_] {:>/morphological-info (comp/get-initial-state WordMorphologicalInfo {})})
+   :initial-state (fn [_] {})
    :query [:word/id :word/word :word/start :word/end :word/active :word/score
            :word/morph :word/lemma :word/pos :word/is_morphed :word/norm
-           {:>/morphological-info (comp/get-query WordMorphologicalInfo)}]}
+           ]}
   
-  (let [word-html (span {:classes (concat [(when active "active") "word"] (morph-html-css-classes morph))
-                         :onClick (when-not (is-touch-device) (fn [ws] (player/on-word-click ws start)))
-                         :style (when (= display-type :confidence) (c-to-c/confidence-to-style score))}
-                        word)]
-    (if (not-empty pos)
-      (ui-popup
-       {:hoverable true
-
-        :popperModifiers #js [#js {"name" "preventOverflow"
-                                   "options" #js {"padding" 8
-                                                  "RootBoundary" "viewport"}}]
-        :position "top left"
-        :hideOnScroll true
-        :on [(if (is-touch-device) "click" "hover")]
-
-        :trigger word-html}
-
-       (ui-popup-content
-        {}
-        (ui-word-morphological-info morphological-info)))
-      word-html)))
+  (span {:classes (concat [(when active "active") "word"] (morph-html-css-classes morph))
+         :onClick (when-not (is-touch-device) (fn [ws] (player/on-word-click ws start)))
+         :style (when (= display-type :confidence) (c-to-c/confidence-to-style score))}
+        word))
 
 
 (def ui-word-with-morph-popup (comp/computed-factory WordWithMorphPopup {:keyfn :word/id}))
