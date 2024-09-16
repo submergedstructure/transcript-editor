@@ -497,7 +497,6 @@
     ["Voice" "Act"]
     ["Degree" "Pos"]
     ["Polarity" "Neg"]
-    ["Polarity" "Pos"]
     ["Number" "Sing"]})
 
 (defn non-redundant-morphological-features [morph]

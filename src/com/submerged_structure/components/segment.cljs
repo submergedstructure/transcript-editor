@@ -15,11 +15,12 @@
            {:segment/translations (comp/get-query translation/Translation)}
            {:>/morphological-info-grid (comp/get-query word-with-morphological-features-popup/WordMorphologicalInfoGrid)}]}
   (div :.segment-transcription-and-translation
+       (word-with-morphological-features-popup/ui-word-morphological-info-grid morphological-info-grid)
        (span :.transcription
              (interleave
               (map #(word-with-morphological-features-popup/ui-word-with-morph-popup % computed) words) (repeat " ")))
        (map (fn [translation] (translation/ui-translation translation {:segment/transcription-text text})) translations)
-       (word-with-morphological-features-popup/ui-word-morphological-info-grid morphological-info-grid)
+       
        )) ;; space between words is language dependent may need to change to support eg. Asian languages.
 
 
