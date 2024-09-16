@@ -9,6 +9,7 @@
    [com.fulcrologic.semantic-ui.icons :as i]
    [com.fulcrologic.semantic-ui.elements.icon.ui-icon :refer [ui-icon]]
    [com.fulcrologic.semantic-ui.elements.divider.ui-divider :refer [ui-divider]]
+   [com.fulcrologic.semantic-ui.collections.message.ui-message :refer [ui-message]]
 
    [clojure.string]
 
@@ -108,16 +109,17 @@
   (let [morph-map (spacy-grammar/morphological-features-str-to-map morph)]
     (filter (set (keys morph-map)) spacy-grammar/attribute-names-that-affect-word-ending)))
 
-(defn condensed-morph-details [is_morphed morph pos lemma norm]
+(defn condensed-morph-details [active is_morphed morph pos lemma norm]
   (let [morph-map (spacy-grammar/non-redundant-morphological-features morph)
         word-attributes-that-inflect-word (word-attributes-that-inflect-word morph)] 
    (div
    :.ui.column.grammar_highlighting
    {}
-   (div
-    :.ui.message
+   (ui-message
     {}
     (ui-icon {:name i/close-icon})
+    (let [norm-html (span {:classes [(when active "active")]} (ui-dict-links-and-popup norm))
+          lemma-html (ui-dict-links-and-popup lemma)])
     (div {}
          (when is_morphed
            (fragment
@@ -125,7 +127,7 @@
             "  "
             (ui-icon {:name i/arrow-right-icon})
             " "))
-         (span {:classes (concat ["inflected_word"] (morph-html-css-classes morph))} (ui-dict-links-and-popup norm)))
+         (span {:classes (concat ["inflected_word"] (morph-html-css-classes morph))} (span {:classes [(when active "active")]} (ui-dict-links-and-popup norm))))
     (div {:classes (concat ["ui" "label" "pointing" "big"] (morph-html-css-classes (str "Case=" (get morph-map "Case"))))}
          (spacy-grammar/word-form-description morph-map pos))
     (when (empty? word-attributes-that-inflect-word)
@@ -140,12 +142,13 @@
                  (h4 {} "The root word itself, \"" (ui-dict-links-and-popup lemma) "\" is or has:")
                  (div :.ui.list.animated.tiny {} (mapv (partial ui-morph-attribute morph-map) (word-attributes-that-are-properties-of-the-word-itself morph))))))))))
 
-(defsc WordMorphologicalInfo [_this {:word/keys [active morph lemma pos is_morphed norm]}]
+(defsc WordMorphologicalInfo [_this {:word/keys [active morph lemma pos is_morphed norm morphological-details-visible?]}
+                             {:word/keys [id]}]
   {:ident :word/id
    :initial-state {}
    :query [:word/id :word/active
-           :word/morph :word/lemma :word/pos :word/is_morphed :word/norm]}
-  (when (not-empty pos)
+           :word/morph :word/lemma :word/pos :word/is_morphed :word/norm :word/morphological-details-visible?]}
+  (when (not-empty (and #_morphological-details-visible? pos))
     (ui-popup
      {:hoverable true
 
@@ -156,20 +159,22 @@
       :hideOnScroll true
       :on [(if (is-touch-device) "click" "hover")]
 
-      :trigger (condensed-morph-details is_morphed morph pos lemma norm)}
+      :trigger (condensed-morph-details active is_morphed morph pos lemma norm)}
      (ui-popup-content
       {}
       (div
        :.grammar_highlighting
        {}
-       (if (not-empty (word-attributes-that-inflect-word morph))
+       (let [norm-html (span {:classes [(when active "active")]}(ui-dict-links-and-popup norm))
+             lemma-html (ui-dict-links-and-popup lemma)]
+        (if (not-empty (word-attributes-that-inflect-word morph))
          (fragment (if is_morphed
                      (if (re-find #" " lemma); more than one lemma
-                       (h4 {} "The root words \"" (ui-dict-links-and-popup lemma) "\" become \"" (ui-dict-links-and-popup norm) "\" here, \"" (ui-dict-links-and-popup norm) "\" is:")
-                       (h4 {} "The root word \"" (ui-dict-links-and-popup lemma) "\" becomes \"" (ui-dict-links-and-popup norm) "\" here, \"" (ui-dict-links-and-popup norm) "\" is:"))
-                     (h4 {} "The root word \"" (ui-dict-links-and-popup lemma) "\" does not change here, is:"))
+                       (h4 {} "The root words \"" lemma-html "\" become \"" norm-html "\" here, \"" norm-html "\" is:")
+                       (h4 {} "The root word \"" lemma-html "\" becomes \"" norm-html "\" here, \"" norm-html "\" is:"))
+                     (h4 {} "The root word \"" norm-html "\" does not change here, is:"))
                    (div :.ui.list.animated {} (mapv (partial ui-morph-attribute (spacy-grammar/morphological-features-str-to-map morph)) (word-attributes-that-inflect-word morph))))
-         (fragment(h4 {} "The root word \"" (ui-dict-links-and-popup lemma) "\" Never changes! Yay!!")))
+         (fragment(h4 {} "The root word \"" norm-html "\" Never changes! Yay!!"))))
        )))))
 
 (def ui-word-morphological-info (comp/factory WordMorphologicalInfo {:keyfn :word/id}))
