@@ -170,6 +170,11 @@
   (get-in state-deref [:ui-translation-control/language language :ui-translation-control/visible-translations?])
   (languages-in-current-transcript state-deref))
 
+(defmutation toggle-visibility-of-morphological-details-for-word [{:keys [:word/id]}]
+  (action [{:keys [state]}]
+          (swap! state update-in [:word/id id :word/morphological-details-visible?] not)))
+
+
 (defmutation toggle-visibility-of-translation [{:keys [:translation/id]}]
   (action [{:keys [state]}]
           (swap! state update-in [:translation/id id :translation/visible?] not)

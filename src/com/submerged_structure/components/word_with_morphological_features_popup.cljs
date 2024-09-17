@@ -109,17 +109,21 @@
   (let [morph-map (spacy-grammar/morphological-features-str-to-map morph)]
     (filter (set (keys morph-map)) spacy-grammar/attribute-names-that-affect-word-ending)))
 
-(defn condensed-morph-details [active is_morphed morph pos lemma norm]
+(defn condensed-morph-details [this id active is_morphed morph pos lemma norm]
   (let [morph-map (spacy-grammar/non-redundant-morphological-features morph)
         word-attributes-that-inflect-word (word-attributes-that-inflect-word morph)] 
    (div
    :.ui.column.grammar_highlighting
    {}
    (ui-message
-    {}
-    (ui-icon {:name i/close-icon})
-    (let [norm-html (span {:classes [(when active "active")]} (ui-dict-links-and-popup norm))
-          lemma-html (ui-dict-links-and-popup lemma)])
+    {:className (when active "active")}
+    (ui-icon {:name i/close-icon
+              :onClick (fn [e & args]
+                         (. e stopPropagation) ;; necessary to prevent the toggle from happening twice when both onRemove and onClick are called.
+                         #_(js/console.log "Hide morph details:" e args id)
+                         (comp/transact!
+                          this
+                          `[(com.submerged-structure.mutations/toggle-visibility-of-morphological-details-for-word {:word/id ~id})]))})
     (div {}
          (when is_morphed
            (fragment
@@ -142,13 +146,12 @@
                  (h4 {} "The root word itself, \"" (ui-dict-links-and-popup lemma) "\" is or has:")
                  (div :.ui.list.animated.tiny {} (mapv (partial ui-morph-attribute morph-map) (word-attributes-that-are-properties-of-the-word-itself morph))))))))))
 
-(defsc WordMorphologicalInfo [_this {:word/keys [active morph lemma pos is_morphed norm morphological-details-visible?]}
-                             {:word/keys [id]}]
+(defsc WordMorphologicalInfo [this {:word/keys [id active morph lemma pos is_morphed norm morphological-details-visible?]}]
   {:ident :word/id
    :initial-state {}
    :query [:word/id :word/active
            :word/morph :word/lemma :word/pos :word/is_morphed :word/norm :word/morphological-details-visible?]}
-  (when (not-empty (and #_morphological-details-visible? pos))
+  (when (and morphological-details-visible? pos)
     (ui-popup
      {:hoverable true
 
@@ -159,7 +162,7 @@
       :hideOnScroll true
       :on [(if (is-touch-device) "click" "hover")]
 
-      :trigger (condensed-morph-details active is_morphed morph pos lemma norm)}
+      :trigger (condensed-morph-details this id active is_morphed morph pos lemma norm)}
      (ui-popup-content
       {}
       (div
@@ -188,16 +191,24 @@
 
 (def ui-word-morphological-info-grid (comp/factory WordMorphologicalInfoGrid {:keyfn :segment/id}))
 
-(defsc WordWithMorphPopup [_this {:word/keys [word active score start morph]}
+(defsc WordWithMorphPopup [this {:word/keys [id word start active score morph]}
                            {:transcript/keys [display-type]}]
   {:ident :word/id
    :initial-state (fn [_] {})
    :query [:word/id :word/word :word/start :word/end :word/active :word/score
-           :word/morph :word/lemma :word/pos :word/is_morphed :word/norm
-           ]}
+           :word/morph :word/lemma :word/pos :word/is_morphed :word/norm]}
   
   (span {:classes (concat [(when active "active") "word"] (morph-html-css-classes morph))
-         :onClick (when-not (is-touch-device) (fn [ws] (player/on-word-click ws start)))
+         :onClick (if (= display-type :grammar)
+                    (fn [e & args]
+                      (. e stopPropagation) ;; necessary to prevent the toggle from happening twice when both onRemove and onClick are called.
+                      (js/console.log "Show morph details:" e args id)
+                      (comp/transact!
+                       this
+                       `[(com.submerged-structure.mutations/toggle-visibility-of-morphological-details-for-word {:word/id ~id})]))
+                    (fn [ws] (player/on-word-click ws start)))
+         
+         #_(when-not (is-touch-device) (fn [ws] (player/on-word-click ws start)))
          :style (when (= display-type :confidence) (c-to-c/confidence-to-style score))}
         word))
 

@@ -1,5 +1,9 @@
-div.transcript span.active {
+div.transcript .active {
     background-color: lightgrey !important;
+}
+
+span.inflected_word span.active { /* in morphological analysis*/
+    background-color: white !important;
 }
 
 #confidence-key {
