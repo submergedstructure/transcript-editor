@@ -9,7 +9,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.fulcro.data-fetch :as df]
    [com.submerged-structure.mock-data :as mock-data]
-   [com.submerged-structure.components.word-with-morphological-features-popup :as word-with-morphological-features-popup]))
+   [com.submerged-structure.components.word :as word-with-morphological-features-popup]))
 
 (defn ^:export init
   "Called by shadow-cljs upon initialization, see shadow-cljs.edn"
@@ -54,7 +54,7 @@
 
   (mutations/words-with-unique-time-stamps (mutations/get-current-segment-word-tree-from-state (app/current-state app)))
 
-  (require '[com.submerged-structure.components.word-with-morphological-features-popup :as word-with-morphological-features-popup])
+  (require '[com.submerged-structure.components.word :as word-with-morphological-features-popup])
   (require '[clojure.walk :as w])
   (w/postwalk
    (fn [x]
@@ -67,7 +67,7 @@
                     (filterv map? x))
   
        :else x))
-   (comp/get-query word-with-morphological-features-popup/WordWithMorphPopup))
+   (comp/get-query word-with-morphological-features-popup/Word))
   (:component (meta *1))
   (:displayName *1)
   (-> (comp/get-query word-with-morphological-features-popup/WordMorphologicalInfo)

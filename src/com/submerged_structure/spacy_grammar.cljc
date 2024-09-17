@@ -515,6 +515,16 @@
    Will be followed by human readable part of speech."
   ["Tense" "Case" "Mood" "Number" "Person" "Gender" "Animacy" "Voice" "VerbForm" "Variant"])
 
+(defn word-attributes-that-are-properties-of-the-word-itself [morph]
+  (let [morph-map (non-redundant-morphological-features morph)]
+    (remove (set attribute-names-that-affect-word-ending) (keys morph-map))))
+
+
+(defn word-attributes-that-inflect-word [morph]
+  (let [morph-map (morphological-features-str-to-map morph)]
+    (filter (set (keys morph-map)) attribute-names-that-affect-word-ending)))
+
+
 (defn human-readable-pos
   "For some parts of speech, an attribute is more human readable than the part of speech itself."
   [morph-map pos]
@@ -592,6 +602,23 @@
                                 (apply-highlight attribute-name-value-classname))}
                     (human-readable-attribute-value attribute-name attribute-value)))))
      attribute-values))))
+
+(defn morph-map-for-lemma
+  "Given morph map of an inflected word, return morph map for the dictionary form of the word.
+   
+   For dictionary form if it is a noun gender and animacy do not change.
+   Otherwise no person, no number; nominative case, masculine gender for words that have case."
+  [pos {:strs [Case Number Gender Animacy]}]
+  (if Case ;either adjective type word or noun
+    (if (= pos "NOUN")
+      {"Case" "Nom"
+       "Number" (if (= Number "Plur") "Sing" Number)
+       "Gender" Gender
+       "Animacy" Animacy}
+      {"Case" "Nom"
+       "Number" (if (= Number "Plur") "Sing" Number)
+       "Gender" "Masc"})
+    {}))
 
 
 (defn grammar-key []
