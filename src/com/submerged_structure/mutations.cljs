@@ -170,10 +170,6 @@
   (get-in state-deref [:ui-translation-control/language language :ui-translation-control/visible-translations?])
   (languages-in-current-transcript state-deref))
 
-(defmutation toggle-visibility-of-morphological-details-for-word [{:keys [:word/id]}]
-  (action [{:keys [state]}]
-          (swap! state update-in [:word/id id :word/morphological-details-visible?] not)))
-
 
 (defmutation toggle-visibility-of-translation [{:keys [:translation/id]}]
   (action [{:keys [state]}]
@@ -183,6 +179,47 @@
                                [:ui-translation-control/language lang :ui-translation-control/visible-translations?]
                                (language-translations-in-current-transcript-visible? @state lang)))
                       (languages-in-current-transcript @state)))))
+
+
+(defn get-all-morphological-details-items-in-current-transcript-and-their-visibility [state-deref]
+  (mapcat :segment/words
+          (get-in
+           (fdn/db->tree
+            [#:root{:current-transcript
+                    [:transcript/id
+                     #:transcript{:segments
+                                  [:segment/id
+                                   #:segment{:words [:word/id :word/pos :word/morphological-details-visible?]}]}]}]
+            state-deref state-deref)
+           [:root/current-transcript :transcript/segments])))
+
+(defn any-morphological-details-item-in-current-transcript-visible? [state-deref]
+  (some :word/morphological-details-visible? (get-all-morphological-details-items-in-current-transcript-and-their-visibility state-deref)))
+
+
+(defmutation toggle-visibility-of-morphological-details-for-word [{:keys [:word/id]}]
+  (action [{:keys [state]}]
+          (swap! state update-in [:word/id id :word/morphological-details-visible?] not)
+          (swap!
+           state
+           assoc-in
+           [:transcript/id (get-current-transcript-id-from-state @state) :ui-morphological-info-grid-control/any-visible?]
+           (any-morphological-details-item-in-current-transcript-visible? @state))))
+
+
+(defmutation toggle-visibility-of-morphological-details-for-transcript [{:keys [:transcript/id]}]
+  (action [{:keys [state]}]
+          (swap! state update-in [:transcript/id id :ui-morphological-info-grid-control/any-visible?] not)
+          (doall (map (fn [id-of-word-with-morph-analysis]
+                        (swap! state
+                               assoc-in
+                               [:word/id id-of-word-with-morph-analysis :word/morphological-details-visible?]
+                               (get-in @state [:transcript/id id :ui-morphological-info-grid-control/any-visible?])))
+                      (map :word/id
+                           (filter :word/pos (get-all-morphological-details-items-in-current-transcript-and-their-visibility @state)) ; only words with morphological analysis
+                           )))))
+
+
 
 (defmutation update-transcript-duration [{:transcript/keys [duration]}]
   (action [{:keys [state]}]

@@ -10,6 +10,7 @@
             [com.submerged-structure.player-atom :as player-atom]
             [com.submerged-structure.components.controls.common :as common-to-controls]
             [com.submerged-structure.components.controls.translation-controls :refer [TranslationControls ui-translation-controls]]
+            [com.submerged-structure.components.controls.morphological-info-control :refer [MorphologicalInfoControl ui-morphological-info-control]]
             
             [goog.string :as gstring]))
 
@@ -28,7 +29,7 @@
                              :ui-player-controls/keys [prev-segment-start current-segment-start next-segment-start
                                                        prev-word-start current-word-start next-word-start]
 
-                             :>/keys [language-controls]}]
+                             :>/keys [language-controls morphological-info-grid]}]
 
   {:ident :transcript/id
    :query [:transcript/id
@@ -44,7 +45,8 @@
            :ui-player-controls/next-word-start
            :ui-player-controls/next-segment-start
 
-           {:>/language-controls (comp/get-query TranslationControls)}]}
+           {:>/language-controls (comp/get-query TranslationControls)}
+           {:>/morphological-info-grid (comp/get-query MorphologicalInfoControl)}]}
   (let [next-word-start-plus-ms (+ next-word-start 0.001) ;; after ws .setTime, getCurrentTime is off by a negative fraction of a ms.
         current-word-start-plus-ms (+ current-word-start 0.001)
         prev-word-start-plus-ms (+ prev-word-start 0.001)
@@ -202,7 +204,13 @@
                       :label {:pointing "left"
                               :content (str "Auto scroll " (if scroll-to-active "on" "off"))}})}
           common-to-controls/common-options-for-popups-of-controls))
-        (ui-translation-controls language-controls))))))
+        (ui-translation-controls language-controls)
+        (ui-morphological-info-control morphological-info-grid)
+        )
+       (dom/div
+        :.item
+        {}
+        )))))
 
 (def ui-player-controls (comp/factory PlayerControls))
 

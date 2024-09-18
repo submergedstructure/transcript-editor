@@ -4,7 +4,7 @@
             [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
             [com.submerged-structure.components.translation :as translation]
             [com.submerged-structure.components.word :as word-with-morphological-features-popup]
-            [com.submerged-structure.components.word-morphological-info-grid :as word-morphological-info-grid]))
+            [com.submerged-structure.components.segment-morphological-info-grid :as word-morphological-info-grid]))
 
 
 (defsc Segment [_this {:segment/keys [words translations text] :>/keys [morphological-info-grid]} computed]

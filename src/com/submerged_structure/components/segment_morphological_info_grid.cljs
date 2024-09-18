@@ -1,4 +1,4 @@
-(ns com.submerged-structure.components.word-morphological-info-grid
+(ns com.submerged-structure.components.segment-morphological-info-grid
   (:require
    [com.fulcrologic.fulcro.dom :as dom  :refer [div]]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
