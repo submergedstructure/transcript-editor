@@ -10,8 +10,8 @@
 (defsc WordMorphologicalInfoGrid [_this {:segment/keys [words]}]
   {:ident :segment/id
    :query [:segment/id :segment/words {:segment/words (comp/get-query word-morphological-info/WordMorphologicalInfo)}]}
-  (div :.ui.grid.relaxed.stackable
-       (div :.three.column.row
+  (div :.ui.grid.stackable
+       (div :.doubling.six.column.row
             (map (fn [morphological-info] (word-morphological-info/ui-word-morphological-info morphological-info)) words))))
 
 (def ui-word-morphological-info-grid (comp/factory WordMorphologicalInfoGrid {:keyfn :segment/id}))

@@ -105,8 +105,7 @@
            {:>/transcript-switcher (comp/get-query transcript-switcher/TranscriptSwitcher)}
            {:>/player (comp/get-query player/PlayerComponent)}
            {:>/player-controls (comp/get-query player-controls/PlayerControls)}]}
-  (div :.ui.container
-       (transcript-switcher/ui-transcript-switcher transcript-switcher {:current-transcript id})
+  (div (transcript-switcher/ui-transcript-switcher transcript-switcher {:current-transcript id})
        (ui-sticky
         {:id (str "player-" id)
          :context (.. js/document -body (querySelector (str "#transcript-" id)))
@@ -142,7 +141,7 @@
               (fragment (div :.key key-for-display-type)
                         (ui-divider)))
             (if-not (empty? segments)
-              (div :.transcript.ui.container
+              (div :.transcript
                    {:id (str "transcript-" id)}
                    (map #(segment/ui-segment % {:transcript/display-type display-type}) segments))
               (div :.ui.placeholder
