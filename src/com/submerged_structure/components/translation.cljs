@@ -37,7 +37,7 @@
                            :onClick toggle-func
                            :pointing (if visible? :above :left)
                            :detail (when visible? text)
-                           :size :large
+                           :size (if visible? :big :large)
                            :content lang})}))))
 
 (def ui-translation (comp/computed-factory Translation {:keyfn :translation/id}))

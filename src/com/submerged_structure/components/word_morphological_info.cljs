@@ -1,6 +1,6 @@
 (ns com.submerged-structure.components.word-morphological-info
   (:require
-   [com.fulcrologic.fulcro.dom :as dom  :refer [h4 div span a]]
+   [com.fulcrologic.fulcro.dom :as dom  :refer [h3 h4 div span a]]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc fragment]]
   
    [com.fulcrologic.semantic-ui.modules.popup.ui-popup-content :refer [ui-popup-content]]
@@ -83,7 +83,7 @@
       (.-matches (.matchMedia js/window "(pointer: coarse)"))))
 
 (defn ui-lemma-and-norm [lemma norm active is_morphed morph pos]
-  (div {}
+  (fragment {}
        (when is_morphed
          (fragment
           (span {:classes (concat ["inflected_word"] (morph-html-css-classes morph :pos pos))} (ui-dict-links-and-popup lemma))
@@ -92,25 +92,32 @@
           " "))
        (span {:classes (concat ["inflected_word"] (morph-html-css-classes morph))} (span {:classes [(when active "active")]} (ui-dict-links-and-popup norm)))))
 
-(defn ui-pos [pos morph-map]
+(defn ui-form [pos morph-map]
   (div {:classes (concat ["ui" "label" "pointing" "big"] (morph-html-css-classes (str "Case=" (get morph-map "Case"))))}
        (spacy-grammar/word-form-description morph-map pos)))
 
 
-(defn condensed-morph-details [this id active is_morphed morph pos lemma norm]
+(defn ui-condensed-morph-details [this id active is_morphed morph pos lemma norm]
   (div
    :.ui.column.grammar_highlighting
    {}
-   (ui-message
-    {:className (when active "active")}
-    (ui-icon {:name i/close-icon
-              :onClick (fn [e & args]
-                         (. e stopPropagation) ;; necessary to prevent the toggle from happening twice when both onRemove and onClick are called.
-                         (js/console.log "Hide morph details:" e args id)
-                         (comp/transact!
-                          this
-                          `[(com.submerged-structure.mutations/toggle-visibility-of-morphological-details-for-word {:word/id ~id})]))})
-    (ui-lemma-and-norm lemma norm active is_morphed morph pos))))
+   (let [{:strs [Case]} (spacy-grammar/morphological-features-str-to-map morph)] 
+     (ui-message
+      {:className (clojure.string/join
+                   " "
+                   (concat ["grammar_highlighting" "grammar_highlighting_background"]
+                           (morph-html-css-classes (str "Case=" Case))
+                           (when active "active")))
+       :icon (ui-icon {:name i/close-icon
+                       :onClick (fn [e & args]
+                                  (. e stopPropagation) ;; necessary to prevent the toggle from happening twice when both onRemove and onClick are called.
+                                  (js/console.log "Hide morph details:" e args id)
+                                  (comp/transact!
+                                   this
+                                   `[(com.submerged-structure.mutations/toggle-visibility-of-morphological-details-for-word {:word/id ~id})]))})
+       :header (ui-lemma-and-norm lemma norm active is_morphed morph pos)}
+      
+      ))))
 
 (defsc WordMorphologicalInfo [this {:word/keys [id active morph lemma pos is_morphed norm morphological-details-visible?]}]
   {:ident :word/id
@@ -128,26 +135,26 @@
       :hideOnScroll true
       :on [(if (is-touch-device) "click" "hover")]
 
-      :trigger (condensed-morph-details this id active is_morphed morph pos lemma norm)}
+      :trigger (ui-condensed-morph-details this id active is_morphed morph pos lemma norm)}
+
      (ui-popup-content
       {}
       (div
        :.grammar_highlighting
-       {}
        (let [norm-html (span {:classes [(when active "active")]} (ui-dict-links-and-popup norm))
              lemma-html (ui-dict-links-and-popup lemma)
              morph-map (spacy-grammar/non-redundant-morphological-features morph)]
          (fragment
-          (ui-lemma-and-norm lemma norm active is_morphed morph pos)
-          (ui-pos pos morph-map)
-          
+          (h3 (ui-lemma-and-norm lemma norm active is_morphed morph pos))
+          (ui-form pos morph-map)
+
           (if (not-empty (spacy-grammar/word-attributes-that-inflect-word morph))
             (fragment (if is_morphed
                         (if (re-find #" " lemma); more than one lemma
                           (h4 {} "The root words \"" lemma-html "\" become \"" norm-html "\" here, \"" norm-html "\" is:")
                           (h4 {} "The root word \"" lemma-html "\" becomes \"" norm-html "\" here, \"" norm-html "\" is:"))
-                        (h4 {} "The root word \"" norm-html "\" does not change here, is:"))
-                      (div :.ui.list.animated {} (mapv (partial ui-morph-attribute (spacy-grammar/morphological-features-str-to-map morph)) (spacy-grammar/word-attributes-that-inflect-word morph))))
+                        (h4 {} "The root word \"" norm-html "\" does not change here, \"" norm-html "\" is:"))
+                      (div :.ui.list.animated {} (mapv (partial ui-morph-attribute (spacy-grammar/non-redundant-morphological-features morph)) (spacy-grammar/word-attributes-that-inflect-word morph))))
             (fragment (h4 {} "The root word \"" norm-html "\" Never changes! Yay!!")))
           (div
            {}

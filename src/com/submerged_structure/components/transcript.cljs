@@ -7,6 +7,7 @@
             [com.fulcrologic.semantic-ui.elements.icon.ui-icon :refer [ui-icon]]
             [com.fulcrologic.semantic-ui.icons :as i]
             [com.fulcrologic.semantic-ui.elements.divider.ui-divider :refer [ui-divider]]
+            
 
 
             [com.submerged-structure.components.player :as player]
@@ -139,9 +140,9 @@
                                               :grammar (spacy-grammar/grammar-key)
                                               nil)]
               (fragment (div :.key key-for-display-type)
-                        (ui-divider)))
+                        (ui-divider {:section true})))
             (if-not (empty? segments)
-              (div :.transcript
+              (div :.transcript.ui.fluid.container
                    {:id (str "transcript-" id)}
                    (map #(segment/ui-segment % {:transcript/display-type display-type}) segments))
               (div :.ui.placeholder

@@ -58,8 +58,7 @@
     (if (or (= doing :loading) (nil? (player-atom/get-player)))
       (ui-icon {:name i/spinner-icon})
       (dom/div
-       :.ui.container.grid.centered.padded
-       {:text-align "center"}
+       :.ui.container.grid
        (dom/span
         :.item
         {}
@@ -75,70 +74,72 @@
                           (.skip player -15)))
                   ;only gets updated when the ui-period changes but that's OK
              :disabled (< (.getCurrentTime (player-atom/get-player)) 15)})}
+          common-to-controls/common-options-for-popups-of-controls))
+        (ui-popup
+         (merge
+          {:header "Back one sentence."
+           :content ""
+           :trigger (ui-button
+                     {:icon i/angle-double-left-icon
+                      :onClick (fn [_]
+                                 (when-let [player (player-atom/get-player)]
+                                   (.setTime player prev-segment-start-plus-ms)))
+                      :disabled (nil? prev-segment-start)})}
+          common-to-controls/common-options-for-popups-of-controls))
+        (ui-popup
+         (merge
+          {:header "Back one word."
+           :content ""
+           :trigger (ui-button
+                     {:icon i/angle-left-icon
+                      :onClick (fn [_]
+                                 (when-let [player (player-atom/get-player)]
+                                   (.setTime player prev-word-start-plus-ms)))
+                      :disabled (nil? prev-word-start)})}
+          common-to-controls/common-options-for-popups-of-controls))
+        (ui-popup
+         (merge
+          {:header "Back to start of sentence and play."
+           :content ""
+           :trigger (ui-button
+                     {:icon i/reply-all-icon
+                      :onClick (fn [_]
+                                 (when-let [player (player-atom/get-player)]
+                                   (.setTime player current-segment-start-plus-ms)
+                                   (.play player)))
+                      :disabled (nil? current-segment-start)})}
+          common-to-controls/common-options-for-popups-of-controls))
+        (ui-popup
+         (merge
+          {:header "Back to start of word and play."
+           :content ""
+           :trigger (ui-button
+                     {:icon i/reply-icon
+                      :onClick
+                      (fn [_]
+                        (when-let [player (player-atom/get-player)]
+                          (.setTime player current-word-start-plus-ms)
+                          (.play player)))
+                      :disabled (nil? current-word-start)})}
           common-to-controls/common-options-for-popups-of-controls)))
-       (ui-popup
-        (merge
-         {:header "Back one sentence."
-          :content ""
-          :trigger (ui-button
-                    {:icon i/angle-double-left-icon
-                     :onClick (fn [_]
-                                (when-let [player (player-atom/get-player)]
-                                  (.setTime player prev-segment-start-plus-ms)))
-                     :disabled (nil? prev-segment-start)})}
-         common-to-controls/common-options-for-popups-of-controls))
-       (ui-popup
-        (merge
-         {:header "Back one word."
-          :content ""
-          :trigger (ui-button
-                    {:icon i/angle-left-icon
-                     :onClick (fn [_]
-                                (when-let [player (player-atom/get-player)]
-                                  (.setTime player prev-word-start-plus-ms)))
-                     :disabled (nil? prev-word-start)})}
-         common-to-controls/common-options-for-popups-of-controls))
-       (ui-popup
-        (merge
-         {:header "Back to start of sentence and play."
-          :content ""
-          :trigger (ui-button
-                    {:icon i/reply-all-icon
-                     :onClick (fn [_]
-                                (when-let [player (player-atom/get-player)]
-                                  (.setTime player current-segment-start-plus-ms)
-                                  (.play player)))
-                     :disabled (nil? current-segment-start)})}
-         common-to-controls/common-options-for-popups-of-controls))
-       (ui-popup
-        (merge
-         {:header "Back to start of word and play."
-          :content ""
-          :trigger (ui-button
-                    {:icon i/reply-icon
-                     :onClick
-                     (fn [_]
-                       (when-let [player (player-atom/get-player)]
-                         (.setTime player current-word-start-plus-ms)
-                         (.play player)))
-                     :disabled (nil? current-word-start)})}
-         common-to-controls/common-options-for-popups-of-controls))
-       (ui-popup
-        (merge
-         {:header "Play/Pause"
-          :content ""
-          :trigger (ui-button
-                    {:icon (if (= doing :playing) i/pause-icon i/play-icon)
-                     :onClick (fn [_]
-                                (when (player-atom/get-player)
-                                  (if (= doing :playing) (.pause (player-atom/get-player)) (.play (player-atom/get-player)))))
-                     :labelPosition "left"
-                     :label {:pointing "right"
-                             :content (dom/span
-                                       (dom/span :#player-time (time-float-to-string 0 (.getDuration (player-atom/get-player))))
-                                       " of "
-                                       (time-float-to-string (.getDuration (player-atom/get-player)) (.getDuration (player-atom/get-player))))}})}
-         common-to-controls/common-options-for-popups-of-controls))
+       (dom/span
+        :.item
+        (ui-popup
+         (merge
+          {:header "Play/Pause"
+           :content ""
+           :trigger (ui-button
+                     {:icon (if (= doing :playing) i/pause-icon i/play-icon)
+                      :onClick (fn [_]
+                                 (when (player-atom/get-player)
+                                   (if (= doing :playing) (.pause (player-atom/get-player)) (.play (player-atom/get-player)))))
+                      :labelPosition "left"
+                      :label {:pointing "right"
+                              :content (dom/span
+                                        (dom/span :#player-time (time-float-to-string 0 (.getDuration (player-atom/get-player))))
+                                        " of "
+                                        (time-float-to-string (.getDuration (player-atom/get-player)) (.getDuration (player-atom/get-player))))}})}
+          common-to-controls/common-options-for-popups-of-controls)))
        (dom/span
         :.item
         {}
@@ -189,7 +190,7 @@
                       :disabled (let [time-remaining (- (.getDuration (player-atom/get-player)) (.getCurrentTime (player-atom/get-player)))]
                                   (< time-remaining 15))})}
           common-to-controls/common-options-for-popups-of-controls)))
-       (dom/div
+       (dom/span
         :.item
         {}
         (ui-popup
@@ -205,12 +206,7 @@
                               :content (str "Auto scroll " (if scroll-to-active "on" "off"))}})}
           common-to-controls/common-options-for-popups-of-controls))
         (ui-translation-controls language-controls)
-        (ui-morphological-info-control morphological-info-grid)
-        )
-       (dom/div
-        :.item
-        {}
-        )))))
+        (ui-morphological-info-control morphological-info-grid))))))
 
 (def ui-player-controls (comp/factory PlayerControls))
 

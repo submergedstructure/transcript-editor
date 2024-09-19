@@ -146,33 +146,79 @@
 .grammar_highlighting  .Number_Ptan {
     text-decoration-style: dashed;
 }
+
+/* Case colouring */
+
+
 .grammar_highlighting .Case_Nom {
-  color: #228B22; /* Forest Green */
+  color: rgba(0, 128, 0, 1); /* Green - Nom (Nominative) often represents the subject, green for go/subject */
 }
 
 .grammar_highlighting .Case_Ins {
-  color: #FF4500; /* Orange Red */
+  color: rgba(255, 165, 0, 1); /* Orange - Ins (Instrumental) can be associated with tools, orange for attention */
 }
 
 .grammar_highlighting .Case_Acc {
-  color: #ceaf05; /* Gold */
+  color: rgba(255, 0, 0, 1); /* Red - Acc (Accusative) often represents the object, bright red for direct impact */
 }
 
 .grammar_highlighting .Case_Gen {
-  color: #B22222; /* Firebrick */
+  color: rgba(128, 0, 128, 1); /* Purple - Gen (Genitive) often represents possession, purple for royalty/possession */
 }
 
 .grammar_highlighting .Case_Loc {
-  color: #8A2BE2; /* Blue Violet */
+  color: rgba(0, 0, 255, 1); /* Blue - Loc (Locative) represents location, blue for calm/stability */
 }
 
 .grammar_highlighting .Case_Dat {
-  color: #FF69B4; /* Hot Pink */
+  color: rgba(0, 206, 209, 1); /* Bright Cyan - Dat (Dative) often represents the indirect object, bright and distinctive */
 }
 
 .grammar_highlighting .Case_Voc {
-  color: #1E90FF; /* Dodger Blue */
+  /* color: rgba(255, 140, 0, 1);  Bright Orange - Voc (Vocative) used for direct address, bright orange for calling attention */
+  color: grey;
+  font-weight: bolder;
+  font-style: italic;
 }
+
+.grammar_highlighting .Case_Voc::before {
+  content : " !! ";
+  font-size: smaller;
+  font-weight: bold;
+  color: grey;
+  vertical-align: super; /* This makes it appear as a superscript */
+}
+
+.grammar_highlighting_background.Case_Nom {
+  background-color: rgba(0, 128, 0, 0.2); /* Green with 20% opacity */
+}
+
+.grammar_highlighting_background.Case_Ins {
+  background-color: rgba(255, 165, 0, 0.2); /* Orange with 20% opacity */
+}
+
+.grammar_highlighting_background.Case_Acc {
+  background-color: rgba(255, 0, 0, 0.2); /* Red with 20% opacity */
+}
+
+.grammar_highlighting_background.Case_Gen {
+  background-color: rgba(128, 0, 128, 0.2); /* Purple with 20% opacity */
+}
+
+.grammar_highlighting_background.Case_Loc {
+  background-color: rgba(0, 0, 255, 0.2); /* Blue with 20% opacity */
+}
+
+.grammar_highlighting_background.Case_Dat {
+  background-color: rgba(0, 206, 209, 0.2); /* Bright Cyan with 20% opacity */
+}
+
+.grammar_highlighting_background.Case_Voc {
+  /* background-color: rgba(255, 140, 0, 0.2); Bright Orange with 20% opacity */
+  font-weight: bolder;
+  font-style: italic;
+}
+
 
 @keyframes fadeOutline {
   0% {

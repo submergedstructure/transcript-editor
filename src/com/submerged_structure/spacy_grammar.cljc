@@ -496,8 +496,8 @@
     ["Mood" "Ind"]
     ["Voice" "Act"]
     ["Degree" "Pos"]
-    ["Polarity" "Neg"]
-    ["Number" "Sing"]})
+    ["Polarity" "Pos"]
+    ["Tense" "Pres"]})
 
 (defn non-redundant-morphological-features [morph]
   (let [morph-map (morphological-features-str-to-map morph)]
@@ -513,7 +513,7 @@
   "Only some of the attributes affect word ending, some are properties of the word itself.
    In a sensible order to display. Hopefully good for all word classes.
    Will be followed by human readable part of speech."
-  ["Tense" "Case" "Mood" "Number" "Person" "Gender" "Animacy" "Voice" "VerbForm" "Variant"])
+  ["Case" "Person" "Number" "Gender" "Animacy" "Voice" "VerbForm" "Variant" "Tense" "Mood"])
 
 (defn word-attributes-that-are-properties-of-the-word-itself [morph]
   (let [morph-map (non-redundant-morphological-features morph)]
@@ -521,7 +521,7 @@
 
 
 (defn word-attributes-that-inflect-word [morph]
-  (let [morph-map (morphological-features-str-to-map morph)]
+  (let [morph-map (non-redundant-morphological-features morph)]
     (filter (set (keys morph-map)) attribute-names-that-affect-word-ending)))
 
 
