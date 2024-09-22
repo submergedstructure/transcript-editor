@@ -22,6 +22,17 @@
      {:class (str attribute-name "_" attribute-value)}
      (spacy-grammar/human-readable-attribute-value-from-morph-map morph-map attribute-name))))
 
+(comment
+  js/Window
+  (.matchMedia js/window "(pointer: coarse)")
+  (.-matches (.matchMedia js/window "(pointer: coarse)"))
+  (.-ontouchstart js/window)
+  (.-maxTouchPoints js/navigator))
+(defn is-touch-device []
+  (or (.-ontouchstart js/window)
+      (> (.-maxTouchPoints js/navigator) 0)
+      (.-matches (.matchMedia js/window "(pointer: coarse)"))))
+
 
 (defn ui-dict-link-and-popup [w]
   (ui-popup
@@ -71,26 +82,19 @@
      (fn [[attribute-name attribue-value]] (str attribute-name "_" attribue-value))
      (if pos (spacy-grammar/morph-map-for-lemma pos relevant-morph-map) relevant-morph-map))))
 
-(comment
-  js/Window
-  (.matchMedia js/window "(pointer: coarse)")
-  (.-matches (.matchMedia js/window "(pointer: coarse)"))
-  (.-ontouchstart js/window)
-  (.-maxTouchPoints js/navigator))
-(defn is-touch-device []
-  (or (.-ontouchstart js/window)
-      (> (.-maxTouchPoints js/navigator) 0)
-      (.-matches (.matchMedia js/window "(pointer: coarse)"))))
 
-(defn ui-lemma-and-norm [lemma norm active is_morphed morph pos]
+(defn ui-lemma-and-norm [lemma norm active is_morphed morph pos link?]
   (fragment {}
-       (when is_morphed
-         (fragment
-          (span {:classes (concat ["inflected_word"] (morph-html-css-classes morph :pos pos))} (ui-dict-links-and-popup lemma))
-          "  "
-          (ui-icon {:name i/arrow-right-icon})
-          " "))
-       (span {:classes (concat ["inflected_word"] (morph-html-css-classes morph))} (span {:classes [(when active "active")]} (ui-dict-links-and-popup norm)))))
+            (when is_morphed
+              (fragment {}
+                        (span {:classes (concat (morph-html-css-classes morph :pos pos))}
+                              (if link? (ui-dict-links-and-popup lemma) lemma))
+                        "  "
+                         (ui-icon {:name i/arrow-right-icon})
+                         " "))
+            (span {:classes (concat ["inflected_word"] (morph-html-css-classes morph))}
+                  (span {:classes (when active ["active"])}
+                        (if link? (ui-dict-links-and-popup norm) norm)))))
 
 (defn ui-form [pos morph-map]
   (div {:classes (concat ["ui" "label" "pointing" "big"] (morph-html-css-classes (str "Case=" (get morph-map "Case"))))}
@@ -99,15 +103,14 @@
 
 (defn ui-condensed-morph-details [this id active is_morphed morph pos lemma norm]
   (div
-   :.ui.column.grammar_highlighting
-   {}
+   {:classes ["column"] #_(into [] (concat (if-not is_morphed ["two"] [(if (< (count (str lemma norm)) 16) "three" "four")]) [ "wide" "column"]))}
    (let [{:strs [Case]} (spacy-grammar/morphological-features-str-to-map morph)] 
      (ui-message
       {:className (clojure.string/join
                    " "
                    (concat ["grammar_highlighting" "grammar_highlighting_background"]
                            (morph-html-css-classes (str "Case=" Case))
-                           (when active "active")))
+                           (when active ["active"])))
        :icon (ui-icon {:name i/close-icon
                        :onClick (fn [e & args]
                                   (. e stopPropagation) ;; necessary to prevent the toggle from happening twice when both onRemove and onClick are called.
@@ -115,7 +118,7 @@
                                   (comp/transact!
                                    this
                                    `[(com.submerged-structure.mutations/toggle-visibility-of-morphological-details-for-word {:word/id ~id})]))})
-       :header (ui-lemma-and-norm lemma norm active is_morphed morph pos)}
+       :header (ui-lemma-and-norm lemma norm active is_morphed morph pos false)}
       
       ))))
 
@@ -145,7 +148,7 @@
              lemma-html (ui-dict-links-and-popup lemma)
              morph-map (spacy-grammar/non-redundant-morphological-features morph)]
          (fragment
-          (h3 (ui-lemma-and-norm lemma norm active is_morphed morph pos))
+          (h3 (ui-lemma-and-norm lemma norm active is_morphed morph pos false))
           (ui-form pos morph-map)
 
           (if (not-empty (spacy-grammar/word-attributes-that-inflect-word morph))
@@ -155,13 +158,11 @@
                           (h4 {} "The root word \"" lemma-html "\" becomes \"" norm-html "\" here, \"" norm-html "\" is:"))
                         (h4 {} "The root word \"" norm-html "\" does not change here, \"" norm-html "\" is:"))
                       (div :.ui.list.animated {} (mapv (partial ui-morph-attribute (spacy-grammar/non-redundant-morphological-features morph)) (spacy-grammar/word-attributes-that-inflect-word morph))))
-            (fragment (h4 {} "The root word \"" norm-html "\" Never changes! Yay!!")))
-          (div
-           {}
-           (when (not-empty (spacy-grammar/word-attributes-that-are-properties-of-the-word-itself morph))
-             (fragment {}
-                       (ui-divider)
-                       (h4 {} "The root word itself, \"" (ui-dict-links-and-popup lemma) "\" is or has:")
-                       (div :.ui.list.animated {} (mapv (partial ui-morph-attribute morph-map) (spacy-grammar/word-attributes-that-are-properties-of-the-word-itself morph)))))))))))))
+            (h4 {} "The root word \"" norm-html "\" Never changes! Yay!!"))
+          (when (not-empty (spacy-grammar/word-attributes-that-are-properties-of-the-word-itself morph))
+            (div {}
+                 (ui-divider)
+                 (h4 {} "The root word itself, \"" (ui-dict-links-and-popup lemma) "\" is or has:")
+                 (div :.ui.list.animated {} (mapv (partial ui-morph-attribute morph-map) (spacy-grammar/word-attributes-that-are-properties-of-the-word-itself morph))))))))))))
 
 (def ui-word-morphological-info (comp/factory WordMorphologicalInfo {:keyfn :word/id}))

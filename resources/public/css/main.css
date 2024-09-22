@@ -1,9 +1,10 @@
-div.transcript .active {
+div.transcript .active.word {
     background-color: lightgrey !important;
 }
 
-span.inflected_word span.active { /* in morphological analysis*/
+div.active span.inflected_word { /* in morphological analysis*/
     background-color: white !important;
+    font-weight: bolder;
 }
 
 #confidence-key {
