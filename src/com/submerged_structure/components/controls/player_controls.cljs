@@ -57,7 +57,8 @@
         ]
     (if (or (= doing :loading) (nil? (player-atom/get-player)))
       (ui-icon {:name i/spinner-icon})
-      (dom/div
+      (dom/div :.ui.segment.basic 
+       (dom/div
        :.ui.container.grid
        (dom/span
         :.item
@@ -206,7 +207,7 @@
                               :content (str "Auto scroll " (if scroll-to-active "on" "off"))}})}
           common-to-controls/common-options-for-popups-of-controls))
         (ui-translation-controls language-controls)
-        (ui-morphological-info-control morphological-info-grid))))))
+        (ui-morphological-info-control morphological-info-grid)))))))
 
 (def ui-player-controls (comp/factory PlayerControls))
 
