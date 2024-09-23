@@ -189,6 +189,11 @@
   vertical-align: super; /* This makes it appear as a superscript */
 }
 
+
+.message.grammar_highlighting_background {
+  background-color: #e0e1e2;
+}
+
 .grammar_highlighting_background.Case_Nom {
   background-color: rgba(0, 128, 0, 0.2); /* Green with 20% opacity */
 }
@@ -218,6 +223,7 @@
   font-weight: bolder;
   font-style: italic;
 }
+
 
 
 @keyframes fadeOutline {
