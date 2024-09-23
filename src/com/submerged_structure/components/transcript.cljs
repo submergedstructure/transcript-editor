@@ -106,7 +106,8 @@
            {:>/transcript-switcher (comp/get-query transcript-switcher/TranscriptSwitcher)}
            {:>/player (comp/get-query player/PlayerComponent)}
            {:>/player-controls (comp/get-query player-controls/PlayerControls)}]}
-  (div (transcript-switcher/ui-transcript-switcher transcript-switcher {:current-transcript id})
+  (fragment
+       (transcript-switcher/ui-transcript-switcher transcript-switcher {:current-transcript id})
        (ui-sticky
         {:id (str "player-" id)
          :context (.. js/document -body (querySelector (str "#transcript-" id)))
@@ -121,9 +122,10 @@
         help-hidden
          (ui-message
           {:info true
+           :className "container"
            :onDismiss (fn [_] (comp/transact! this `[(com.submerged-structure.mutations/hide-transcript-help {})]))}
           app-help/app-help))
-       (div :.ui.pointing.menu.stackable
+       (div :.ui.pointing.menu.stackable.container
             (a {:classes [(when (= display-type :plain) "active") "item"]
                 :onClick (partial change-display-type this id :plain)}
                (ui-icon {:name i/low-vision-icon}) "Plain Transcript - No Coloring")
@@ -133,8 +135,8 @@
             (a {:classes [(when (= display-type :grammar) "active") "item"]
                 :onClick (partial change-display-type this id :grammar)}
                (ui-icon {:name i/eye-icon}) "Grammar X-Ray"))
-       
-       (div {:classes [(when (= display-type :grammar) "grammar_highlighting") "ui" "segment" "big"]}
+
+       (div {:classes [(when (= display-type :grammar) "grammar_highlighting") "ui" "segment" "big" "container"]}
             (when-let [key-for-display-type (case display-type
                                               :confidence (c-to-c/confidence-key)
                                               :grammar (spacy-grammar/grammar-key)

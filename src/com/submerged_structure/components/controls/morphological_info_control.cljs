@@ -16,7 +16,6 @@
    (merge
     {:header (if any-visible? (str "Hide ALL word information boxes.") (str "Show ALL word information boxes."))
      :content (str "If any word information boxes are shown clicking will hide them all. If none are, clicking will reveal them all.")
-     :positive any-visible?
      :trigger (ui-button
                {:icon i/eye-icon
                 :onClick

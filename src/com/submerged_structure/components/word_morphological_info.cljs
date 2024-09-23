@@ -9,7 +9,8 @@
    [com.fulcrologic.semantic-ui.icons :as i]
    [com.fulcrologic.semantic-ui.elements.icon.ui-icon :refer [ui-icon]]
    [com.fulcrologic.semantic-ui.elements.divider.ui-divider :refer [ui-divider]]
-   [com.fulcrologic.semantic-ui.collections.message.ui-message :refer [ui-message]]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
+   [com.fulcrologic.semantic-ui.elements.label.ui-label :refer [ui-label]]
   
    [clojure.string]
 
@@ -102,25 +103,31 @@
 
 
 (defn ui-condensed-morph-details [this id active is_morphed morph pos lemma norm]
-  (div
+  (div :.item
    {:classes ["column"] #_(into [] (concat (if-not is_morphed ["two"] [(if (< (count (str lemma norm)) 16) "three" "four")]) [ "wide" "column"]))}
    (let [{:strs [Case]} (spacy-grammar/morphological-features-str-to-map morph)] 
-     (ui-message
+     (ui-segment
       {:className (clojure.string/join
                    " "
                    (concat ["grammar_highlighting" "grammar_highlighting_background"]
                            (morph-html-css-classes (str "Case=" Case))
                            (when active ["active"])))
-       :icon (ui-icon {:name i/close-icon
-                       :onClick (fn [e & args]
-                                  (. e stopPropagation) ;; necessary to prevent the toggle from happening twice when both onRemove and onClick are called.
-                                  (js/console.log "Hide morph details:" e args id)
-                                  (comp/transact!
-                                   this
-                                   `[(com.submerged-structure.mutations/toggle-visibility-of-morphological-details-for-word {:word/id ~id})]))})
-       :header (ui-lemma-and-norm lemma norm active is_morphed morph pos false)}
-      
-      ))))
+
+
+       :compact true
+       :children
+       (fragment
+        (ui-label
+         {:corner "right"
+          :icon
+          (ui-icon {:name i/close-icon
+                    :onClick (fn [e & args]
+                               (. e stopPropagation) ;; necessary to prevent the toggle from happening twice when both onRemove and onClick are called.
+                               (js/console.log "Hide morph details:" e args id)
+                               (comp/transact!
+                                this
+                                `[(com.submerged-structure.mutations/toggle-visibility-of-morphological-details-for-word {:word/id ~id})]))})})
+        (h3 (ui-lemma-and-norm lemma norm active is_morphed morph pos false)))}))))
 
 (defsc WordMorphologicalInfo [this {:word/keys [id active morph lemma pos is_morphed norm morphological-details-visible?]}]
   {:ident :word/id
@@ -134,7 +141,7 @@
       :popperModifiers #js [#js {"name" "preventOverflow"
                                  "options" #js {"padding" 8
                                                 "RootBoundary" "viewport"}}]
-      :position "top center"
+      :position "top right"
       :hideOnScroll true
       :on [(if (is-touch-device) "click" "hover")]
 
