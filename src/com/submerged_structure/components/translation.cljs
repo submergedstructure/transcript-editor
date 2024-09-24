@@ -11,10 +11,10 @@
 
 (defsc Translation
   "`visible?` is a boolean. css class makes the translation appear to the right of a segment when translation hidden or below when shown."
-  [this {:translation/keys [id text lang visible?]}]
+  [this {:translation/keys [id text lang visible? active]}]
   {:ident :translation/id
    :initial-state {}
-   :query [:translation/id :translation/text :translation/start :translation/end :translation/lang :translation/visible?]}
+   :query [:translation/id :translation/text :translation/start :translation/end :translation/lang :translation/visible? :translation/active]}
   (span
    {:classes ["translation" (if visible? "translation-visible" "translation-hidden")]}
    (let [translation-failed (= (str/lower-case (:segment/transcription-text (comp/get-computed this))) (str/lower-case text))
@@ -33,6 +33,7 @@
                  (if visible? "Click to hide translation" "Click to show translation of this setence. You can also use the button above to the right of the player controls to show or hide all translations.")
                  (when translation-failed " ... Sorry the AI failed to translate this."))
        :trigger (ui-label {:onRemove (when visible? toggle-func)
+                           :active active
                            :color (when translation-failed "red")
                            :onClick toggle-func
                            :pointing (if visible? :above :left)

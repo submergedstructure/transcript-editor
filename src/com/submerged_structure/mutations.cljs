@@ -33,7 +33,68 @@
    (mapcat :segment/words)
    (filter #(not= (:word/start %) (:word/end %))))) ;; where start times are the same take the last one.
 
-(defn changes-to-make-to-transcript-keys-in-local-db-when-time-changes
+
+(defn get-current-translation-tree [state-deref]
+  (fdn/db->tree
+   [{:root/current-transcript [#:transcript{:segments
+                                            [#:segment{:translations [:translation/id :translation/start :translation/end :translation/lang :translation/visible?]}]}]}] ; or any component
+   state-deref
+   state-deref))
+
+(defn get-all-translations-in-current-transcript [state-deref]
+  (mapcat :segment/translations (get-in (get-current-translation-tree state-deref) [:root/current-transcript :transcript/segments])))
+
+(defn languages-in-current-transcript [state-deref]
+  (set (map :translation/lang (get-all-translations-in-current-transcript state-deref))))
+
+(defn language-translations-in-current-transcript
+  "Reurn all translations in `lang` in current transcript."
+  [state-deref lang]
+  (filter #(= (:translation/lang %) lang) (get-all-translations-in-current-transcript state-deref)))
+
+
+(defn changes-to-make-to-transcript-keys-in-local-db-when-time-changes-related-to-current-translations
+  "Return the id of current word to highlight or nil if no word to highlight.
+   And return the period for t outside which this function should be called again."
+  [state-deref t]
+  (let [transcript-duration (get-in state-deref [:transcript/id (get-current-transcript-id-from-state state-deref) :transcript/duration])
+        changes-for-each-lang (for [lang (languages-in-current-transcript state-deref)
+                                    :let [translations-in-lang (language-translations-in-current-transcript state-deref lang)
+                                          translations-started-before-t-in-lang (filter #(<= (:translation/start %) t) translations-in-lang)
+                                          translations-starting-after-t-in-lang (filter #(> (:translation/start %) t) translations-in-lang)
+                                          last-started-translation-in-lang (last translations-started-before-t-in-lang)
+                                          next-translation-in-lang (first translations-starting-after-t-in-lang)]]
+                                (cond (and last-started-translation-in-lang (<= t (:translation/end last-started-translation-in-lang))) ;; currently in translation
+                                      {:transcript/current-translation [:translation/id (:translation/id last-started-translation-in-lang)]
+                                       :ui-period/start (:translation/start last-started-translation-in-lang)
+                                       :ui-period/end (:translation/end last-started-translation-in-lang)}
+                                      (and last-started-translation-in-lang next-translation-in-lang) ;; currently in pause after this translation
+                                      {:transcript/current-translation [:translation/id nil]
+                                       :ui-period/start (:translation/end last-started-translation-in-lang)
+                                       :ui-period/end (:translation/start next-translation-in-lang)}
+                                      last-started-translation-in-lang ;; currently in pause after last translation in transcript
+                                      {:transcript/current-translation [:translation/id nil]
+                                       :ui-period/start (:translation/end last-started-translation-in-lang)
+                                       :ui-period/end transcript-duration};; if this is last translation then end of period is end of transcript
+                                      next-translation-in-lang
+                                      {:transcript/current-translation [:translation/id nil] ;; before first translation
+                                       :ui-period/start 0
+                                       :ui-period/end (:translation/start next-translation-in-lang)}
+                                      :else ;; no timestamped translations in transcript!!
+                                      {:transcript/current-translation [:translation/id nil]
+                                       :ui-period/start 0
+                                       :ui-period/end transcript-duration}))]
+        {:transcript/current-translations (into [] (map :transcript/current-translation changes-for-each-lang))
+         :ui-period/start (apply max (map :ui-period/start changes-for-each-lang)) ;; smallest period for which translations do not change
+         :ui-period/end (apply min (map :ui-period/end changes-for-each-lang))}))
+
+(comment 
+  (def state-deref *1)
+  (changes-to-make-to-transcript-keys-in-local-db-when-time-changes-related-to-current-translations state-deref 0.5)
+  (languages-in-current-transcript state-deref))
+
+
+(defn changes-to-make-to-transcript-keys-in-local-db-when-time-changes-related-to-current-word
   "Return the id of current word to highlight or nil if no word to highlight.
    And return the period for t outside which this function should be called again."
   [state-deref t]
@@ -80,17 +141,42 @@
               :ui-period/start 0
               :ui-period/end transcript-duration}))))
 
+(defn changes-to-make-to-transcript-keys-in-local-db-when-time-changes-related-to-current-word-and-translations
+  "Return the id of current word to highlight or nil if no word to highlight.
+   And return the period for t outside which this function should be called again."
+  [state-deref t]
+  (let [changes-related-to-translations (changes-to-make-to-transcript-keys-in-local-db-when-time-changes-related-to-current-translations state-deref t)
+        changes-related-to-current-word (changes-to-make-to-transcript-keys-in-local-db-when-time-changes-related-to-current-word state-deref t)] 
+   (merge
+    changes-related-to-current-word
+    changes-related-to-translations
+
+    {:ui-period/start ((comp min :ui-period/start) changes-related-to-current-word changes-related-to-translations)
+     :ui-period/end ((comp max :ui-period/end) changes-related-to-current-word)})))
+
 (defmutation update-transcript-current-time
   "Sets the currently active word, if there is one, and also sets the start and end time of the time period that the word or pause covers."
 
   [{:transcript/keys [current-time]}]
   (action [{:keys [state]}]
           (let [transcript-id (get-current-transcript-id-from-state @state)
-                transcript-keys-to-update (changes-to-make-to-transcript-keys-in-local-db-when-time-changes @state current-time)
+                transcript-keys-to-update (changes-to-make-to-transcript-keys-in-local-db-when-time-changes-related-to-current-word-and-translations @state current-time)
+                last-current-translation-idents (get-in @state [:transcript/id transcript-id :transcript/current-translations])
                 last-current-word-id (get-in @state [:transcript/id transcript-id :transcript/current-word 1])]
             (do
               (js/console.log "update-transcript-current-time" current-time last-current-word-id transcript-keys-to-update)
               (doall (map (fn [[k v]] (swap! state assoc-in (conj [:transcript/id transcript-id] k) v)) transcript-keys-to-update))
+              ;; deactivate last translations
+              (doall
+               (map (fn [[_ last-translation-id]]
+                      (when last-translation-id
+                        (swap! state assoc-in [:translation/id last-translation-id :translation/active] false))) last-current-translation-idents))
+              ;; activate new translations
+              (doall
+               (map (fn [[_ new-translation-id]]
+                      (when new-translation-id
+                        (swap! state assoc-in [:translation/id new-translation-id :translation/active] true)))
+                    (get-in transcript-keys-to-update [:transcript/current-translations])))
               ;; deactivate last word
               (when last-current-word-id
                 (swap! state assoc-in [:word/id last-current-word-id :word/active] false))
@@ -110,26 +196,6 @@
 (defmutation transcript-display-type-menu [#:transcript{:keys [id display-type]}]
   (action [{:keys [state]}]
           (swap! state assoc-in [:transcript/id id :transcript/display-type] display-type)))
-
-
-
-(defn get-current-transcript-tree [state-deref]
-  (fdn/db->tree
-   [{:root/current-transcript [#:transcript{:segments
-                                            [#:segment{:translations [:translation/id :translation/lang :translation/visible?]}]}]}] ; or any component
-   state-deref
-   state-deref))
-
-(defn get-all-translations-in-current-transcript [state-deref]
-  (mapcat :segment/translations (get-in (get-current-transcript-tree state-deref) [:root/current-transcript :transcript/segments])))
-
-(defn languages-in-current-transcript [state-deref]
-  (set (map :translation/lang (get-all-translations-in-current-transcript state-deref))))
-
-(defn language-translations-in-current-transcript
-  "Reurn all translations in `lang` in current transcript."
-  [state-deref lang]
-  (filter #(= (:translation/lang %) lang) (get-all-translations-in-current-transcript state-deref)))
 
 
 (defn language-translations-in-current-transcript-visible?
