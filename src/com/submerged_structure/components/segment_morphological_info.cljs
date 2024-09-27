@@ -7,11 +7,14 @@
    
    [com.submerged-structure.components.word-morphological-info :as word-morphological-info]))
 
-(defsc WordMorphologicalInfo [_this {:segment/keys [words]}]
+(defsc SegmentMorphologicalInfo [_this {:segment/keys [words]}]
   {:ident :segment/id
-   :query [:segment/id :segment/words {:segment/words (comp/get-query word-morphological-info/WordMorphologicalInfo)}]}
+   :initial-state (fn [_] {:segment/words (comp/get-initial-state word-morphological-info/WordMorphologicalInfo {})})
+   :query [:segment/id {:segment/words (comp/get-query word-morphological-info/WordMorphologicalInfo)}]}
   (div
+   {}
    (div :.ui.horizontal.list
-        (map (fn [morphological-info] (word-morphological-info/ui-word-morphological-info morphological-info)) words))))
+        {}
+        (map word-morphological-info/ui-word-morphological-info words))))
 
-(def ui-word-morphological-info (comp/factory WordMorphologicalInfo {:keyfn :segment/id}))
+(def ui-segment-morphological-info (comp/factory SegmentMorphologicalInfo {:keyfn :segment/id}))

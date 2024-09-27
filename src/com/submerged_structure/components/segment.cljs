@@ -3,24 +3,23 @@
             
             [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
             [com.submerged-structure.components.translation :as translation]
-            [com.submerged-structure.components.word :as word-with-morphological-features-popup]
-            [com.submerged-structure.components.segment-morphological-info :as word-morphological-info-grid]))
+            [com.submerged-structure.components.word :as word]
+            [com.submerged-structure.components.segment-morphological-info :as segment-morphological-info]))
 
 
-(defsc Segment [_this {:segment/keys [words translations text] :>/keys [morphological-info-grid]} computed]
+(defsc Segment [_this {:segment/keys [words translations text] :>/keys [segment-morphological-info]} computed]
   {:ident :segment/id
-   :initial-state (fn [_] {:segment/words (comp/get-initial-state word-with-morphological-features-popup/Word {})
+   :initial-state (fn [_] {:segment/words (comp/get-initial-state word/Word {})
                            :segment/translations (comp/get-initial-state translation/Translation {})
-                           :>/morphological-info-grid (comp/get-initial-state word-morphological-info-grid/WordMorphologicalInfo {})})
+                           :>/segment-morphological-info (comp/get-initial-state segment-morphological-info/SegmentMorphologicalInfo {})})
    :query [:segment/id :segment/start :segment/end :segment/text
-           {:segment/words (comp/get-query word-with-morphological-features-popup/Word)}
+           {:segment/words (comp/get-query word/Word)}
            {:segment/translations (comp/get-query translation/Translation)}
-           {:>/morphological-info-grid (comp/get-query word-morphological-info-grid/WordMorphologicalInfo)}]}
+           {:>/segment-morphological-info (comp/get-query segment-morphological-info/SegmentMorphologicalInfo)}]}
   (div :.segment-transcription-and-translation
-       (word-morphological-info-grid/ui-word-morphological-info morphological-info-grid)
+       (segment-morphological-info/ui-segment-morphological-info segment-morphological-info)
        (span :.transcription
-             (interleave
-              (map #(word-with-morphological-features-popup/ui-word % computed) words) (repeat " ")))
+             (map #(word/ui-word % computed) words))
        (map (fn [translation] (translation/ui-translation translation {:segment/transcription-text text})) translations)
        
        )) ;; space between words is language dependent may need to change to support eg. Asian languages.

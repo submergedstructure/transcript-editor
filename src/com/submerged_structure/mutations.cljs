@@ -248,24 +248,34 @@
 
 
 (defn get-all-morphological-details-items-in-current-transcript-and-their-visibility [state-deref]
-  (mapcat :segment/words
-          (get-in
-           (fdn/db->tree
-            [#:root{:current-transcript
-                    [:transcript/id
-                     #:transcript{:segments
-                                  [:segment/id
-                                   #:segment{:words [:word/id :word/pos :word/morphological-details-visible?]}]}]}]
-            state-deref state-deref)
-           [:root/current-transcript :transcript/segments])))
+  (remove #(#{"SYM" "PUNCT"} (:token/pos %))
+          (mapcat
+           :word/tokens
+           (mapcat
+            :segment/words
+            (get-in
+             (fdn/db->tree
+              [#:root{:current-transcript
+                      [:transcript/id
+                       #:transcript{:segments
+                                    [:segment/id
+                                     #:segment{:words [:word/id
+                                                       #:word{:tokens
+                                                              [:token/id :token/pos :token/morphological-details-visible?]}]}]}]}]
+              state-deref state-deref)
+             [:root/current-transcript :transcript/segments])))))
+
+(comment 
+  (def state-deref *1)
+  (get-all-morphological-details-items-in-current-transcript-and-their-visibility state-deref))
 
 (defn any-morphological-details-item-in-current-transcript-visible? [state-deref]
-  (some :word/morphological-details-visible? (get-all-morphological-details-items-in-current-transcript-and-their-visibility state-deref)))
+  (some :token/morphological-details-visible? (get-all-morphological-details-items-in-current-transcript-and-their-visibility state-deref)))
 
 
-(defmutation toggle-visibility-of-morphological-details-for-word [{:keys [:word/id]}]
+(defmutation toggle-visibility-of-morphological-details-for-token [{:keys [:token/id]}]
   (action [{:keys [state]}]
-          (swap! state update-in [:word/id id :word/morphological-details-visible?] not)
+          (swap! state update-in [:token/id id :token/morphological-details-visible?] not)
           (swap!
            state
            assoc-in
@@ -276,13 +286,13 @@
 (defmutation toggle-visibility-of-morphological-details-for-transcript [{:keys [:transcript/id]}]
   (action [{:keys [state]}]
           (swap! state update-in [:transcript/id id :ui-morphological-info-grid-control/any-visible?] not)
-          (doall (map (fn [id-of-word-with-morph-analysis]
+          (doall (map (fn [id-of-token-with-morph-analysis]
                         (swap! state
                                assoc-in
-                               [:word/id id-of-word-with-morph-analysis :word/morphological-details-visible?]
+                               [:token/id id-of-token-with-morph-analysis :token/morphological-details-visible?]
                                (get-in @state [:transcript/id id :ui-morphological-info-grid-control/any-visible?])))
-                      (map :word/id
-                           (filter :word/pos (get-all-morphological-details-items-in-current-transcript-and-their-visibility @state)) ; only words with morphological analysis
+                      (map :token/id
+                           (get-all-morphological-details-items-in-current-transcript-and-their-visibility @state)
                            )))))
 
 

@@ -6,7 +6,7 @@
 ;; from https://spacy.io/models/pl Morphologizer section
 ;; see also https://universaldependencies.org/pl/index.html for more information
 
-(def morph-tree (slurp "resources/morpholiger_leaf_tree.txt"))
+(def morph-tree (slurp "resources/morpholigiser_leaf_tree.txt"))
 
 (defn morph-tree-parser
   "Parse the morpholiger leaf tree. Returns a vector of maps, where each map

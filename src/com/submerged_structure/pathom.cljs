@@ -126,9 +126,16 @@
 (pco/defresolver word-data
   [_ {:keys [:word/id]}]
   {::pco/input [:word/id]
-   ::pco/output [:word/start :word/end :word/id :word/word :word/score  :word/active :word/morph :word/lemma :word/pos :word/pos_explained :word/is_morphed :word/norm]}
+   ::pco/output [:word/start :word/end :word/id :word/word :word/score  :word/active]}
   (->(get mock-data/transcripts [:word/id id])
    (assoc :word/active false)))
+
+(pco/defresolver token-data
+  [_ {:keys [:token/id]}]
+  {::pco/input [:token/id]
+   ::pco/output [:token/text :token/morph :token/lemma :token/pos :token/pos_explained :token/is_morphed :token/norm  :token/whitespace]}
+  (get mock-data/transcripts [:token/id id]))
+
 
 
 (def my-resolvers-and-mutations
@@ -141,6 +148,7 @@
    segment-data
    translation-data
    word-data
+   token-data
    current-transcript
    all-transcripts])
 
