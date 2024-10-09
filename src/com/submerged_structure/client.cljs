@@ -1,23 +1,39 @@
 (ns com.submerged-structure.client
   (:require
    [com.submerged-structure.app :refer [app]]
-   [com.submerged-structure.ui :as ui]
+   [com.submerged-structure.components.root :as root]
+   [com.submerged-structure.components.home :as home]
    
    [com.fulcrologic.fulcro.application :as app]
    [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.fulcro.algorithms.denormalize :as fdn]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.fulcro.data-fetch :as df]
-   [com.submerged-structure.mock-data :as mock-data]
-   [com.submerged-structure.components.word :as word-with-morphological-features-popup]))
+
+   [com.fulcrologic.rad.routing.html5-history :as hist5 :refer [new-html5-history]]
+   [com.fulcrologic.rad.routing.history :as history]
+   [clojure.string]))
+
+
+(defn route-only-no-params->url
+  "Construct URL from route and params
+   (same as default but without the params encoded.)"
+  [route _params _hash-based?]
+  (str "/" (clojure.string/join "/" (map str route))))
 
 (defn ^:export init
   "Called by shadow-cljs upon initialization, see shadow-cljs.edn"
   []
   (println "Initializing the app...")
-  (app/set-root! app ui/Root {:initialize-state? true})
-  (comp/transact! app `[(com.submerged-structure.mutations/load-transcript {:transcript/id ~(mock-data/nth-transcript-id 2)})])
-  (app/mount! app (app/root-class app) "app"))
+  (app/set-root! app root/Root {:initialize-state? true})
+  (dr/initialize! app)
+  (history/install-route-history!
+   app
+   (new-html5-history {:hash-based? false
+                       :route->url route-only-no-params->url}))
+  #_(comp/transact! app `[(com.submerged-structure.mutations/load-transcript {:transcript/id ~(mock-data/nth-transcript-id 2)})])
+  (app/mount! app (app/root-class app) "app")
+  (hist5/restore-route! app home/Home {}))
 
 (defn ^:export refresh
   "Called by shadow-cljs upon hot code reload, see shadow-cljs.edn"

@@ -15,10 +15,12 @@
             [com.submerged-structure.confidence-to-color :as c-to-c]
             [com.submerged-structure.spacy-grammar :as spacy-grammar]
             [com.submerged-structure.components.segment :as segment]
-            [com.submerged-structure.components.transcript-switcher :as transcript-switcher]
+            #_[com.submerged-structure.components.transcript-switcher :as transcript-switcher]
             [com.submerged-structure.app-help :as app-help]
 
-            [goog.functions :as gf]))
+            [goog.functions :as gf]
+            
+            [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]))
 
 
 
@@ -79,11 +81,25 @@
                                            display-type
                                            segments]
                          :>/keys          [player
-                                           transcript-switcher
+                                           #_transcript-switcher
                                            player-controls]}]
   {:ident :transcript/id
+
+   :route-segment ["transcript" :transcript/id]
+   :will-enter
+   (fn [app route-params]
+     (js/console.log "Transcript will-enter" route-params)
+     
+     (dr/route-deferred
+      [:transcript/id
+       (:transcript/id route-params)]
+      #(do (comp/transact! app `[(com.submerged-structure.mutations/load-transcript ~(select-keys route-params [:transcript/id]))])
+          (dr/target-ready! app [:transcript/id
+                                 (:transcript/id route-params)]))))
+
+
    :initial-state (fn [_] {:transcript/segments (comp/get-initial-state segment/Segment {})
-                           :>/transcript-switcher (comp/get-initial-state transcript-switcher/TranscriptSwitcher {})
+                           #_#_:>/transcript-switcher (comp/get-initial-state transcript-switcher/TranscriptSwitcher {})
                            :>/player (comp/get-initial-state player/PlayerComponent {})
                            :>/player-controls (comp/get-initial-state player-controls/PlayerControls {})})
    :query [:transcript/id
@@ -103,11 +119,11 @@
                                       :word/word]}
 
            {:transcript/segments (comp/get-query segment/Segment)}
-           {:>/transcript-switcher (comp/get-query transcript-switcher/TranscriptSwitcher)}
+           #_{:>/transcript-switcher (comp/get-query transcript-switcher/TranscriptSwitcher)}
            {:>/player (comp/get-query player/PlayerComponent)}
            {:>/player-controls (comp/get-query player-controls/PlayerControls)}]}
   (fragment
-       (transcript-switcher/ui-transcript-switcher transcript-switcher {:current-transcript id})
+       #_(transcript-switcher/ui-transcript-switcher transcript-switcher {:current-transcript id})
        (ui-sticky
         {:id (str "player-" id)
          :context (.. js/document -body (querySelector (str "#transcript-" id)))

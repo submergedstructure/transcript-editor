@@ -2,6 +2,8 @@
  :deps
  {org.clojure/clojure {:mvn/version "1.12.0-alpha5"},
   com.fulcrologic/fulcro {:mvn/version "3.7.3"},
+  com.fulcrologic/fulcro-rad {:mvn/version "1.6.7"}
+
   com.fulcrologic/semantic-ui-wrapper {:mvn/version "2.1.4"},
   com.wsscode/pathom3 {:mvn/version "2023.08.22-alpha"},
   org.babashka/http-client {:mvn/version "0.3.11"},
