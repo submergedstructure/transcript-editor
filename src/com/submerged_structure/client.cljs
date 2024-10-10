@@ -66,6 +66,19 @@
             ;; otherwise st. like (get-in state-map [:thing/id 1]):
      state
      state))
+  
+  (let [state (app/current-state app)
+        segments-with-words (get-in
+                             (fdn/db->tree
+                              [#:root{:current-transcript
+                                      [:transcript/id
+                                       #:transcript{:segments
+                                                    [:segment/id :segment/start :segment/end :segment/autopause? #:segment{:words [:word/id :word/start :word/end]}]}]}]
+                              state state)
+                             [:root/current-transcript :transcript/segments])]
+    (filter (fn [{:segment/keys [start end words]}]
+              (or (not= (:word/start (first words)) start)
+                   (not= (:word/end (last words)) end))) segments-with-words))
   (require '[com.submerged-structure.mutations :as mutations])
 
   (mutations/words-with-unique-time-stamps (mutations/get-current-segment-word-tree-from-state (app/current-state app)))

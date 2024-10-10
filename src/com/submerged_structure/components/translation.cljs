@@ -30,8 +30,10 @@
        :hideOnScroll true
        :header (str "\"" lang "\" translation")
        :content (str
-                 (if visible? "Click to hide translation" "Click to show translation of this setence. You can also use the button above to the right of the player controls to show or hide all translations.")
-                 (when translation-failed " ... Sorry the AI failed to translate this."))
+                 (if visible?
+                   "Click to hide translation"
+                     "Click to show translation of this setence. You can also use the button above to the right of the player controls to show or hide all translations.")
+                 (when translation-failed "\n\n ... Sorry the AI failed to translate this."))
        :trigger (ui-label {:onRemove (when visible? toggle-func)
                            :active active
                            :color (when translation-failed "red")

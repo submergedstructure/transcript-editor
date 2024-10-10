@@ -1,5 +1,5 @@
 (ns com.submerged-structure.components.controls.player-controls
-  (:require [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+  (:require [com.fulcrologic.fulcro.components :as comp :refer [defsc fragment]]
             [com.fulcrologic.fulcro.dom :as dom]
 
             [com.fulcrologic.semantic-ui.modules.popup.ui-popup :refer [ui-popup]]
@@ -25,7 +25,9 @@
         player-time-el (js/document.querySelector "span#player-time")]
     (set! (.-textContent player-time-el) (time-float-to-string current-time (.getDuration ws)))))
 
-(defsc PlayerControls [this {:ui-player/keys  [doing scroll-to-active]
+(defsc PlayerControls [this {:transcript/keys [id]
+                             :ui-player/keys  [doing scroll-to-active]
+                             :ui-transcript-autopause-control/keys [any-segment?]
                              :ui-player-controls/keys [prev-segment-start current-segment-start next-segment-start
                                                        prev-word-start current-word-start next-word-start]
 
@@ -44,6 +46,8 @@
 
            :ui-player-controls/next-word-start
            :ui-player-controls/next-segment-start
+
+           :ui-transcript-autopause-control/any-segment?
 
            {:>/language-controls (comp/get-query TranslationControls)}
            {:>/morphological-info-grid (comp/get-query MorphologicalInfoControl)}]}
@@ -140,6 +144,26 @@
                                         (dom/span :#player-time (time-float-to-string 0 (.getDuration (player-atom/get-player))))
                                         " of "
                                         (time-float-to-string (.getDuration (player-atom/get-player)) (.getDuration (player-atom/get-player))))}})}
+          common-to-controls/common-options-for-popups-of-controls))
+        (ui-popup
+         (merge
+          {:header (str "Autopause: " (if any-segment? (str "Don't pause after ANY sentences.") (str "Pause after ALL sentences.")))
+           :content (str "If ANY autopause after sentence is on, clicking will turn ALL autopauses off. If NONE are, clicking will autopause after EVERY sentence. You can also turn on and off autopause individually with the button at the end of each sentence.")
+           :trigger (ui-button
+                     {
+                      ;; :label {:pointing "left" :content (if any-autopause? "on" "off")}
+                      ;; :labelPosition "right"
+                      :style {:vertical-align "middle"}
+                      :size "tiny"
+                      :icon (fragment
+                             (ui-icon {:name i/pause-icon})
+                             (ui-icon {:name i/clock-icon}))
+                      :onClick
+                      (fn [& _args]
+                        (comp/transact!
+                         this
+                         `[(com.submerged-structure.mutations/toggle-autopause-for-transcript {:transcript/id ~id})]))
+                      :positive any-segment?})}
           common-to-controls/common-options-for-popups-of-controls)))
        (dom/span
         :.item

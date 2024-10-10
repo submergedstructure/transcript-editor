@@ -22,7 +22,7 @@
     [#:root{:current-transcript
             [:transcript/id
              #:transcript{:segments
-                          [:segment/id :segment/start :segment/end
+                          [:segment/id :segment/start :segment/end :segment/autopause?
                            #:segment{:words [:word/id :word/start :word/end]}]}]}]
     state-deref state-deref)
    [:root/current-transcript :transcript/segments]))
@@ -110,13 +110,16 @@
         next-word (first words-starting-after-t)
         
         segments-starting-before-t (filter #(<= (:segment/start %) t) segment-word-tree)
-        segments-starting-after-t (filter #(> (:segment/start %) t) segment-word-tree)]
+        segments-starting-after-t (filter #(> (:segment/start %) t) segment-word-tree)
+        last-started-segment (last segments-starting-before-t)
+        next-segment (first segments-starting-after-t)
+        ]
     (merge {:ui-player-controls/prev-word-start (:word/start (last (drop-last words-started-before-t)))
             :ui-player-controls/prev-segment-start (:segment/start (last (drop-last segments-starting-before-t)))
 
             :ui-player-controls/current-word-start (:word/start last-started-word)
-            :ui-player-controls/current-segment-start (:segment/start (last segments-starting-before-t))
-            
+            :ui-player-controls/current-segment-start (:segment/start last-started-segment)
+
             :ui-player-controls/next-word-start (:word/start next-word)
             :ui-player-controls/next-segment-start (:segment/start (first segments-starting-after-t))}
            (cond
@@ -136,10 +139,21 @@
              {:transcript/current-word [:word/id nil] ;; before first word
               :ui-period/start 0
               :ui-period/end (:word/start next-word)}
-             :else ;; no timestamped words in transcript!!
-             {:transcript/current-word [:word/id nil] ;; before first word
-              :ui-period/start 0
-              :ui-period/end transcript-duration}))))
+             :else ;; no timestamped words in transcript!! no more upates needed.
+             {:transcript/current-word [:word/id nil] 
+              :ui-period/start 0 
+              :ui-period/end transcript-duration})
+           ;;segments start and end at the same time as words so no need to adjust ui-period/start and ui-period/end
+           (if (and last-started-segment
+                    (:segment/autopause? last-started-segment)
+                    (<= t (:segment/end last-started-segment))) ;; currently in segment with autopause
+             {:ui-transcript-autopause/next-period-start (:segment/end last-started-segment) ;; if we hit this time period on subsequent throttled calls then we should pause
+              :ui-transcript-autopause/next-period-end (if (not= (:segment/end last-started-segment) (:segment/start next-segment))
+                                                 (:segment/start next-segment)
+                                                 (+ (:segment/end last-started-segment) 0.2))}  ;;want to pause just after this segment ends on first call throttled by :ui-period/end
+             {:ui-transcript-autopause/next-period-start nil
+              :ui-transcript-autopause/next-period-end nil}))))
+
 
 (defn changes-to-make-to-transcript-keys-in-local-db-when-time-changes-related-to-current-word-and-translations
   "Return the id of current word to highlight or nil if no word to highlight.
@@ -165,6 +179,7 @@
                 last-current-word-id (get-in @state [:transcript/id transcript-id :transcript/current-word 1])]
             (do
               (js/console.log "update-transcript-current-time" current-time last-current-word-id transcript-keys-to-update)
+              
               (doall (map (fn [[k v]] (swap! state assoc-in (conj [:transcript/id transcript-id] k) v)) transcript-keys-to-update))
               ;; deactivate last translations
               (doall
@@ -272,7 +287,6 @@
 (defn any-morphological-details-item-in-current-transcript-visible? [state-deref]
   (some :token/morphological-details-visible? (get-all-morphological-details-items-in-current-transcript-and-their-visibility state-deref)))
 
-
 (defmutation toggle-visibility-of-morphological-details-for-token [{:keys [:token/id]}]
   (action [{:keys [state]}]
           (swap! state update-in [:token/id id :token/morphological-details-visible?] not)
@@ -292,9 +306,46 @@
                                [:token/id id-of-token-with-morph-analysis :token/morphological-details-visible?]
                                (get-in @state [:transcript/id id :ui-morphological-info-grid-control/any-visible?])))
                       (map :token/id
-                           (get-all-morphological-details-items-in-current-transcript-and-their-visibility @state)
-                           )))))
+                           (get-all-morphological-details-items-in-current-transcript-and-their-visibility @state))))))
 
+(defn get-all-segments-in-current-transcript-and-autopause? [state-deref]
+  (get-in
+   (fdn/db->tree
+    [#:root{:current-transcript
+            [:transcript/id
+             #:transcript{:segments
+                          [:segment/id :segment/autopause?]}]}]
+    state-deref state-deref)
+   [:root/current-transcript :transcript/segments]))
+
+(comment
+  (def state-deref *1)
+  (get-all-morphological-details-items-in-current-transcript-and-their-visibility state-deref))
+
+(defn any-segments-in-current-transcript-and-autopaused? [state-deref]
+  (some :segment/autopause? (get-all-segments-in-current-transcript-and-autopause? state-deref)))
+
+
+(defmutation toggle-autopause-for-segment [{:keys [:segment/id]}]
+  (action [{:keys [state]}]
+          (swap! state update-in [:segment/id id :segment/autopause?] not)
+          (swap!
+           state
+           assoc-in
+           [:transcript/id (get-current-transcript-id-from-state @state) :ui-transcript-autopause-control/any-segment?]
+           (any-segments-in-current-transcript-and-autopaused? @state))))
+
+
+(defmutation toggle-autopause-for-transcript [{:keys [:transcript/id]}]
+  (action [{:keys [state]}]
+          (swap! state update-in [:transcript/id id :ui-transcript-autopause-control/any-segment?] not)
+          (doall (map (fn [segment-id]
+                        (swap! state
+                               assoc-in
+                               [:segment/id segment-id :segment/autopause?]
+                               (get-in @state [:transcript/id id :ui-transcript-autopause-control/any-segment?])))
+                      (map :segment/id
+                           (get-all-segments-in-current-transcript-and-autopause? @state))))))
 
 
 (defmutation update-transcript-duration [{:transcript/keys [duration]}]

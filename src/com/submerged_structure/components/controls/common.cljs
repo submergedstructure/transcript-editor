@@ -3,4 +3,5 @@
 (def common-options-for-popups-of-controls
   {:size "tiny"
    :position "bottom center"
-   :hideOnScroll true})
+   :hideOnScroll true
+   :on ["hover", "click", "focus"]})

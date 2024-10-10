@@ -20,7 +20,8 @@
 
             [goog.functions :as gf]
             
-            [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]))
+            [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
+            [com.submerged-structure.player-atom :as player-atom]))
 
 
 
@@ -37,6 +38,14 @@
                                    :behavior "smooth"}))))
 
 (defn update-current-word [this t id]
+  (let [props (comp/props this)
+        start (:ui-transcript-autopause/next-period-start props)
+        end (:ui-transcript-autopause/next-period-end props)]
+    ; these have been set on a previous call when within a segment with autopause? true
+    (js/console.log "check for autopause " props start t end)
+    (when (and start (<= start t end))
+      (.pause (player-atom/get-player))))
+    
   (comp/transact!! this `[(com.submerged-structure.mutations/update-transcript-current-time {:transcript/current-time ~t})])
   (js/console.log "update-current-word" this id t)
   (js/setTimeout
@@ -112,6 +121,9 @@
 
            :ui-period/start
            :ui-period/end
+
+           :ui-transcript-autopause/next-period-start
+           :ui-transcript-autopause/next-period-end
 
            :transcript/display-type
 
