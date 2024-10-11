@@ -108,6 +108,7 @@
             :content "Repeat to skip back to previous sentences."
             :trigger (ui-button
                       {:icon i/reply-icon
+                       :id "sentence-back"
                        :onClick (fn [_]
                                   (when-let [player (player-atom/get-player)]
                                     (if (and prev-segment-start
@@ -140,7 +141,8 @@
            {:header "Play/Pause"
             :content ""
             :trigger (ui-button
-                      {:icon (if (= doing :playing) i/pause-icon i/play-icon)
+                      {:id "play-pause"
+                       :icon (if (= doing :playing) i/pause-icon i/play-icon)
                        :onClick (fn [_]
                                   (when (player-atom/get-player)
                                     (if (= doing :playing) (.pause (player-atom/get-player)) (.play (player-atom/get-player)))))
@@ -156,7 +158,8 @@
            {:header (str "Autopause: " (if any-segment? (str "Don't pause after ANY sentences.") (str "Pause after ALL sentences.")))
             :content (str "If ANY autopause after sentence is on, clicking will turn ALL autopauses off. If NONE are, clicking will autopause after EVERY sentence. You can also turn on and off autopause individually with the button at the end of each sentence.")
             :trigger (ui-button
-                      {;; :label {:pointing "left" :content (if any-autopause? "on" "off")}
+                      {:id "autopause-all"
+                      ;; :label {:pointing "left" :content (if any-autopause? "on" "off")}
                       ;; :labelPosition "right"
                        :size "tiny"
                        :icon (fragment
@@ -198,7 +201,8 @@
            {:header "Forward one sentence."
             :content ""
             :trigger (ui-button
-                      {:icon i/share-icon
+                      {:id "sentence-forward"
+                       :icon i/share-icon
                        :onClick (fn [_]
                                   (when-let [player (player-atom/get-player)]
                                     (.setTime player next-segment-start-plus-ms)

@@ -5,7 +5,9 @@
             ["wavesurfer.js/dist/plugins/minimap.esm.js" :default Minimap]
             ["wavesurfer.js/dist/plugins/regions.esm.js" :default Regions]
 
-            [com.submerged-structure.player-atom :as player-atom]))
+            [com.submerged-structure.player-atom :as player-atom]
+            
+            [com.submerged-structure.components.controls.keyboardshortcuts :as keyboardshortcuts]))
 
 
 (defn ^js get-player-regions-plugin [& [^js ws-player]]
@@ -66,6 +68,7 @@
 
     :onReady (fn [^js player]
                (js/console.log "onReady" player)
+               (.addEventListener js/document "keydown" keyboardshortcuts/handle-keydown)
                (comp/transact! this `[(com.submerged-structure.mutations/update-ui-player-doing {:ui-player/doing :paused})
                                       (com.submerged-structure.mutations/update-transcript-duration {:transcript/duration ~(.getDuration player)})
                                       (com.submerged-structure.mutations/update-transcript-current-time {:transcript/current-time ~(.getCurrentTime player)})]))
