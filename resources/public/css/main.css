@@ -27,7 +27,9 @@ div.active span.inflected_word { /* in morphological analysis*/
     height: calc(100vh - 171.5px); /* 100% height - height player */
   }
 
-
+div.player-controls .ui.button {
+    vertical-align: middle;
+}
 
 div.segment-transcription-and-translation {
     margin-bottom: 1.5em;
