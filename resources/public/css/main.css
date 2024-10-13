@@ -44,3 +44,28 @@ div.segment-transcription-and-translation {
 .translation.translation-visible {
     display: block;
 }
+/* Background image styling for the home section */
+// div#home div.bg-image {
+//     background-image: url('/images/wave.jpg'); /* Replace with the actual path to your image */
+//     background-size: cover; /* Ensures the image covers the entire div */
+//     background-repeat: repeat-y; /* Prevents the image from repeating */
+//     position: relative; /* Allows positioning of the overlay */
+// }
+
+// /* Overlay styling for the background image */
+// div#home div.bg-image::before {
+//     content: '';
+//     position: absolute;
+//     top: 0;
+//     left: 0;
+//     width: 100%;
+//     height: 100%;
+//     background: rgba(255, 255, 255, 0.8); /* Semi-transparent black overlay */
+//     z-index: 1; /* Ensures the overlay is above the background image */
+// }
+
+// /* Ensures the text is above the overlay */
+// div#home div.bg-image > * {
+//     position: relative;
+//     z-index: 2; /* Ensures the text is above the overlay */
+// }

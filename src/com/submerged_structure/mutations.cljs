@@ -113,14 +113,14 @@
         segments-starting-after-t (filter #(> (:segment/start %) t) segment-word-tree)
         last-started-segment (last segments-starting-before-t)
         next-segment (first segments-starting-after-t)
+        prev-segments (drop-last segments-starting-before-t)
         ]
-    (merge {:ui-player-controls/prev-word-start (:word/start (last (drop-last words-started-before-t)))
-            :ui-player-controls/prev-segment-start (:segment/start (last (drop-last segments-starting-before-t)))
-
-            :ui-player-controls/current-word-start (:word/start last-started-word)
+    (merge {:ui-player-controls/prev-prev-segment-end (:segment/end (last (drop-last prev-segments)))
+            :ui-player-controls/prev-segment-start (:segment/start (last prev-segments))
+            :ui-player-controls/prev-segment-end (:segment/end (last prev-segments))
             :ui-player-controls/current-segment-start (:segment/start last-started-segment)
-
-            :ui-player-controls/next-word-start (:word/start next-word)
+            :ui-player-controls/current-segment-end (:segment/end last-started-segment)
+            :transcript/current-or-last-segment [:segment/id (:segment/id last-started-segment)] ;; differs from current-word as still set between segments.
             :ui-player-controls/next-segment-start (:segment/start (first segments-starting-after-t))}
            (cond
              (and last-started-word (<= t (:word/end last-started-word))) ;; currently in word
@@ -169,8 +169,7 @@
      :ui-period/end ((comp max :ui-period/end) changes-related-to-current-word)})))
 
 (defmutation update-transcript-current-time
-  "Sets the currently active word, if there is one, and also sets the start and end time of the time period that the word or pause covers."
-
+  "Sets the currently active word, if there is one, and also sets the start and end time of the time period in which no more updates to state necessary for segment, word or translation."
   [{:transcript/keys [current-time]}]
   (action [{:keys [state]}]
           (let [transcript-id (get-current-transcript-id-from-state @state)
