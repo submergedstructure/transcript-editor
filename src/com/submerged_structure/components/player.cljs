@@ -3,20 +3,20 @@
             [com.fulcrologic.fulcro.algorithms.react-interop :as interop]
             ["@wavesurfer/react" :default WavesurferPlayer]
             ["wavesurfer.js/dist/plugins/minimap.esm.js" :default Minimap]
-            ["wavesurfer.js/dist/plugins/regions.esm.js" :default Regions]
+            #_["wavesurfer.js/dist/plugins/regions.esm.js" :default Regions]
 
             [com.submerged-structure.player-atom :as player-atom]
             
             [com.submerged-structure.components.controls.keyboardshortcuts :as keyboardshortcuts]))
 
 
-(defn ^js get-player-regions-plugin [& [^js ws-player]]
+#_(defn ^js get-player-regions-plugin [& [^js ws-player]]
   (-> (or ws-player (player-atom/get-player))
       (.getActivePlugins)
       (.find #(instance? Regions %))))
 
 
-(comment (get-player-regions-plugin)
+#_(comment (get-player-regions-plugin)
          (js/console.log "get-player-regions-plugin" (get-player-regions-plugin)))
 
 
@@ -30,8 +30,8 @@
 
 (def ui-wavesurfer-player (interop/react-factory WavesurferPlayer))
 
-(defn player-on-current-word-update [start-current-word end-current-word current-word]
-  (let [rp (get-player-regions-plugin)]
+#_(defn player-on-current-word-update [start-current-word end-current-word current-word]
+  #_(let [rp (get-player-regions-plugin)]
     (.clearRegions rp)
     (.addRegion rp
                 #js {:content current-word
@@ -41,7 +41,7 @@
                      :resize true
                      :color "rgba(0, 0, 128, 0.5)"})))
 
-(comment (player-on-current-word-update 5 15 "test"))
+#_(comment (player-on-current-word-update 5 15 "test"))
 
 (defsc PlayerComponent [this {:transcript/keys [audio-filename]}]
   {:ident :transcript/id
@@ -90,7 +90,7 @@
     :plugins [(.create Minimap
                        #js {:height 40,
                             :normalize? true})
-              (.create Regions
+              #_(.create Regions
                        #js {:on (fn [& args] (js/console.log "Regions event" args))})]}))
 
 (def ui-player
@@ -100,5 +100,5 @@
 
 (comment (player-atom/get-player)
          (js/console.log (player-atom/get-player))
-         (player-on-current-word-update 10, 15, "hello")
+         #_(player-on-current-word-update 10, 15, "hello")
          (.getCurrentTime (player-atom/get-player)))
