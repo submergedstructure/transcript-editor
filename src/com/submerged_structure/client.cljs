@@ -15,11 +15,14 @@
    [clojure.string]))
 
 
+
 (defn route-only-no-params->url
   "Construct URL from route and params
    (same as default but without the params encoded.)"
-  [route _params _hash-based?]
-  (str "/" (clojure.string/join "/" (map str route))))
+  [route _params hash-based?]
+  (if hash-based?
+    (str "#/" (clojure.string/join "/" (map str route)))
+    (str "/" (clojure.string/join "/" (map str route)))))
 
 (defn ^:export init
   "Called by shadow-cljs upon initialization, see shadow-cljs.edn"
@@ -29,7 +32,7 @@
   (dr/initialize! app)
   (history/install-route-history!
    app
-   (new-html5-history {:hash-based? false
+   (new-html5-history {:hash-based? true
                        :route->url route-only-no-params->url}))
   #_(comp/transact! app `[(com.submerged-structure.mutations/load-transcript {:transcript/id ~(mock-data/nth-transcript-id 2)})])
   (app/mount! app (app/root-class app) "app")
