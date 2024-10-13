@@ -60,8 +60,7 @@
   (let [transcript-duration (get-in state-deref [:transcript/id (get-current-transcript-id-from-state state-deref) :transcript/duration])
         changes-for-each-lang (for [lang (languages-in-current-transcript state-deref)
                                     :let [translations-in-lang (language-translations-in-current-transcript state-deref lang)
-                                          translations-started-before-t-in-lang (filter #(<= (:translation/start %) t) translations-in-lang)
-                                          translations-starting-after-t-in-lang (filter #(> (:translation/start %) t) translations-in-lang)
+                                          [translations-started-before-t-in-lang translations-starting-after-t-in-lang] (split-with #(<= (:translation/start %) t) translations-in-lang)
                                           last-started-translation-in-lang (last translations-started-before-t-in-lang)
                                           next-translation-in-lang (first translations-starting-after-t-in-lang)]]
                                 (cond (and last-started-translation-in-lang (<= t (:translation/end last-started-translation-in-lang))) ;; currently in translation
@@ -104,13 +103,11 @@
         segment-word-tree (get-current-segment-word-tree-from-state state-deref)
         
         all-words (words-with-unique-time-stamps segment-word-tree) 
-        words-started-before-t (filter #(<= (:word/start %) t) all-words)
-        words-starting-after-t (filter #(> (:word/start %) t) all-words)
+        [words-started-before-t words-starting-after-t] (split-with #(<= (:word/start %) t) all-words)
         last-started-word (last words-started-before-t)
         next-word (first words-starting-after-t)
         
-        segments-starting-before-t (filter #(<= (:segment/start %) t) segment-word-tree)
-        segments-starting-after-t (filter #(> (:segment/start %) t) segment-word-tree)
+        [segments-starting-before-t segments-starting-after-t] (split-with #(<= (:segment/start %) t) segment-word-tree)
         last-started-segment (last segments-starting-before-t)
         next-segment (first segments-starting-after-t)
         prev-segments (drop-last segments-starting-before-t)
