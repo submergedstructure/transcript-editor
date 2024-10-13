@@ -4,15 +4,15 @@
   (let [key (.-key event)]
     (case key
       ;; ids in com.submerged-structure.components.controls.player-controls
-      "s"
+      "a"
       (when-let [button (.getElementById js/document "sentence-back")]
         (.click button))
 
-      "d"
+      "s"
       (when-let [button (.getElementById js/document "play-pause")]
         (.click button))
 
-      "f"
+      "d"
       (when-let [button (.getElementById js/document "sentence-forward")]
         (.click button))
       "w"
