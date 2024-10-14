@@ -8,8 +8,7 @@
             [clojure.set :as set]
 
             [clojure.math :refer [round]]
-            [clojure.pprint :as pp]
-            [clojure.string :as s]))
+            [transcript-hard-coded-data]))
 
 ;; Code to be run in the clj repl to convert the transcript data returned by my 
 ;; web service to edn.
@@ -267,7 +266,7 @@
 
 
 
-(defn transcripts_all_files []
+(defn transcripts_and_translations_all_files []
   (-> (str filepath "transcriptions_and_translations.json")
       slurp
       (cheshire/parse-string false)))
@@ -277,13 +276,13 @@
 
 
   (let [filename "Freediving.mp3"
-        transcripts-and-translations (transcripts_all_files)]
+        transcripts-and-translations (transcripts_and_translations_all_files)]
     (->> (get-in transcripts-and-translations [filename "transcription"])
          #_(mapv (fn [segment]
                    (->
                     (select-keys segment ["text" "start" "end"]))))))
   (let [filename "Freediving.mp3"
-        transcripts-and-translations (transcripts_all_files)]
+        transcripts-and-translations (transcripts_and_translations_all_files)]
     (->> (get-in transcripts-and-translations [filename "translations"])
          #_(mapv (fn [segment]
                    (->
@@ -375,7 +374,9 @@
 
 
 (defn add-id [m]
-  (assoc m "id" (str (java.util.UUID/randomUUID))))
+  (if-not (get m "id")
+    (assoc m "id" (str (java.util.UUID/randomUUID)))
+    m))
 
 (defn add-ids [tree]
   (postwalk (fn [node]
@@ -441,55 +442,58 @@
           new-segment-starts
           new-segment-ends)))
 
+(defn transcript-tree [transcripts-and-translations filename audio-url]
+  (let [transcripts (whispers2t-keys-to-open-ai-standard-keys (get-in transcripts-and-translations [filename "transcription"]))
+        translations-all-langs
+        (into {} (map
+                  (fn [[lang translations-for-one-lang]]
+                    [lang (->>
+                           (whispers2t-keys-to-open-ai-standard-keys translations-for-one-lang)
+                           (mapv #(assoc % "lang" lang)))])
+                  (get-in transcripts-and-translations [filename "translations"])))]
+    (-> {"audio-url" audio-url
+         "label" filename
+         "segments" (get-segment-data-with-translation-all-langs transcripts translations-all-langs)}
+        (merge (get transcript-hard-coded-data/audio-url->transcript-data audio-url))
+        add-ids
+        round-all-starts-and-ends
+        (update "segments" adjust-segment-starts-and-ends)
+        (add-ns-and-keywordize-keys-in-m "transcript"))))
+
+(comment
+  (transcript-tree (transcripts_and_translations_all_files) "Freediving.mp3" "resources/public/audio_and_transcript/Freediving"))
+
+(defn find-mp3-files-at-path
+  "Return vector of filename and url for all mp3 files in folder at `path`."
+  [path]
+  (->> (java.io.File. path)
+       (.listFiles)
+       (filter #(.isFile %))
+       (filter #(re-matches #".*\.mp3" (.getName %)))
+       (map #(.getName %))
+       (map #(vector
+              %
+              (str (subs path (count "resources/public")) %)))))
 
 
-    (defn transcript-tree [filename full-filepath-without-extension]
-      (let [transcripts-and-translations (transcripts_all_files)
-            transcripts (whispers2t-keys-to-open-ai-standard-keys (get-in transcripts-and-translations [filename "transcription"]))
-            translations-all-langs
-            (into {} (map
-                      (fn [[lang translations-for-one-lang]]
-                        [lang (->>
-                               (whispers2t-keys-to-open-ai-standard-keys translations-for-one-lang)
-                               (mapv #(assoc % "lang" lang)))])
-                      (get-in transcripts-and-translations [filename "translations"])))]
-        (-> {"audio-filename" (str (subs full-filepath-without-extension (count "resources/public")) ".mp3")
-             "label" filename
-             "segments" (get-segment-data-with-translation-all-langs transcripts translations-all-langs)}
-            add-ids
-            round-all-starts-and-ends
-            (update "segments" adjust-segment-starts-and-ends)
-            (add-ns-and-keywordize-keys-in-m "transcript"))))
 
-    (comment
-      (transcript-tree "Freediving.mp3" "resources/public/audio_and_transcript/whispers2t/Freediving.mp3"))
-
-    (defn find-mp3-files-at-path [path]
-      (->> (java.io.File. path)
-           (.listFiles)
-           (filter #(.isFile %))
-           (filter #(re-matches #".*\.mp3" (.getName %)))
-           (map #(.getName %))
-           (map #(vector
-                  %
-                  (str path (subs % 0 (- (count %) 4)))))))
+(defn write-mock-data-cljs-file []
+  (let [transcripts_and_translations (transcripts_and_translations_all_files)]
+    (-> (for [[filename full-filepath-without-extension] (find-mp3-files-at-path filepath)]
+        (transcript-tree transcripts_and_translations filename full-filepath-without-extension))
+      (flatten-tree-of-maps-into-maps-referenced-by-id)
+      pprint/pprint
+      with-out-str
+      (str/replace #"^" "  ")
+      (#(str/replace (slurp "resources/txt/mock_data_template.txt") "%%%" %))
+      (#(spit "src/com/submerged_structure/mock_data.cljs" %)))))
 
 
-
-    (defn write-mock-data-cljs-file []
-      (-> (for [[filename full-filepath-without-extension] (find-mp3-files-at-path filepath)]
-            (transcript-tree filename full-filepath-without-extension))
-          (flatten-tree-of-maps-into-maps-referenced-by-id)
-          pprint/pprint
-          with-out-str
-          (str/replace #"^" "  ")
-          (#(str/replace (slurp "resources/txt/mock_data_template.txt") "%%%" %))
-          (#(spit "src/com/submerged_structure/mock_data.cljc" %))))
+(comment (find-mp3-files-at-path filepath))
 
 
-    (comment (find-mp3-files-at-path filepath))
-
-
-    (comment
-      (write-mock-data-cljs-file))
+(comment
+  (write-mock-data-cljs-file)
+  (def audio-filename "/audio_and_transcript/Freediving.mp3")
+  (get transcript-hard-coded-data/audio-url->transcript-data audio-filename))
 

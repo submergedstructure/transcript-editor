@@ -43,19 +43,19 @@
 
 #_(comment (player-on-current-word-update 5 15 "test"))
 
-(defsc PlayerComponent [this {:transcript/keys [audio-filename]}]
+(defsc PlayerComponent [this {:transcript/keys [audio-url]}]
   {:ident :transcript/id
    :initial-state {}
    :query [:transcript/id
-           :transcript/audio-filename]
+           :transcript/audio-url]
    :shouldComponentUpdate
    (fn [this next-props next-state]
      (js/setTimeout (js/console.log "shouldComponentUpdate" this next-props next-state) 0)
      (not= (select-keys next-props [:transcript/id])
            (select-keys (comp/props this) [:transcript/id])))}
-  (js/console.log "PlayerComponent" (comp/get-computed this :onTimeupdate) audio-filename)
+  (js/console.log "PlayerComponent" (comp/get-computed this :onTimeupdate) audio-url)
   (ui-wavesurfer-player
-   {:url (js/encodeURI audio-filename)
+   {:url (js/encodeURI audio-url)
     :height 150
     :minPxPerSec 100,
     :waveColor "violet"

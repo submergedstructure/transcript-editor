@@ -88,7 +88,10 @@
 (defsc Transcript [this {:ui/keys [help-hidden]
                          :transcript/keys [id
                                            display-type
-                                           segments]
+                                           segments
+                                           label
+                                           summary
+                                           url]
                          :>/keys          [player
                                            #_transcript-switcher
                                            player-controls]}]
@@ -115,6 +118,9 @@
            :transcript/label
            :transcript/duration
 
+           :transcript/summary
+           :transcript/url
+
            [:ui/help-hidden '_]
 
            :ui-player/scroll-to-active
@@ -136,47 +142,55 @@
            {:>/player-controls (comp/get-query player-controls/PlayerControls)}]
    :shouldComponentUpdate (fn [_ _ _] true)}
   (fragment
-       #_(transcript-switcher/ui-transcript-switcher transcript-switcher {:current-transcript id})
-       (ui-sticky
-        {:id (str "player-" id)
-         :context (.. js/document -body (querySelector (str "#transcript-" id)))
-         :styleElement {:backgroundColor "white"}
-         :children
-         (div
-          (player/ui-player
-           player
-           {:onTimeupdate (transcript-on-timeupdate this id)})
-          (player-controls/ui-player-controls player-controls))})
-       (when-not
-        help-hidden
-         (ui-message
-          {:info true
-           :className "container"
-           :onDismiss (fn [_] (comp/transact! this `[(com.submerged-structure.mutations.controls/hide-transcript-help {})]))}
-          app-help/app-help))
-       (div :.ui.pointing.menu.stackable.container
-            (a {:classes [(when (= display-type :plain) "active") "item"]
-                :onClick (partial change-display-type this id :plain)}
-               (ui-icon {:name i/low-vision-icon}) "Plain Transcript - No Coloring")
-            (a {:classes [(when (= display-type :confidence) "active") "item"]
-                :onClick (partial change-display-type this id :confidence)}
-               (ui-icon {:name i/braille-icon}) "AI's Confidence of Each Word")
-            (a {:classes [(when (= display-type :grammar) "active") "item"]
-                :onClick (partial change-display-type this id :grammar)}
-               (ui-icon {:name i/eye-icon}) "Grammar X-Ray"))
+   {}
+   #_(transcript-switcher/ui-transcript-switcher transcript-switcher {:current-transcript id})
+   (ui-sticky
+    {:id (str "player-" id)
+     :context (.. js/document -body (querySelector (str "#transcript-" id)))
+     :styleElement {:backgroundColor "white"}
+     :children
+     (fragment
+      {}
+      (player/ui-player
+       player
+       {:onTimeupdate (transcript-on-timeupdate this id)})
+      (player-controls/ui-player-controls player-controls))})
+   (when-not
+    help-hidden
+     (ui-message
+      {:info true
+       :className "container"
+       :onDismiss (fn [_] (comp/transact! this `[(com.submerged-structure.mutations.controls/hide-transcript-help {})]))}
+      app-help/app-help))
+   (div :.ui.container.raised.segment
+        (div :.ui.header
+             label
+             (when url (fragment " " (a {:href url} "(original talk here)"))))
+        (when summary (div :.ui.meta
+                           summary)))
+   (div :.ui.pointing.menu.stackable.container {}
+        (a {:classes [(when (= display-type :plain) "active") "item"]
+            :onClick (partial change-display-type this id :plain)}
+           (ui-icon {:name i/low-vision-icon}) "Plain Transcript - No Coloring")
+        (a {:classes [(when (= display-type :confidence) "active") "item"]
+            :onClick (partial change-display-type this id :confidence)}
+           (ui-icon {:name i/braille-icon}) "AI's Confidence of Each Word")
+        (a {:classes [(when (= display-type :grammar) "active") "item"]
+            :onClick (partial change-display-type this id :grammar)}
+           (ui-icon {:name i/eye-icon}) "Grammar X-Ray"))
 
-       (div {:classes [(when (= display-type :grammar) "grammar_highlighting") "ui" "segment" "big" "container"]}
-            (when-let [key-for-display-type (case display-type
-                                              :confidence (c-to-c/confidence-key)
-                                              :grammar (spacy-grammar/grammar-key)
-                                              nil)]
-              (fragment (div :.key key-for-display-type)
-                        (ui-divider {:section true})))
-            (if-not (empty? segments)
-              (div :.transcript
-                   {:id (str "transcript-" id)}
-                   (map #(segment/ui-segment % {:transcript/display-type display-type}) segments))
-              (div :.ui.placeholder
-                   (mapv (fn [_] (div :.line)) (range 20)))))))
+   (div {:classes [(when (= display-type :grammar) "grammar_highlighting") "ui" "segment" "big" "container"]}
+        (when-let [key-for-display-type (case display-type
+                                          :confidence (c-to-c/confidence-key)
+                                          :grammar (spacy-grammar/grammar-key)
+                                          nil)]
+          (fragment (div :.key key-for-display-type)
+                    (ui-divider {:section true})))
+        (if-not (empty? segments)
+          (div :.transcript
+               {:id (str "transcript-" id)}
+               (map #(segment/ui-segment % {:transcript/display-type display-type}) segments))
+          (div :.ui.placeholder
+               (mapv (fn [_] (div :.line)) (range 20)))))))
 
 (def ui-transcript (comp/factory Transcript {:keyfn :transcript/id}))

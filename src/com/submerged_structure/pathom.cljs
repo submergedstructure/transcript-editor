@@ -54,7 +54,7 @@
 (pco/defresolver transcript-data
   [_ {:keys [transcript/id]}]
   {::pco/input  [:transcript/id]
-   ::pco/output [:transcript/audio-filename :transcript/label :transcript/segments :transcript/id :ui-player/scroll-to-active :ui-player/doing]}
+   ::pco/output [:transcript/audio-url :transcript/label :transcript/summary :transcript/url :transcript/segments :transcript/id :transcript/display-type :ui-player/scroll-to-active :ui-player/doing]}
   (js/console.log "MOCK SERVER: Simulate loading transcript data" id)
   (->
    (get mock-data/transcripts [:transcript/id id])
@@ -210,3 +210,11 @@
                       (fn [_ _]
                         (throw (ex-info "Deu ruim." {}))))))
    [:error ::pcr/attribute-errors ::pcr/mutation-error]))
+
+
+(comment
+  (->>
+   mock-data/transcripts
+   (keep (fn [[[kw id] v]] (when (= :transcript/id kw) [(:transcript/audio-filename v) {"id" id}])))
+   (into {}))
+  )
