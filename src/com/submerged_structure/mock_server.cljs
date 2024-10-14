@@ -13,12 +13,10 @@
    (let [parser    (pathom/new-parser)
          transmit! (:transmit! (mock-http-server {:parser (fn [eql] (parser eql))}))]
      {:transmit! (fn [this send-node]
-                   (js/setTimeout ; simulate some network delay, for fun
-                    #(transmit! this send-node
-                                (update send-node
-                                        ::txn/result-handler
-                                        (fn [handler]
-                                          ;; FIXME: Does this work for mutations?!
-                                          (fn logging-wrapper [res] (println "MOCK SERVER RESULT>" res)
-                                            (handler res)))))
-                    100))})))
+                   (transmit! this send-node
+                              (update send-node
+                                      ::txn/result-handler
+                                      (fn [handler]
+                                                             ;; FIXME: Does this work for mutations?!
+                                        (fn logging-wrapper [res] (println "MOCK SERVER RESULT>" res)
+                                          (handler res))))))})))
