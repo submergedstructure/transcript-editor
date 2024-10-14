@@ -37,7 +37,7 @@
 
         :onChange (fn [_ev data]
                     (js/console.log "TranscriptSwitcher onChange" data)
-                    (comp/transact! this `[(com.submerged-structure.mutations/load-transcript {:transcript/id ~(.-value data)})]))
+                    (comp/transact! this `[(com.submerged-structure.mutations.load/load-transcript {:transcript/id ~(.-value data)})]))
         :text (:transcript/label (first (filter #(= (:transcript/id %) current-transcript) all-transcripts)))})})))
 
 (def ui-transcript-switcher (comp/computed-factory TranscriptSwitcher))

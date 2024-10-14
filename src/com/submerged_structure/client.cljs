@@ -34,7 +34,7 @@
    app
    (new-html5-history {:hash-based? true
                        :route->url route-only-no-params->url}))
-  #_(comp/transact! app `[(com.submerged-structure.mutations/load-transcript {:transcript/id ~(mock-data/nth-transcript-id 2)})])
+  #_(comp/transact! app `[(com.submerged-structure.mutations.load/load-transcript {:transcript/id ~(mock-data/nth-transcript-id 2)})])
   (app/mount! app (app/root-class app) "app")
   (hist5/restore-route! app home/Home {}))
 
@@ -42,7 +42,7 @@
   "Called by shadow-cljs upon hot code reload, see shadow-cljs.edn"
   []
   (println "Refreshing after a hot code reload...")
-  #_(comp/transact! app `[(com.submerged-structure.mutations/load-transcript {:transcript/id ~(mock-data/nth-transcript-id 2)})])
+  #_(comp/transact! app `[(com.submerged-structure.mutations.load/load-transcript {:transcript/id ~(mock-data/nth-transcript-id 2)})])
   (app/mount! app (app/root-class app) "app"))
 
 (comment
@@ -82,7 +82,7 @@
     (filter (fn [{:segment/keys [start end words]}]
               (or (not= (:word/start (first words)) start)
                    (not= (:word/end (last words)) end))) segments-with-words))
-  (require '[com.submerged-structure.mutations :as mutations])
+  (require '[com.submerged-structure.mutations.words-and-segments :as mutations])
 
   (mutations/words-with-unique-time-stamps (mutations/get-current-segment-word-tree-from-state (app/current-state app)))
 

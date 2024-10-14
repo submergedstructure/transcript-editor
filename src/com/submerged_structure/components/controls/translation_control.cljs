@@ -21,7 +21,7 @@
                 (fn [& _args]
                   (comp/transact!
                    this
-                   `[(com.submerged-structure.mutations/toggle-visibility-of-all-translations-in-lang {:ui-translation-control/language ~language})]))
+                   `[(com.submerged-structure.mutations.translations/toggle-visibility-of-all-translations-in-lang {:ui-translation-control/language ~language})]))
                 :positive visible-translations?
                 :labelPosition "right"
                 :label {:pointing "left"

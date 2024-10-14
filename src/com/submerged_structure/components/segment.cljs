@@ -64,7 +64,7 @@
                            :onClick (fn [_]
                                       (comp/transact!
                                        this
-                                       `[(com.submerged-structure.mutations/toggle-autopause-for-segment {:segment/id ~id})]))})}
+                                       `[(com.submerged-structure.mutations.controls/toggle-autopause-for-segment {:segment/id ~id})]))})}
               common-to-controls/common-options-for-popups-of-controls))
              (map (fn [translation] (translation/ui-translation translation {:segment/transcription-text text})) translations))))
 

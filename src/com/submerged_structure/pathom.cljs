@@ -24,8 +24,14 @@
    [com.wsscode.pathom3.path :as p.path]
    [com.wsscode.pathom3.plugin :as p.plugin]
    [promesa.core :as p]
+   
    [com.submerged-structure.mock-data :as mock-data]
-   [com.submerged-structure.mutations :as mutations]))
+
+   [com.submerged-structure.mutations.words-and-segments]
+   [com.submerged-structure.mutations.load]
+   [com.submerged-structure.mutations.controls]
+   [com.submerged-structure.mutations.translations]
+   ))
 
 
 (pco/defresolver all-transcripts [_ _]

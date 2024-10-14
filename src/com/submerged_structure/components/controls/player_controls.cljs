@@ -161,7 +161,7 @@
                              (fn [& _args]
                                (comp/transact!
                                 this
-                                `[(com.submerged-structure.mutations/toggle-autopause-for-transcript {:transcript/id ~id})]))
+                                `[(com.submerged-structure.mutations.controls/toggle-autopause-for-transcript {:transcript/id ~id})]))
                              :positive any-segment?})}
                  common-to-controls/common-options-for-popups-of-controls))
   
@@ -223,7 +223,7 @@
                   :trigger (ui-button
                             {:icon i/crosshairs-icon
                              :onClick (fn [& _args]
-                                        (comp/transact! this `[(com.submerged-structure.mutations/toggle-transcript-scroll-to-active {})]))
+                                        (comp/transact! this `[(com.submerged-structure.mutations.controls/toggle-transcript-scroll-to-active {})]))
                              :positive scroll-to-active
                              :labelPosition "right"
                              :label {:pointing "left"

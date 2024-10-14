@@ -22,7 +22,7 @@
                     (when-not (#{"SYM" "PUNCT"} pos)
                       (comp/transact!
                        this
-                       `[(com.submerged-structure.mutations/toggle-visibility-of-morphological-details-for-token {:token/id ~id})])))
+                       `[(com.submerged-structure.mutations.controls/toggle-visibility-of-morphological-details-for-token {:token/id ~id})])))
          
          }
         text)

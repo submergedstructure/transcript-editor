@@ -46,7 +46,7 @@
     (when (and start (<= start t end))
       (.pause (player-atom/get-player))))
     
-  (comp/transact!! this `[(com.submerged-structure.mutations/update-transcript-current-time {:transcript/current-time ~t})])
+  (comp/transact!! this `[(com.submerged-structure.mutations.words-and-segments/update-transcript-current-time {:transcript/current-time ~t})])
   (js/console.log "update-current-word" this id t)
   (js/setTimeout
    (fn []
@@ -81,7 +81,7 @@
   (js/console.log "Menu item clicked" this id type js-args)
   (comp/transact!
      this
-     `[(com.submerged-structure.mutations/transcript-display-type-menu
+     `[(com.submerged-structure.mutations.controls/transcript-display-type-menu
         {:transcript/id ~id
          :transcript/display-type ~type})]))
 
@@ -102,7 +102,7 @@
      (dr/route-deferred
       [:transcript/id
        (:transcript/id route-params)]
-      #(do (comp/transact! app `[(com.submerged-structure.mutations/load-transcript ~(select-keys route-params [:transcript/id]))])
+      #(do (comp/transact! app `[(com.submerged-structure.mutations.load/load-transcript ~(select-keys route-params [:transcript/id]))])
           (dr/target-ready! app [:transcript/id
                                  (:transcript/id route-params)]))))
 
@@ -151,7 +151,7 @@
          (ui-message
           {:info true
            :className "container"
-           :onDismiss (fn [_] (comp/transact! this `[(com.submerged-structure.mutations/hide-transcript-help {})]))}
+           :onDismiss (fn [_] (comp/transact! this `[(com.submerged-structure.mutations.controls/hide-transcript-help {})]))}
           app-help/app-help))
        (div :.ui.pointing.menu.stackable.container
             (a {:classes [(when (= display-type :plain) "active") "item"]

@@ -126,7 +126,7 @@
                                (js/console.log "Hide morph details:" e args id)
                                (comp/transact!
                                 this
-                                `[(com.submerged-structure.mutations/toggle-visibility-of-morphological-details-for-token {:token/id ~id})]))})})
+                                `[(com.submerged-structure.mutations.controls/toggle-visibility-of-morphological-details-for-token {:token/id ~id})]))})})
         (h3 (ui-lemma-and-norm lemma norm active is_morphed morph pos false)))}))))
 
 (defsc TokenMorphologicalInfo [this {:token/keys [id morph lemma pos is_morphed norm morphological-details-visible?]} {:word/keys [active]}]

@@ -22,7 +22,7 @@
                 (fn [& _args]
                   (comp/transact!
                    this
-                   `[(com.submerged-structure.mutations/toggle-visibility-of-morphological-details-for-transcript {:transcript/id ~id})]))
+                   `[(com.submerged-structure.mutations.controls/toggle-visibility-of-morphological-details-for-transcript {:transcript/id ~id})]))
                 :positive any-visible?})}
     common-to-controls/common-options-for-popups-of-controls)))
 

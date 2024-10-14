@@ -69,9 +69,9 @@
     :onReady (fn [^js player]
                (js/console.log "onReady" player)
                (.addEventListener js/document "keydown" keyboardshortcuts/handle-keydown)
-               (comp/transact! this `[(com.submerged-structure.mutations/update-ui-player-doing {:ui-player/doing :paused})
-                                      (com.submerged-structure.mutations/update-transcript-duration {:transcript/duration ~(.getDuration player)})
-                                      (com.submerged-structure.mutations/update-transcript-current-time {:transcript/current-time ~(.getCurrentTime player)})]))
+               (comp/transact! this `[(com.submerged-structure.mutations.controls/update-ui-player-doing {:ui-player/doing :paused})
+                                      (com.submerged-structure.mutations.load/update-transcript-duration {:transcript/duration ~(.getDuration player)})
+                                      (com.submerged-structure.mutations.words-and-segments/update-transcript-current-time {:transcript/current-time ~(.getCurrentTime player)})]))
 
     :onError (fn [^js & args]
                (js/console.log "onError" args))
@@ -81,11 +81,11 @@
 
     :onPause (fn [_]
                (js/console.log "onPause")
-               (comp/transact! this `[(com.submerged-structure.mutations/update-ui-player-doing {:ui-player/doing :paused})]))
+               (comp/transact! this `[(com.submerged-structure.mutations.controls/update-ui-player-doing {:ui-player/doing :paused})]))
 
     :onPlay (fn [_]
               (js/console.log "onPlay")
-              (comp/transact! this `[(com.submerged-structure.mutations/update-ui-player-doing {:ui-player/doing :playing})]))
+              (comp/transact! this `[(com.submerged-structure.mutations.controls/update-ui-player-doing {:ui-player/doing :playing})]))
 
     :plugins [(.create Minimap
                        #js {:height 40,

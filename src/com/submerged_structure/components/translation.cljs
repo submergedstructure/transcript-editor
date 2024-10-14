@@ -23,7 +23,7 @@
                        (js/console.log "Toggle show translation:" e args id)
                        (comp/transact!
                         this
-                        `[(com.submerged-structure.mutations/toggle-visibility-of-translation {:translation/id ~id})]))]
+                        `[(com.submerged-structure.mutations.translations/toggle-visibility-of-translation {:translation/id ~id})]))]
      (ui-popup
       {:size "tiny"
        :position "top center"
