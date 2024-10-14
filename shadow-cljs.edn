@@ -6,7 +6,7 @@
  :builds   {:main     {:target     :browser
                        :output-dir "resources/public/js/main"
                        :asset-path "/js/main"
-                       :dev        {:compiler-options {:external-config {:guardrails {:emit-spec? true :throw? false}}}}
+                       #_#_:dev        {:compiler-options {:external-config {:guardrails {:emit-spec? true :throw? false}}}}
                        :release    {:compiler-options {:source-map true}}
                        :modules    {:main {:init-fn com.submerged-structure.client/init}}
                        :devtools   {:preloads   [shadow.remote.runtime.cljs.browser ; Shadow Inspect tab support
