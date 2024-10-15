@@ -1,0 +1,9 @@
+/* adjust display for smaller screens */
+@media only screen and (max-width: 1350px) {
+    .visible-on-screen-less-than-1350px {
+      display: block !important;
+    }
+    .hidden-on-screen-less-than-1350px {
+      display: none !important;
+    }
+  }

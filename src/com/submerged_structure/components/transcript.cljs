@@ -9,6 +9,8 @@
             [com.fulcrologic.semantic-ui.elements.divider.ui-divider :refer [ui-divider]]
             
 
+            
+
 
             [com.submerged-structure.components.player :as player]
             [com.submerged-structure.components.controls.player-controls :as player-controls]
@@ -21,7 +23,9 @@
             [goog.functions :as gf]
             
             [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
-            [com.submerged-structure.player-atom :as player-atom]))
+            [com.submerged-structure.player-atom :as player-atom]
+            
+            [clojure.string]))
 
 
 
@@ -85,7 +89,18 @@
         {:transcript/id ~id
          :transcript/display-type ~type})]))
 
+(defn transcript-blurb [label summary url]
+  (div :.ui.raised.segment {}
+       (div :.ui.header
+            label
+            (when url (fragment " " (a {:href url} "(original talk here)"))))
+       (when summary (div :.ui.meta
+                          {}
+                          (map-indexed (fn [p-no paragraph] (dom/p {:key p-no} paragraph))
+                                       (clojure.string/split-lines summary))))))
+
 (defsc Transcript [this {:ui/keys [help-hidden]
+                         player-doing :ui-player/doing
                          :transcript/keys [id
                                            display-type
                                            segments
@@ -128,6 +143,8 @@
            :ui-period/start
            :ui-period/end
 
+           :ui-player/doing
+
            :ui-transcript-autopause/next-period-start
            :ui-transcript-autopause/next-period-end
 
@@ -162,12 +179,9 @@
        :className "container"
        :onDismiss (fn [_] (comp/transact! this `[(com.submerged-structure.mutations.controls/hide-transcript-help {})]))}
       app-help/app-help))
-   (div :.ui.container.raised.segment
-        (div :.ui.header
-             label
-             (when url (fragment " " (a {:href url} "(original talk here)"))))
-        (when summary (div :.ui.meta
-                           summary)))
+   (div :.ui.big.container.visible-on-screen-less-than-1350px
+        {:style {:display "none"}}
+        (transcript-blurb label summary url))
    (div :.ui.pointing.menu.stackable.container {}
         (a {:classes [(when (= display-type :plain) "active") "item"]
             :onClick (partial change-display-type this id :plain)}
@@ -179,16 +193,63 @@
             :onClick (partial change-display-type this id :grammar)}
            (ui-icon {:name i/eye-icon}) "Grammar X-Ray"))
 
-   (div {:classes [(when (= display-type :grammar) "grammar_highlighting") "ui" "segment" "big" "container"]}
+   (div {:classes [(when (= display-type :grammar) "grammar_highlighting") "ui" "segment" "big" "container" "text"]}
         (when-let [key-for-display-type (case display-type
                                           :confidence (c-to-c/confidence-key)
                                           :grammar (spacy-grammar/grammar-key)
                                           nil)]
           (fragment (div :.key key-for-display-type)
                     (ui-divider {:section true})))
+        
         (if-not (empty? segments)
           (div :.transcript
                {:id (str "transcript-" id)}
+               (when-not (= player-doing :loading)
+                 ; Wait until the player has loaded before adding the sticky rails to dom.
+                 ; If player is not on the page, we cannot calculate it's height in order to y offset the stick rail content.
+                 (fragment
+                  {}
+                  (div :.ui.left.rail.very.close.hidden-on-screen-less-than-1350px {}
+                       (ui-sticky
+                        {:context (.. js/document -body (querySelector (str "#transcript-" id)))
+                         :offset (+ (player/player-height id) 10)
+                         }
+                        (transcript-blurb label summary url)
+                        ))
+                  (div :.ui.right.rail.very.close.hidden-on-screen-less-than-1350px  ;; will be outside viewport for small screens.
+                       {}
+                       (ui-sticky
+                        {:context (.. js/document -body (querySelector (str "#transcript-" id)))
+                         :offset (+ (player/player-height id) 10)
+                         :pushing true}
+                        (div :.ui.raised.segment {}
+                             (div :.ui.header "Lorewm Ipsum Dolor Sit Amet")
+                             (div :.ui.meta "Lorem ipsum dolor sit amet, consectetur adipiscing elit."))
+                        (div :.ui.raised.segment {}
+                             (div :.ui.header "Lorewm Ipsum Dolor Sit Amet")
+                             (div :.ui.meta "Lorem ipsum dolor sit amet, consectetur adipiscing elit."))
+                        (div :.ui.raised.segment {}
+                             (div :.ui.header "Lorewm Ipsum Dolor Sit Amet")
+                             (div :.ui.meta "Lorem ipsum dolor sit amet, consectetur adipiscing elit."))
+                        (div :.ui.raised.segment {}
+                             (div :.ui.header "Lorewm Ipsum Dolor Sit Amet")
+                             (div :.ui.meta "Lorem ipsum dolor sit amet, consectetur adipiscing elit."))
+                        (div :.ui.raised.segment {}
+                             (div :.ui.header "Lorewm Ipsum Dolor Sit Amet")
+                             (div :.ui.meta "Lorem ipsum dolor sit amet, consectetur adipiscing elit."))
+                        (div :.ui.raised.segment {}
+                             (div :.ui.header "Lorewm Ipsum Dolor Sit Amet")
+                             (div :.ui.meta "Lorem ipsum dolor sit amet, consectetur adipiscing elit."))
+                        (div :.ui.raised.segment {}
+                             (div :.ui.header "Lorewm Ipsum Dolor Sit Amet")
+                             (div :.ui.meta "Lorem ipsum dolor sit amet, consectetur adipiscing elit."))
+                        (div :.ui.raised.segment {}
+                             (div :.ui.header "Lorewm Ipsum Dolor Sit Amet")
+                             (div :.ui.meta "Lorem ipsum dolor sit amet, consectetur adipiscing elit."))
+                        (div :.ui.raised.segment {}
+                             (div :.ui.header "Lorewm Ipsum Dolor Sit Amet")
+                             (div :.ui.meta "Lorem ipsum dolor sit amet, consectetur adipiscing elit."))))
+                  ))
                (map #(segment/ui-segment % {:transcript/display-type display-type}) segments))
           (div :.ui.placeholder
                (mapv (fn [_] (div :.line)) (range 20)))))))

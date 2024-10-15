@@ -54,7 +54,7 @@
 (pco/defresolver transcript-data
   [_ {:keys [transcript/id]}]
   {::pco/input  [:transcript/id]
-   ::pco/output [:transcript/audio-url :transcript/label :transcript/summary :transcript/url :transcript/segments :transcript/id :transcript/display-type :ui-player/scroll-to-active :ui-player/doing]}
+   ::pco/output [:transcript/audio-url :transcript/label :transcript/summary :transcript/label-pl :transcript/summary-pl :transcript/url :transcript/segments :transcript/id :transcript/display-type :ui-player/scroll-to-active :ui-player/doing]}
   (js/console.log "MOCK SERVER: Simulate loading transcript data" id)
   (->
    (get mock-data/transcripts [:transcript/id id])
