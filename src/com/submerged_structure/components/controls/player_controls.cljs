@@ -36,7 +36,9 @@
                              :ui-transcript-autopause-control/keys [any-segment?]
                              :ui-player-controls/keys [prev-prev-segment-end prev-segment-start  prev-segment-end current-segment-start current-segment-end next-segment-start]
 
-                             :>/keys [language-controls morphological-info-grid]}]
+                             :ui-morph-display/keys [display-token-id]
+
+                             :>/keys [language-controls]}]
 
   {:ident :transcript/id
    :query [:transcript/id
@@ -51,8 +53,9 @@
            :ui-player-controls/next-segment-start
            :ui-transcript-autopause-control/any-segment?
 
-           {:>/language-controls (comp/get-query TranslationControls)}
-           {:>/morphological-info-grid (comp/get-query MorphologicalInfoControl)}]}
+           :ui-morph-display/display-token-id
+
+           {:>/language-controls (comp/get-query TranslationControls)}]}
   (if (or (= doing :loading) (nil? (player-atom/get-player)))
     (ui-icon {:name i/spinner-icon})
     (dom/div :.ui.segment.basic
@@ -233,7 +236,7 @@
                :.item
                {}
                (ui-translation-controls language-controls))
-              (dom/span
+              #_(dom/span
                :.item
                {} (ui-morphological-info-control morphological-info-grid))))))
 

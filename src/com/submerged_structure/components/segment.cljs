@@ -12,22 +12,17 @@
 
             [com.submerged-structure.components.controls.common :as common-to-controls]
 
-            [com.submerged-structure.player-atom :as player-atom]
-
-            [com.submerged-structure.components.segment-morphological-info :as segment-morphological-info]))
+            [com.submerged-structure.player-atom :as player-atom]))
 
 
-(defsc Segment [this {:segment/keys [id words translations start text autopause?] :>/keys [segment-morphological-info]} transcript-display-type]
+(defsc Segment [this {:segment/keys [id words translations start text autopause?]} transcript-display-type]
   {:ident :segment/id
    :initial-state (fn [_] {:segment/words (comp/get-initial-state word/Word {})
-                           :segment/translations (comp/get-initial-state translation/Translation {})
-                           :>/segment-morphological-info (comp/get-initial-state segment-morphological-info/SegmentMorphologicalInfo {})})
+                           :segment/translations (comp/get-initial-state translation/Translation {})})
    :query [:segment/id :segment/start :segment/end :segment/text :segment/autopause?
            {:segment/words (comp/get-query word/Word)}
-           {:segment/translations (comp/get-query translation/Translation)}
-           {:>/segment-morphological-info (comp/get-query segment-morphological-info/SegmentMorphologicalInfo)}]}
+           {:segment/translations (comp/get-query translation/Translation)}]}
   (div :.segment-transcription-and-translation
-       (segment-morphological-info/ui-segment-morphological-info segment-morphological-info)
        (span :.transcription
              (ui-popup
               (merge
@@ -36,8 +31,8 @@
                 :trigger (ui-button
                           {:icon i/play-icon
                            :size "mini"
-                           :style {:vertical-align "middle"
-                                   :margin-right "0.7em"}
+                           :style {:verticalAlign "middle"
+                                   :marginRight "0.7em"}
                            :compact true
                            :onClick (fn [_]
                                       (when-let [player (player-atom/get-player)]
@@ -51,8 +46,8 @@
                 :content ""
                 :trigger (ui-button
                           {:size "mini"
-                           :style {:vertical-align "middle"
-                                   :margin-left "0.5em"}
+                           :style {:verticalAlign "middle"
+                                   :marginLeft "0.5em"}
                            :compact true
                            :icon (fragment
                                   (ui-icon {:name i/pause-icon})

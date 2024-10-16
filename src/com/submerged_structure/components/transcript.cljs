@@ -17,6 +17,7 @@
             [com.submerged-structure.confidence-to-color :as c-to-c]
             [com.submerged-structure.spacy-grammar :as spacy-grammar]
             [com.submerged-structure.components.segment :as segment]
+            [com.submerged-structure.components.token-morphological-info :as token-morphological-info]
             #_[com.submerged-structure.components.transcript-switcher :as transcript-switcher]
             [com.submerged-structure.app-help :as app-help]
 
@@ -107,6 +108,7 @@
                                            label
                                            summary
                                            url]
+                         :ui-morph-display/keys [display-token]
                          :>/keys          [player
                                            #_transcript-switcher
                                            player-controls]}]
@@ -128,7 +130,9 @@
    :initial-state (fn [_] {:transcript/segments (comp/get-initial-state segment/Segment {})
                            #_#_:>/transcript-switcher (comp/get-initial-state transcript-switcher/TranscriptSwitcher {})
                            :>/player (comp/get-initial-state player/PlayerComponent {})
-                           :>/player-controls (comp/get-initial-state player-controls/PlayerControls {})})
+                           :>/player-controls (comp/get-initial-state player-controls/PlayerControls {})
+                           :ui-morph-display/display-token (comp/get-initial-state token-morphological-info/TokenMorphologicalInfo {})}
+                    )
    :query [:transcript/id
            :transcript/label
            :transcript/duration
@@ -156,7 +160,9 @@
            {:transcript/segments (comp/get-query segment/Segment)}
            #_{:>/transcript-switcher (comp/get-query transcript-switcher/TranscriptSwitcher)}
            {:>/player (comp/get-query player/PlayerComponent)}
-           {:>/player-controls (comp/get-query player-controls/PlayerControls)}]
+           {:>/player-controls (comp/get-query player-controls/PlayerControls)}
+           {:ui-morph-display/display-token
+            (comp/get-query token-morphological-info/TokenMorphologicalInfo)}]
    :shouldComponentUpdate (fn [_ _ _] true)}
   (fragment
    {}
@@ -212,44 +218,14 @@
                   (div :.ui.left.rail.very.close.hidden-on-screen-less-than-1350px {}
                        (ui-sticky
                         {:context (.. js/document -body (querySelector (str "#transcript-" id)))
-                         :offset (+ (player/player-height id) 10)
-                         }
-                        (transcript-blurb label summary url)
-                        ))
+                         :offset (+ (player/player-height id) 10)}
+                        (transcript-blurb label summary url)))
                   (div :.ui.right.rail.very.close.hidden-on-screen-less-than-1350px  ;; will be outside viewport for small screens.
                        {}
                        (ui-sticky
                         {:context (.. js/document -body (querySelector (str "#transcript-" id)))
-                         :offset (+ (player/player-height id) 10)
-                         :pushing true}
-                        (div :.ui.raised.segment {}
-                             (div :.ui.header "Lorewm Ipsum Dolor Sit Amet")
-                             (div :.ui.meta "Lorem ipsum dolor sit amet, consectetur adipiscing elit."))
-                        (div :.ui.raised.segment {}
-                             (div :.ui.header "Lorewm Ipsum Dolor Sit Amet")
-                             (div :.ui.meta "Lorem ipsum dolor sit amet, consectetur adipiscing elit."))
-                        (div :.ui.raised.segment {}
-                             (div :.ui.header "Lorewm Ipsum Dolor Sit Amet")
-                             (div :.ui.meta "Lorem ipsum dolor sit amet, consectetur adipiscing elit."))
-                        (div :.ui.raised.segment {}
-                             (div :.ui.header "Lorewm Ipsum Dolor Sit Amet")
-                             (div :.ui.meta "Lorem ipsum dolor sit amet, consectetur adipiscing elit."))
-                        (div :.ui.raised.segment {}
-                             (div :.ui.header "Lorewm Ipsum Dolor Sit Amet")
-                             (div :.ui.meta "Lorem ipsum dolor sit amet, consectetur adipiscing elit."))
-                        (div :.ui.raised.segment {}
-                             (div :.ui.header "Lorewm Ipsum Dolor Sit Amet")
-                             (div :.ui.meta "Lorem ipsum dolor sit amet, consectetur adipiscing elit."))
-                        (div :.ui.raised.segment {}
-                             (div :.ui.header "Lorewm Ipsum Dolor Sit Amet")
-                             (div :.ui.meta "Lorem ipsum dolor sit amet, consectetur adipiscing elit."))
-                        (div :.ui.raised.segment {}
-                             (div :.ui.header "Lorewm Ipsum Dolor Sit Amet")
-                             (div :.ui.meta "Lorem ipsum dolor sit amet, consectetur adipiscing elit."))
-                        (div :.ui.raised.segment {}
-                             (div :.ui.header "Lorewm Ipsum Dolor Sit Amet")
-                             (div :.ui.meta "Lorem ipsum dolor sit amet, consectetur adipiscing elit."))))
-                  ))
+                         :offset (+ (player/player-height id) 10)}
+                        (token-morphological-info/ui-token-morphological-info display-token)))))
                (map #(segment/ui-segment % {:transcript/display-type display-type}) segments))
           (div :.ui.placeholder
                (mapv (fn [_] (div :.line)) (range 20)))))))
