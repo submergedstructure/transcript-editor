@@ -138,7 +138,8 @@
       ("SYM" "PUNCT") (div :.item.column (div :.segment norm))
       #_(ui-condensed-morph-details this id is_morphed morph pos lemma norm)
       (div
-       :.ui.raised.segment {}
+       :.ui.raised.segment
+       {#_#_:style {:overflow "auto", :maxHeight "300px"}}
        (div
         :.grammar_highlighting
         (let [norm-html (span {} (ui-dict-links-and-popup norm))
@@ -154,12 +155,12 @@
                            (h4 {} "The root words \"" lemma-html "\" become \"" norm-html "\" here, \"" norm-html "\" is:")
                            (h4 {} "The root word \"" lemma-html "\" becomes \"" norm-html "\" here, \"" norm-html "\" is:"))
                          (h4 {} "The root word \"" norm-html "\" does not change here, \"" norm-html "\" is:"))
-                       (div :.ui.list.animated {} (mapv (partial ui-morph-attribute (spacy-grammar/non-redundant-morphological-features morph)) (spacy-grammar/word-attributes-that-inflect-word morph))))
+                       (div :.ui.list.animated.horizontal {} (mapv (partial ui-morph-attribute (spacy-grammar/non-redundant-morphological-features morph)) (spacy-grammar/word-attributes-that-inflect-word morph))))
              (h4 {} "The root word \"" norm-html "\" Never changes! Yay!!"))
            (when (not-empty (spacy-grammar/word-attributes-that-are-properties-of-the-word-itself morph))
              (div {}
                   (ui-divider)
                   (h4 {} "The root word itself, \"" (ui-dict-links-and-popup lemma) "\" is or has:")
-                  (div :.ui.list.animated {} (mapv (partial ui-morph-attribute morph-map) (spacy-grammar/word-attributes-that-are-properties-of-the-word-itself morph))))))))))))
+                  (div :.ui.list.animated.horizontal {} (mapv (partial ui-morph-attribute morph-map) (spacy-grammar/word-attributes-that-are-properties-of-the-word-itself morph))))))))))))
 
 (def ui-token-morphological-info (comp/factory TokenMorphologicalInfo {:keyfn :token/id}))

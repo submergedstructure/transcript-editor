@@ -60,7 +60,24 @@
      state
      state))
   ;; => #:root{:current-transcript {}}
-  
+  (let [state-deref (app/current-state app)
+        token-tree (get-in
+                    (fdn/db->tree
+                     [#:root{:current-transcript
+                             [:transcript/id
+                              #:transcript{:segments
+                                           [:segment/id
+                                            #:segment{:words [#:word{:tokens [:token/id]}]}]}]}]
+                     state-deref state-deref)
+                    [:root/current-transcript :transcript/segments])]
+    (some 
+     (fn [[segment-id tokens]]
+       (when (some (fn [{:token/keys [id]}] (= id "25fb9f17-c769-41b2-9f4b-49f68a9a1334")) tokens)
+         segment-id))
+     (map
+             (fn [segment] [(:segment/id segment)
+                            (mapcat (fn [word] (:word/tokens word)) (:segment/words segment))]) token-tree))
+    )
   (let [state (app/current-state app)]
     (fdn/db->tree
      (comp/get-query ui/Root

@@ -91,14 +91,14 @@
          :transcript/display-type ~type})]))
 
 (defn transcript-blurb [label summary url]
-  (div :.ui.raised.segment {}
-       (div :.ui.header
-            label
-            (when url (fragment " " (a {:href url} "(original talk here)"))))
-       (when summary (div :.ui.meta
-                          {}
-                          (map-indexed (fn [p-no paragraph] (dom/p {:key p-no} paragraph))
-                                       (clojure.string/split-lines summary))))))
+  (fragment
+   (div :.ui.header
+        label)
+   (when summary (div :.ui.meta
+                      {}
+                      (map-indexed (fn [p-no paragraph] (dom/p {:key p-no} paragraph))
+                                   (clojure.string/split-lines summary))))
+   (when url (div :.ui.footer " " (a {:href url} "See more here.")))))
 
 (defsc Transcript [this {:ui/keys [help-hidden]
                          player-doing :ui-player/doing
@@ -187,7 +187,8 @@
       app-help/app-help))
    (div :.ui.big.container.visible-on-screen-less-than-1350px
         {:style {:display "none"}}
-        (transcript-blurb label summary url))
+        (div :.ui.raised.segment
+             (transcript-blurb label summary url)))
    (div :.ui.pointing.menu.stackable.container {}
         (a {:classes [(when (= display-type :plain) "active") "item"]
             :onClick (partial change-display-type this id :plain)}
@@ -219,7 +220,8 @@
                        (ui-sticky
                         {:context (.. js/document -body (querySelector (str "#transcript-" id)))
                          :offset (+ (player/player-height id) 10)}
-                        (transcript-blurb label summary url)))
+                        (div :.ui.raised.segment
+                             (transcript-blurb label summary url))))
                   (div :.ui.right.rail.very.close.hidden-on-screen-less-than-1350px  ;; will be outside viewport for small screens.
                        {}
                        (ui-sticky
