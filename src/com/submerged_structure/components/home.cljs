@@ -2,7 +2,7 @@
   (:require [com.fulcrologic.fulcro.dom :as dom]
             [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
             [com.fulcrologic.fulcro.dom.html-entities :as ent]
-            [com.submerged-structure.components.transcript :as transcript]
+            [com.submerged-structure.components.transcript-page :as transcript]
             [com.fulcrologic.rad.routing :as rad-routing]))
 
 (defsc Home [this {:keys []}]
@@ -25,7 +25,7 @@
 
       (dom/div
        :.ui.huge.primary.button
-       {:onClick #(rad-routing/route-to! this transcript/Transcript {:transcript/id "a0f1cee2-b66a-4a7f-afd8-e6b362724c5d"})}
+       {:onClick #(rad-routing/route-to! this transcript/TranscriptPage {:transcript/id "a0f1cee2-b66a-4a7f-afd8-e6b362724c5d"})}
        "Example interactive transcript"
        (dom/i :.right.arrow.icon))))
     (dom/div
@@ -90,7 +90,7 @@
        (dom/div
         :.six.wide.column
 
-        (dom/h2 :.ui.header "Dive into more details of a words properties by clicking on it or touching it.")
+        (dom/h2 :.ui.header "Dive into more details of a word's grammatical properties by clicking on the word or touching it.")
 
         (dom/img
          :.ui.large.bordered.rounded.image
@@ -99,7 +99,7 @@
       :.ui.text.container.center.aligned.padding
       (dom/div
        :.ui.huge.primary.button
-       {:onClick #(rad-routing/route-to! this transcript/Transcript {:transcript/id "a0f1cee2-b66a-4a7f-afd8-e6b362724c5d"})}
+       {:onClick #(rad-routing/route-to! this transcript/TranscriptPage {:transcript/id "a0f1cee2-b66a-4a7f-afd8-e6b362724c5d"})}
        "Example interactive transcript"
        (dom/i :.right.arrow.icon)))
      (dom/h2
