@@ -26,7 +26,7 @@
       (dom/div
        :.ui.huge.primary.button
        {:onClick #(rad-routing/route-to! this transcript/Transcript {:transcript/id "a0f1cee2-b66a-4a7f-afd8-e6b362724c5d"})}
-       "Example interative transcript"
+       "Example interactive transcript"
        (dom/i :.right.arrow.icon))))
     (dom/div
      :.ui.vertical.stripe.segment
@@ -101,5 +101,5 @@
       (dom/div
        :.ui.huge.primary.button
        {:onClick #(rad-routing/route-to! this transcript/Transcript {:transcript/id "a0f1cee2-b66a-4a7f-afd8-e6b362724c5d"})}
-       "Example interative transcript"
+       "Example interactive transcript"
        (dom/i :.right.arrow.icon)))))))
