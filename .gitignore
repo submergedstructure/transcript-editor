@@ -16,3 +16,4 @@ resources/public/js/
 node_modules
 .portal/
 resources/public/audio_and_transcript/.tmp.*
+.vscode/settings.json
