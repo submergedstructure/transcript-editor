@@ -339,24 +339,23 @@
          currently-checking-translation-no 0
          transcribed-with-translations transcribed]
     (let [current-transcription (get transcribed currently-checking-transcription-no)]
-      (cond  (> currently-checking-transcription-no (count transcribed))
+      (cond  (>= currently-checking-transcription-no (count transcribed))
              transcribed-with-translations
-             (> currently-checking-translation-no (count translations))
-             (do (prn "No more translations to check. next-transcription-to-check: " currently-checking-transcription-no " current-transcription text " (get current-transcription "text"))
-                 transcribed-with-translations)
+             (>= currently-checking-translation-no (count translations))
+             transcribed-with-translations
              :else
              (let [current-translation (get translations currently-checking-translation-no)]
                (if-let [next-transcription (get transcribed (inc currently-checking-transcription-no))]
                  (if (< (score-for-translation-fit-to-segment current-transcription current-translation)
                         (score-for-translation-fit-to-segment next-transcription current-translation))
-                     ;found a fit
+                                      ;found a fit
                    (recur currently-checking-transcription-no
                           (inc currently-checking-translation-no)
                           (update-in transcribed-with-translations
                                      [currently-checking-transcription-no "translations"]
                                      add-item-to-vector-create-vector-if-necessary
                                      current-translation))
-                     ;translation fits better with next transcription
+                                      ;translation fits better with next transcription
                    (recur (inc currently-checking-transcription-no)
                           currently-checking-translation-no
                           transcribed-with-translations))
@@ -442,26 +441,29 @@
           new-segment-starts
           new-segment-ends)))
 
+(defn translations-all-langs [transcripts-and-translations filename]
+  (into {} (map
+            (fn [[lang translations-for-one-lang]]
+              [lang (->>
+                     (whispers2t-keys-to-open-ai-standard-keys translations-for-one-lang)
+                     (mapv #(assoc % "lang" lang)))])
+            (get-in transcripts-and-translations [filename "translations"]))))
+
 (defn transcript-tree [transcripts-and-translations filename audio-url]
-  (let [transcripts (whispers2t-keys-to-open-ai-standard-keys (get-in transcripts-and-translations [filename "transcription"]))
-        translations-all-langs
-        (into {} (map
-                  (fn [[lang translations-for-one-lang]]
-                    [lang (->>
-                           (whispers2t-keys-to-open-ai-standard-keys translations-for-one-lang)
-                           (mapv #(assoc % "lang" lang)))])
-                  (get-in transcripts-and-translations [filename "translations"])))]
-    (-> {"audio-url" audio-url
-         "label" filename
-         "segments" (get-segment-data-with-translation-all-langs transcripts translations-all-langs)}
-        (merge (get transcript-hard-coded-data/audio-url->transcript-data audio-url))
-        add-ids
-        round-all-starts-and-ends
-        (update "segments" adjust-segment-starts-and-ends)
-        (add-ns-and-keywordize-keys-in-m "transcript"))))
+  (-> {"audio-url" audio-url
+       "label" filename
+       "segments"
+       (get-segment-data-with-translation-all-langs
+        (whispers2t-keys-to-open-ai-standard-keys (get-in transcripts-and-translations [filename "transcription"]))
+        (translations-all-langs transcripts-and-translations filename))}
+      (merge (get transcript-hard-coded-data/audio-url->transcript-data audio-url))
+      add-ids
+      round-all-starts-and-ends
+      (update "segments" adjust-segment-starts-and-ends)
+      (add-ns-and-keywordize-keys-in-m "transcript")))
 
 (comment
-  (transcript-tree (transcripts_and_translations_all_files) "Freediving.mp3" "resources/public/audio_and_transcript/Freediving"))
+  (transcript-tree (transcripts_and_translations_all_files) "RealPolish-espisode-470.mp3" "/audio_and_transcript/RealPolish-espisode-470.mp3"))
 
 (defn find-mp3-files-at-path
   "Return vector of filename and url for all mp3 files in folder at `path`."
@@ -493,7 +495,22 @@
 
 
 (comment
+  (transcripts_and_translations_all_files)
   (write-mock-data-cljs-file)
-  (def audio-filename "/audio_and_transcript/Freediving.mp3")
-  (get transcript-hard-coded-data/audio-url->transcript-data audio-filename))
+  (def audio-url "/audio_and_transcript/Freediving.mp3")
+  (get transcript-hard-coded-data/audio-url->transcript-data audio-url)
+  
+  
+  (def transcripts_and_translations (transcripts_and_translations_all_files))
+  
+  (keys transcripts_and_translations)
+  (def mp3-files (find-mp3-files-at-path filepath))
+  (for  [[filename _full-filepath-without-extension] mp3-files]
+       (for [t-or-t [["transcription"] ["translations" "en"]]]
+         (let [index (concat [filename] t-or-t)]
+           
+           [index (distinct (map (fn [m] (map (fn [[k v]] [k (nil? v)]) m)) (get-in transcripts_and_translations index)))])))
+  )
+
+
 
