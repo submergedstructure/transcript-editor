@@ -118,11 +118,11 @@
    :will-enter
    (fn [app route-params]
      (js/console.log "Transcript will-enter" route-params)
-     
-     (dr/route-deferred
+     (comp/transact! app `[(com.submerged-structure.mutations.load/load-transcript ~(select-keys route-params [:transcript/id]))])
+     (dr/route-immediate
       [:transcript/id
        (:transcript/id route-params)]
-      #(do (comp/transact! app `[(com.submerged-structure.mutations.load/load-transcript ~(select-keys route-params [:transcript/id]))])
+      #_#(do 
           (dr/target-ready! app [:transcript/id
                                  (:transcript/id route-params)]))))
 
