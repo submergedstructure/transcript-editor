@@ -4,7 +4,7 @@
    [com.submerged-structure.mutations.common :as common]
    [com.fulcrologic.fulcro.data-fetch :as df]
    
-   [com.submerged-structure.components.transcript :as transcript]))
+   [com.submerged-structure.components.transcript-page :as transcript]))
 
 
 (defmutation update-transcript-duration [{:transcript/keys [duration]}]
@@ -17,5 +17,5 @@
   (action [{:keys [app state]}]
           (let [next-transcript-ident [:transcript/id id]]
             (swap! state assoc-in [:root/current-transcript] next-transcript-ident)
-            (df/load! app next-transcript-ident transcript/Transcript)))
+            (df/load! app next-transcript-ident transcript/TranscriptPage)))
   (remote [_] false))

@@ -1,4 +1,4 @@
-(ns com.submerged-structure.components.transcript
+(ns com.submerged-structure.components.transcript-page
   (:require [com.fulcrologic.fulcro.dom :as dom  :refer [div a]]
             [com.fulcrologic.fulcro.components :as comp :refer [defsc fragment]]
 
@@ -100,7 +100,7 @@
                                    (clojure.string/split-lines summary))))
    (when url (div :.ui.footer " " (a {:href url} "See more here.")))))
 
-(defsc Transcript [this {:ui/keys [help-hidden]
+(defsc TranscriptPage [this {:ui/keys [help-hidden]
                          player-doing :ui-player/doing
                          :transcript/keys [id
                                            display-type
@@ -232,4 +232,4 @@
           (div :.ui.placeholder
                (mapv (fn [_] (div :.line)) (range 20)))))))
 
-(def ui-transcript (comp/factory Transcript {:keyfn :transcript/id}))
+(def ui-transcript-page (comp/factory TranscriptPage {:keyfn :transcript/id}))
