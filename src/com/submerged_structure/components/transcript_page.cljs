@@ -7,9 +7,11 @@
             [com.fulcrologic.semantic-ui.elements.icon.ui-icon :refer [ui-icon]]
             [com.fulcrologic.semantic-ui.icons :as i]
             [com.fulcrologic.semantic-ui.elements.divider.ui-divider :refer [ui-divider]]
-            
+            [com.fulcrologic.semantic-ui.modules.popup.ui-popup :refer [ui-popup]]
 
-            
+
+
+
 
 
             [com.submerged-structure.components.player :as player]
@@ -22,10 +24,10 @@
             [com.submerged-structure.app-help :as app-help]
 
             [goog.functions :as gf]
-            
+
             [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
             [com.submerged-structure.player-atom :as player-atom]
-            
+
             [clojure.string]))
 
 
@@ -166,6 +168,19 @@
    :shouldComponentUpdate (fn [_ _ _] true)}
   (fragment
    {}
+   (dom/div
+    :.ui.inverted.vertical.masthead.center.aligned.segment
+   
+    (dom/div
+     :.ui.text.container
+     (dom/h1 :.ui.inverted.header
+             (dom/a {:href "/"
+                     :title "Home"}
+                    (ui-popup {:trigger (ui-icon {:name i/home-icon
+                                                  :size "large"} )}
+                              "Home of SubmergedStructure.com"))
+             "SubmergedStructure.com")
+     (dom/h3 "Listen to any audio in your target language with all the help you need when you need it.")))
    #_(transcript-switcher/ui-transcript-switcher transcript-switcher {:current-transcript id})
    (ui-sticky
     {:id (str "player-" id)
