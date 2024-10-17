@@ -22,7 +22,7 @@
      (dom/div
       :.ui.text.container
       (dom/h1 :.ui.inverted.header "SubmergedStructure.com")
-      (dom/h2 "Create a regular listening and simultaneous reading habit to super charge your Polish learning. With the best tool to help you progressively understand more and more of what you are listening to.")
+      (dom/h2 "Create a regular listening and simultaneous reading habit to super charge your Polish learning.")
 
 
       (dom/div
