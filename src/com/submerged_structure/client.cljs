@@ -34,7 +34,6 @@
    app
    (new-html5-history {:hash-based? true
                        :route->url route-only-no-params->url}))
-  #_(comp/transact! app `[(com.submerged-structure.mutations.load/load-transcript {:transcript/id ~(mock-data/nth-transcript-id 2)})])
   (app/mount! app (app/root-class app) "app")
   (hist5/restore-route! app home/Home {}))
 
@@ -42,7 +41,6 @@
   "Called by shadow-cljs upon hot code reload, see shadow-cljs.edn"
   []
   (println "Refreshing after a hot code reload...")
-  #_(comp/transact! app `[(com.submerged-structure.mutations.load/load-transcript {:transcript/id ~(mock-data/nth-transcript-id 2)})])
   (app/mount! app (app/root-class app) "app"))
 
 (comment
@@ -70,23 +68,21 @@
                                             #:segment{:words [#:word{:tokens [:token/id]}]}]}]}]
                      state-deref state-deref)
                     [:root/current-transcript :transcript/segments])]
-    (some 
+    (some
      (fn [[segment-id tokens]]
        (when (some (fn [{:token/keys [id]}] (= id "25fb9f17-c769-41b2-9f4b-49f68a9a1334")) tokens)
          segment-id))
      (map
-             (fn [segment] [(:segment/id segment)
-                            (mapcat (fn [word] (:word/tokens word)) (:segment/words segment))]) token-tree))
-    )
+      (fn [segment] [(:segment/id segment)
+                     (mapcat (fn [word] (:word/tokens word)) (:segment/words segment))]) token-tree)))
   (let [state (app/current-state app)]
     (fdn/db->tree
-     (comp/get-query ui/Root
-                     )
+     (comp/get-query root/Root)
             ;; Starting entity, state itself for Root
             ;; otherwise st. like (get-in state-map [:thing/id 1]):
      state
      state))
-  
+
   (let [state (app/current-state app)
         segments-with-words (get-in
                              (fdn/db->tree
@@ -98,7 +94,14 @@
                              [:root/current-transcript :transcript/segments])]
     (filter (fn [{:segment/keys [start end words]}]
               (or (not= (:word/start (first words)) start)
-                   (not= (:word/end (last words)) end))) segments-with-words))
+                  (not= (:word/end (last words)) end))) segments-with-words))
+
+  (require '[com.submerged-structure.mutations.progressive-reveal :as progressive-reveal])
+  (com.submerged-structure.mutations.progressive-reveal/get-necessary-data-from-state (app/current-state app))
+  (get-in (com.submerged-structure.mutations.progressive-reveal/query-local-db (app/current-state app) :segment-keys [:segment/id]) [:root/current-transcript :transcript/segments])
+
+  (comp/transact! app `[(com.submerged-structure.mutations.progressive-reveal/progressive-reveal-segments-upto-current {})])
+
   (require '[com.submerged-structure.mutations.words-and-segments :as mutations])
 
   (mutations/words-with-unique-time-stamps (mutations/get-current-segment-word-tree-from-state (app/current-state app)))
@@ -114,13 +117,12 @@
                             [:component :displayName]
                             :NO-COMPONENT)
                     (filterv map? x))
-  
+
        :else x))
    (comp/get-query word-with-morphological-features-popup/Word))
   (:component (meta *1))
   (:displayName *1)
   (-> (comp/get-query word-with-morphological-features-popup/WordMorphologicalInfo)
       vals
-      first
-      )
+      first)
   )

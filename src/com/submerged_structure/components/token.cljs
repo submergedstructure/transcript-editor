@@ -8,23 +8,25 @@
    [com.submerged-structure.components.token-morphological-info :as token-morphological-info]))
 
 
-(defsc WordToken [this {:token/keys [id morph pos text whitespace]} {:word/keys [active]}]
+(defsc WordToken [this {:token/keys [id morph pos text whitespace]} {:word/keys [active] :segment/keys [ui-reveal-state]}]
   {:ident :token/id
    :initial-state (fn [_] {})
    :query [:token/id :token/text :token/pos
            :token/morph :token/lemma :token/pos :token/is_morphed :token/norm :token/whitespace]}
   
   (fragment
-   (span {:classes (concat [(when active "active") "word"] (token-morphological-info/morph-html-css-classes morph))
-         :onClick (fn [e & args]
-                    (. e stopPropagation) ;; necessary to prevent the toggle from happening twice when both onRemove and onClick are called.
-                    (js/console.log "Show morph details:" e args id)
-                    (when-not (#{"SYM" "PUNCT"} pos)
-                      (comp/transact!
-                       this
-                       `[(com.submerged-structure.mutations.controls/display-morphological-details-for-token {:token/id ~id})])))
-         
-         }
+   (span {:classes (concat [(when active "active") "word"]
+                           (case ui-reveal-state
+                             "grammar-highlighted" (token-morphological-info/morph-html-css-classes morph)
+                             "blurred" ["blurred"]
+                             []))
+          :onClick (fn [e & args]
+                     (. e stopPropagation) ;; necessary to prevent the toggle from happening twice when both onRemove and onClick are called.
+                     (js/console.log "Show morph details:" e args id)
+                     (when-not (#{"SYM" "PUNCT"} pos)
+                       (comp/transact!
+                        this
+                        `[(com.submerged-structure.mutations.controls/display-morphological-details-for-token {:token/id ~id})])))}
         text)
    whitespace))
 

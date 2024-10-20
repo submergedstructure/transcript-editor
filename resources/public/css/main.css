@@ -2,6 +2,17 @@ div.transcript .active.word {
     background-color: lightgrey !important;
 }
 
+div.transcript .blurred.word {
+    background: repeating-linear-gradient(
+        rgba(255, 255, 255, 0.5),
+        rgba(255, 255, 255, 0.5) 10px,
+        rgba(200, 200, 200, 0.5) 10px,
+        rgba(200, 200, 200, 0.5) 20px
+    );
+    color: transparent;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
 div.active span.inflected_word { /* in morphological analysis*/
     background-color: white !important;
     font-weight: bolder;

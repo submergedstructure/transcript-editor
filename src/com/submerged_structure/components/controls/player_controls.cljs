@@ -10,7 +10,7 @@
             [com.submerged-structure.player-atom :as player-atom]
             [com.submerged-structure.components.controls.common :as common-to-controls]
             [com.submerged-structure.components.controls.translation-controls :refer [TranslationControls ui-translation-controls]]
-            [com.submerged-structure.components.controls.morphological-info-control :refer [MorphologicalInfoControl ui-morphological-info-control]]
+            [com.submerged-structure.components.controls.progressive-reveal-controls :refer [ProgressiveRevealControls ui-progressive-reveal-controls]]
             
             [goog.string :as gstring]))
 
@@ -38,7 +38,7 @@
 
                              :ui-morph-display/keys [display-token-id]
 
-                             :>/keys [language-controls]}]
+                             :>/keys [language-controls progressive-reveal-controls]}]
 
   {:ident :transcript/id
    :query [:transcript/id
@@ -55,7 +55,8 @@
 
            :ui-morph-display/display-token-id
 
-           {:>/language-controls (comp/get-query TranslationControls)}]}
+           {:>/language-controls (comp/get-query TranslationControls)}
+           {:>/progressive-reveal-controls (comp/get-query ProgressiveRevealControls)}]}
   (if (or (= doing :loading) (nil? (player-atom/get-player)))
     (ui-icon {:name i/spinner-icon})
     (dom/div :.ui.segment.basic
@@ -106,7 +107,9 @@
                   :trigger (ui-button
                             {:icon i/reply-icon
                              :id "sentence-back"
-                             :onClick (fn [_]
+                             :onClick (fn [^js e & args]
+                                        (js/console.log "sentence-back" e args)
+                                        (.stopPropagation e)
                                         (when-let [player (player-atom/get-player)]
                                           (if (and prev-segment-start
                                                    (.isPlaying player) ;; if we're playing the beginning of the segment
@@ -236,9 +239,9 @@
                :.item
                {}
                (ui-translation-controls language-controls))
-              #_(dom/span
+              (dom/span
                :.item
-               {} (ui-morphological-info-control morphological-info-grid))))))
+               {} (ui-progressive-reveal-controls progressive-reveal-controls))))))
 
 (def ui-player-controls (comp/factory PlayerControls))
 

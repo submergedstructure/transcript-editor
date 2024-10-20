@@ -3,7 +3,7 @@
    [com.fulcrologic.fulcro.mutations :refer [defmutation]]
    [com.submerged-structure.mutations.common :as common]
    [com.fulcrologic.fulcro.data-fetch :as df]
-   
+
    [com.submerged-structure.components.transcript-page :as transcript]))
 
 
@@ -17,5 +17,6 @@
   (action [{:keys [app state]}]
           (let [next-transcript-ident [:transcript/id id]]
             (swap! state assoc-in [:root/current-transcript] next-transcript-ident)
-            (df/load! app next-transcript-ident transcript/TranscriptPage)))
+            (df/load! app next-transcript-ident transcript/TranscriptPage
+                      {:post-mutation 'com.submerged-structure.mutations.progressive-reveal/reset-reveal-state-of-all})))
   (remote [_] false))

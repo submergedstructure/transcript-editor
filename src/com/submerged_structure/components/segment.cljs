@@ -16,13 +16,13 @@
             [com.submerged-structure.player-atom :as player-atom]))
 
 
-(defsc Segment [this {:segment/keys [id words translations start text autopause?]
-                      :ui-morph-display/keys [display-token]} transcript-display-type]
+(defsc Segment [this {:segment/keys [id words translations start text autopause? ui-reveal-state]
+                      :ui-morph-display/keys [display-token]}]
   {:ident :segment/id
    :initial-state (fn [_] {:segment/words (comp/get-initial-state word/Word {})
                            :segment/translations (comp/get-initial-state translation/Translation {})
                            :ui-morph-display/display-token (comp/get-initial-state token-morphological-info/TokenMorphologicalInfo {})})
-   :query [:segment/id :segment/start :segment/end :segment/text :segment/autopause?
+   :query [:segment/id :segment/start :segment/end :segment/text :segment/autopause? :segment/ui-reveal-state
            {:segment/words (comp/get-query word/Word)}
            {:segment/translations (comp/get-query translation/Translation)}
            {:ui-morph-display/display-token
@@ -32,45 +32,45 @@
         {:style {:display "none"}}
     (token-morphological-info/ui-token-morphological-info display-token))
    (div :.segment-transcription-and-translation
-       (span :.transcription
-             (ui-popup
-              (merge
-               {:header "Play from beginning of sentence"
-                :content ""
-                :trigger (ui-button
-                          {:icon i/play-icon
-                           :size "mini"
-                           :style {:verticalAlign "middle"
-                                   :marginRight "0.7em"}
-                           :compact true
-                           :onClick (fn [_]
-                                      (when-let [player (player-atom/get-player)]
-                                        (.setTime player (+ start 0.001))
-                                        (.play player)))})}
-               common-to-controls/common-options-for-popups-of-controls))
-             (map #(word/ui-word % transcript-display-type) words)
-             (ui-popup
-              (merge
-               {:header "Auto pause at end of sentence"
-                :content ""
-                :trigger (ui-button
-                          {:size "mini"
-                           :style {:verticalAlign "middle"
-                                   :marginLeft "0.5em"}
-                           :compact true
-                           :icon (fragment
-                                  (ui-icon {:name i/pause-icon})
-                                  (ui-icon {:name i/clock-icon}))
+        (span :.transcription
+              (ui-popup
+               (merge
+                {:header "Play from beginning of sentence"
+                 :content ""
+                 :trigger (ui-button
+                           {:icon i/play-icon
+                            :size "mini"
+                            :style {:verticalAlign "middle"
+                                    :marginRight "0.7em"}
+                            :compact true
+                            :onClick (fn [_]
+                                       (when-let [player (player-atom/get-player)]
+                                         (.setTime player (+ start 0.001))
+                                         (.play player)))})}
+                common-to-controls/common-options-for-popups-of-controls))
+              (map #(word/ui-word % {:segment/ui-reveal-state ui-reveal-state}) words)
+              (ui-popup
+               (merge
+                {:header "Auto pause at end of sentence"
+                 :content ""
+                 :trigger (ui-button
+                           {:size "mini"
+                            :style {:verticalAlign "middle"
+                                    :marginLeft "0.5em"}
+                            :compact true
+                            :icon (fragment
+                                   (ui-icon {:name i/pause-icon})
+                                   (ui-icon {:name i/clock-icon}))
 
 
 
-                           :positive autopause?
-                           :onClick (fn [_]
-                                      (comp/transact!
-                                       this
-                                       `[(com.submerged-structure.mutations.controls/toggle-autopause-for-segment {:segment/id ~id})]))})}
-              common-to-controls/common-options-for-popups-of-controls))
-             (map (fn [translation] (translation/ui-translation translation {:segment/transcription-text text})) translations)))))
+                            :positive autopause?
+                            :onClick (fn [_]
+                                       (comp/transact!
+                                        this
+                                        `[(com.submerged-structure.mutations.controls/toggle-autopause-for-segment {:segment/id ~id})]))})}
+                common-to-controls/common-options-for-popups-of-controls))
+              (map (fn [translation] (translation/ui-translation translation {:segment/transcription-text text})) translations)))))
 
 
 

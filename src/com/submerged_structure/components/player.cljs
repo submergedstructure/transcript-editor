@@ -20,7 +20,7 @@
          (js/console.log "get-player-regions-plugin" (get-player-regions-plugin)))
 
 
-(defn player-height [transcript-id] (.-clientHeight (js/document.querySelector (str "#player-" transcript-id))))
+(defn player-height [] (.-clientHeight (js/document.querySelector (str "#media-player"))))
 
 (defn on-word-click [_ start]
   (let [player (player-atom/get-player)]

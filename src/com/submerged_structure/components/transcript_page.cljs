@@ -27,14 +27,14 @@
 
 
 
-(defn scroll-element-to-middle-of-visible-area-below-player
+(defn scroll-element-to-middle-of-visible
   "Assuming player is a sticky at the top of the screen, scroll element 
    to the vertical center of the screen below the player."
-  [element transcript-id]
-  (let [element-y-in-viewport (.-top (.. element (getBoundingClientRect)))
+  [dom-element]
+  (let [element-y-in-viewport (.-top (.. dom-element (getBoundingClientRect)))
         current-top-of-viewport (.. js/window -pageYOffset)
         element-y-in-document (+ element-y-in-viewport current-top-of-viewport)
-        scroll-to (- element-y-in-document (/ (+ (player/player-height transcript-id) js/window.innerHeight) 2))]
+        scroll-to (- element-y-in-document (/ (+ (player/player-height) js/window.innerHeight) 2))]
     (js/window.scrollTo  (clj->js {:left 0
                                    :top scroll-to
                                    :behavior "smooth"}))))
@@ -55,7 +55,7 @@
      (when-let [active-word (js/document.querySelector ".word.active")]
        #_(player/player-on-current-word-update (:ui-period/start (comp/props this)) (:ui-period/end (comp/props this)) (get-in (comp/props this) [:transcript/current-word :word/word]))
        (when (:ui-player/scroll-to-active (comp/props this))
-         (scroll-element-to-middle-of-visible-area-below-player active-word id))))
+         (scroll-element-to-middle-of-visible active-word))))
    0))
 
 (def update-current-word-once-per-frame
@@ -178,8 +178,8 @@
      (dom/h3 "Listen to audio in Polish with all the help you need when you need it.")))
    #_(transcript-switcher/ui-transcript-switcher transcript-switcher {:current-transcript id})
    (ui-sticky
-    {:id (str "player-" id)
-     :context (.. js/document -body (querySelector (str "#transcript-" id)))
+    {:id "media-player"
+     :context (.. js/document -body (querySelector "#transcript"))
      :styleElement {:backgroundColor "white"}
      :children
      (fragment
@@ -220,7 +220,7 @@
         
         (if-not (empty? segments)
           (div :.transcript
-               {:id (str "transcript-" id)}
+               {:id "transcript"}
                (when-not (= player-doing :loading)
                  ; Wait until the player has loaded before adding the sticky rails to dom.
                  ; If player is not on the page, we cannot calculate it's height in order to y offset the stick rail content.
@@ -228,17 +228,17 @@
                   {}
                   (div :.ui.left.rail.very.close.hidden-on-screen-less-than-1350px {}
                        (ui-sticky
-                        {:context (.. js/document -body (querySelector (str "#transcript-" id)))
-                         :offset (+ (player/player-height id) 10)}
+                        {:context (.. js/document -body (querySelector "#transcript"))
+                         :offset (+ (player/player-height) 10)}
                         (div :.ui.raised.segment
                              (transcript-blurb label summary url))))
                   (div :.ui.right.rail.very.close.hidden-on-screen-less-than-1350px  ;; will be outside viewport for small screens.
                        {}
                        (ui-sticky
-                        {:context (.. js/document -body (querySelector (str "#transcript-" id)))
-                         :offset (+ (player/player-height id) 10)}
+                        {:context (.. js/document -body (querySelector "#transcript"))
+                         :offset (+ (player/player-height) 10)}
                         (token-morphological-info/ui-token-morphological-info display-token)))))
-               (map #(segment/ui-segment % {:transcript/display-type display-type}) segments))
+               (map segment/ui-segment segments))
           (div :.ui.placeholder
                (mapv (fn [_] (div :.line)) (range 20)))))))
 

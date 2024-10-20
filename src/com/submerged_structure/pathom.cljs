@@ -31,7 +31,9 @@
    [com.submerged-structure.mutations.load]
    [com.submerged-structure.mutations.controls]
    [com.submerged-structure.mutations.translations]
-   ))
+   [com.submerged-structure.mutations.progressive-reveal]
+   
+   [com.submerged-structure.mutations.progressive-reveal :as progressive-reveal]))
 
 
 (pco/defresolver all-transcripts [_ _]
