@@ -18,17 +18,22 @@
 
 (def reveal-progression (map (fn [text-state translation-state] {:text text-state :translations-visible? translation-state}) text-reveal-progression translation-reveal-progression))
 
+(defn segment-reveal-state [{:segment/keys [ui-reveal-state translations]}]
+  {:text ui-reveal-state
+   :translations-visible? (some? (some :translation/visible? translations))})
+
 (defn next-reveal-state-and-segments-to-set [state-deref]
   (let [tree-from-state (segment-translation-tree state-deref)
         current-segment-id (get-in tree-from-state [:root/current-transcript :transcript/current-or-last-segment 1])]        
     (when current-segment-id
       (let [segments-tree (get-in tree-from-state [:root/current-transcript :transcript/segments])
             [segment-tree-before-current [current-segment & _]] (split-with #(not= (:segment/id %) current-segment-id) segments-tree)
-            current-segment-reveal-state {:text (get current-segment :segment/ui-reveal-state)
-                                          :translations-visible? (some? (some :translation/visible? (get current-segment :segment/translations)))}
-            next-reveal-state (first (drop 1 (drop-while (partial not= current-segment-reveal-state) reveal-progression)))]
+            current-segment-reveal-state (segment-reveal-state current-segment)
+            [prev-reveal-states [_ next-reveal-state & _]] (split-with (partial not= current-segment-reveal-state) reveal-progression)]
         (when next-reveal-state
-          [next-reveal-state (concat segment-tree-before-current [current-segment])])))))
+          [next-reveal-state (filter (fn [segment]
+                                       ((into #{} (conj prev-reveal-states current-segment-reveal-state)) (segment-reveal-state segment)))
+                                     (conj segment-tree-before-current current-segment))])))))
 
 (defmutation progressive-reveal-segments-upto-current [{}]
   (action [{:keys [state]}]
@@ -72,6 +77,4 @@
                                       :translations-visible? (some? (some :translation/visible? (get current-segment :segment/translations)))}]
     {:current-reveal-state current-segment-reveal-state
      :next-reveal-state (first (drop 1 (drop-while (partial not= current-segment-reveal-state) reveal-progression)))}
-    )
-  (def )
-  (def next-reveal-state ))
+    ))
