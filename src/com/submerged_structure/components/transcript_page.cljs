@@ -27,7 +27,7 @@
 
 
 
-(defn scroll-element-to-middle-of-visible
+(defn scroll-element-to-vertical-middle
   "Assuming player is a sticky at the top of the screen, scroll element 
    to the vertical center of the screen below the player."
   [dom-element]
@@ -55,7 +55,7 @@
      (when-let [active-word (js/document.querySelector ".word.active")]
        #_(player/player-on-current-word-update (:ui-period/start (comp/props this)) (:ui-period/end (comp/props this)) (get-in (comp/props this) [:transcript/current-word :word/word]))
        (when (:ui-player/scroll-to-active (comp/props this))
-         (scroll-element-to-middle-of-visible active-word))))
+         (scroll-element-to-vertical-middle active-word))))
    0))
 
 (def update-current-word-once-per-frame
@@ -199,28 +199,13 @@
         {:style {:display "none"}}
         (div :.ui.raised.segment
              (transcript-blurb label summary url)))
-   (div :.ui.pointing.menu.stackable.container {}
-        (a {:classes [(when (= display-type :plain) "active") "item"]
-            :onClick (partial change-display-type this id :plain)}
-           (ui-icon {:name i/low-vision-icon}) "Plain Transcript - No Coloring")
-        (a {:classes [(when (= display-type :confidence) "active") "item"]
-            :onClick (partial change-display-type this id :confidence)}
-           (ui-icon {:name i/braille-icon}) "AI's Confidence of Each Word")
-        (a {:classes [(when (= display-type :grammar) "active") "item"]
-            :onClick (partial change-display-type this id :grammar)}
-           (ui-icon {:name i/eye-icon}) "Grammar X-Ray"))
+   
 
-   (div {:classes [(when (= display-type :grammar) "grammar_highlighting") "ui" "segment" "big" "container" "text"]}
-        (when-let [key-for-display-type (case display-type
-                                          :confidence (c-to-c/confidence-key)
-                                          :grammar (spacy-grammar/grammar-key)
-                                          nil)]
-          (fragment (div :.key key-for-display-type)
-                    (ui-divider {:section true})))
-        
+   (div {:classes ["ui" "segment" "big" "container" "text" "grammar_highlighting"]}
+        (div :.key (spacy-grammar/grammar-key))
+        (ui-divider {:section true})
         (if-not (empty? segments)
-          (div :.transcript
-               {:id "transcript"}
+          (div :.transcript#transcript
                (when-not (= player-doing :loading)
                  ; Wait until the player has loaded before adding the sticky rails to dom.
                  ; If player is not on the page, we cannot calculate it's height in order to y offset the stick rail content.
