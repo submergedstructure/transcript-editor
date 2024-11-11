@@ -10,6 +10,24 @@
 
    [com.submerged-structure.components.controls.common :as common-to-controls]))
 
+(defn element-y-in-viewport [element]
+  (.. element
+      (getBoundingClientRect)
+      -top))
+
+(defn save-current-scroll-position-and-after-timeout-scroll-there [dom-element]
+  (let [old-element-y-in-viewport (element-y-in-viewport dom-element)]
+    (js/setTimeout (fn []
+                     (let [scroll-by (- (element-y-in-viewport dom-element) old-element-y-in-viewport)]
+                       (js/window.scrollBy  (clj->js {:left 0
+                                                      :top scroll-by
+                                                      :behavior "smooth"}))
+                       (js/console.log "scrolling by" scroll-by)))
+                   100)))
+
+(comment 
+  (def element (js/document.querySelector ".segment-transcription-and-translation.active")))
+
 
 (defsc ProgressiveRevealControls [this {#_#_:ui-morphological-info-grid-control/keys [any-visible?]}]
   {:ident :transcript/id
@@ -30,7 +48,9 @@
                            (fn [& _args]
                              (comp/transact!
                               this
-                              `[(com.submerged-structure.mutations.progressive-reveal/progressive-reveal-segments-upto-current {})]))
+                              `[(com.submerged-structure.mutations.progressive-reveal/progressive-reveal-segments-upto-current {})])
+                             (when-let [element (js/document.querySelector ".segment-transcription-and-translation.active")]
+                               (save-current-scroll-position-and-after-timeout-scroll-there element)))
                            #_#_:positive any-visible?})}
      common-to-controls/common-options-for-popups-of-controls))
    (ui-popup

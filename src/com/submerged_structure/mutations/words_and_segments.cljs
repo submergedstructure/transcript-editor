@@ -149,6 +149,7 @@
           (let [transcript-id (common/get-current-transcript-id-from-state @state)
                 transcript-keys-to-update (changes-to-make-to-transcript-keys-in-local-db-when-time-changes-related-to-current-word-and-translations @state current-time)
                 last-current-translation-idents (get-in @state [:transcript/id transcript-id :transcript/current-translations])
+                last-current-segment-id (get-in @state [:transcript/id transcript-id :transcript/current-or-last-segment 1])
                 last-current-word-id (get-in @state [:transcript/id transcript-id :transcript/current-word 1])]
             (do
               (js/console.log "update-transcript-current-time" current-time last-current-word-id transcript-keys-to-update)
@@ -165,6 +166,14 @@
                       (when new-translation-id
                         (swap! state assoc-in [:translation/id new-translation-id :translation/active] true)))
                     (get-in transcript-keys-to-update [:transcript/current-translations])))
+              
+              ;; deactivate last segment
+              (when last-current-segment-id
+                (swap! state assoc-in [:segment/id last-current-segment-id :segment/active] false))
+              (when-let [new-current-segment-id (get-in transcript-keys-to-update [:transcript/current-or-last-segment 1])]
+                ;; activate new active segment
+                (swap! state assoc-in [:segment/id new-current-segment-id :segment/active] true))
+              
               ;; deactivate last word
               (when last-current-word-id
                 (swap! state assoc-in [:word/id last-current-word-id :word/active] false))
