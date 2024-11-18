@@ -11,37 +11,20 @@
 
 (defsc Translation
   "`visible?` is a boolean. css class makes the translation appear to the right of a segment when translation hidden or below when shown."
-  [this {:translation/keys [id text lang visible? active]}]
+  [this {:translation/keys [text lang visible? active]}]
   {:ident :translation/id
    :initial-state {}
    :query [:translation/id :translation/text :translation/start :translation/end :translation/lang :translation/visible? :translation/active]}
-  (span
-   {:classes ["translation" (if visible? "translation-visible" "translation-hidden")]}
-   (let [translation-failed (= (str/lower-case (:segment/transcription-text (comp/get-computed this))) (str/lower-case text))
-         toggle-func (fn [e & args]
-                       (. e stopPropagation) ;; necessary to prevent the toggle from happening twice when both onRemove and onClick are called.
-                       (js/console.log "Toggle show translation:" e args id)
-                       (comp/transact!
-                        this
-                        `[(com.submerged-structure.mutations.translations/toggle-visibility-of-translation {:translation/id ~id})]))]
-     (ui-popup
-      {:size "tiny"
-       :position "top center"
-       :hideOnScroll true
-       :header (str "\"" lang "\" translation")
-       :content (str
-                 (if visible?
-                   "Click to hide translation"
-                     "Click to show translation of this setence. You can also use the button above to the right of the player controls to show or hide all translations.")
-                 (when translation-failed "\n\n ... Sorry the AI failed to translate this."))
-       :trigger (ui-label {:onRemove (when visible? toggle-func)
-                           :active active
-                           :color (when translation-failed "red")
-                           :onClick toggle-func
-                           :pointing (if visible? :above :left)
-                           :detail (when visible? text)
-                           :size (if visible? :big :large)
-                           :content lang})}))))
+  (when visible?
+    (span
+     {:classes ["translation" (if visible? "translation-visible" "translation-hidden")]}
+     (let [translation-failed (= (str/lower-case (:segment/transcription-text (comp/get-computed this))) (str/lower-case text))]
+       (ui-label {:active active
+                  :color (when translation-failed "red")
+                  :pointing :above
+                  :detail text
+                  :size (if visible? :big :large)
+                  :content lang})))))
 
 (def ui-translation (comp/computed-factory Translation {:keyfn :translation/id}))
 

@@ -9,7 +9,6 @@
             
             [com.submerged-structure.player-atom :as player-atom]
             [com.submerged-structure.components.controls.common :as common-to-controls]
-            [com.submerged-structure.components.controls.translation-controls :refer [TranslationControls ui-translation-controls]]
             [com.submerged-structure.components.controls.progressive-reveal-controls :refer [ProgressiveRevealControls ui-progressive-reveal-controls]]
             
             [goog.string :as gstring]))
@@ -36,9 +35,7 @@
                              :ui-transcript-autopause-control/keys [any-segment?]
                              :ui-player-controls/keys [prev-prev-segment-end prev-segment-start  prev-segment-end current-segment-start current-segment-end next-segment-start]
 
-                             :ui-morph-display/keys [display-token-id]
-
-                             :>/keys [language-controls progressive-reveal-controls]}]
+                             :>/keys [progressive-reveal-controls]}]
 
   {:ident :transcript/id
    :query [:transcript/id
@@ -55,8 +52,7 @@
 
            :ui-morph-display/display-token-id
 
-           {:>/language-controls (comp/get-query TranslationControls)}
-           {:>/progressive-reveal-controls (comp/get-query ProgressiveRevealControls)}]}
+          {:>/progressive-reveal-controls (comp/get-query ProgressiveRevealControls)}]}
   (if (or (= doing :loading) (nil? (player-atom/get-player)))
     (ui-icon {:name i/spinner-icon})
     (dom/div :.ui.segment.basic
@@ -103,7 +99,7 @@
                (ui-popup
                 (merge
                  {:header "Back to beginning of sentence."
-                  :content "Repeat to skip back to previous sentences."
+                  :content "Repeat to skip back to previous sentences. Click button or press key \"a\"."
                   :trigger (ui-button
                             {:icon i/reply-icon
                              :id "sentence-back"
@@ -137,7 +133,7 @@
                (ui-popup
                 (merge
                  {:header "Play/Pause"
-                  :content ""
+                  :content  "Click button or press key \"s\"."
                   :trigger (ui-button
                             {:id "play-pause"
                              :icon (if (= doing :playing) i/pause-icon i/play-icon)
@@ -153,8 +149,8 @@
                  common-to-controls/common-options-for-popups-of-controls))
                (ui-popup
                 (merge
-                 {:header (str "Autopause: " (if any-segment? (str "Don't pause after ANY sentences.") (str "Pause after ALL sentences.")))
-                  :content (str "If ANY autopause after sentence is on, clicking will turn ALL autopauses off. If NONE are, clicking will autopause after EVERY sentence. You can also turn on and off autopause individually with the button at the end of each sentence.")
+                 {:header (str "Auto-pause " (if any-segment? (str "is on! Click to turn off.") (str "is off! Click to turn it on.")))
+                  :content (str "When auto-pause is on the player pauses after each sentence. Click button or press key \"w\".")
                   :trigger (ui-button
                             {:id "autopause-all"
                         ;; :label {:pointing "left" :content (if any-autopause? "on" "off")}
@@ -197,7 +193,7 @@
                (ui-popup
                 (merge
                  {:header "Forward one sentence."
-                  :content ""
+                  :content "Short cut key \"d\"."
                   :trigger (ui-button
                             {:id "sentence-forward"
                              :icon i/share-icon
@@ -235,7 +231,7 @@
                              :label {:pointing "left"
                                      :content (str "Auto scroll " (if scroll-to-active "on" "off"))}})}
                  common-to-controls/common-options-for-popups-of-controls)))
-              (dom/span
+              #_(dom/span
                :.item
                {}
                (ui-translation-controls language-controls))

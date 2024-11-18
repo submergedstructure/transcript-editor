@@ -51,7 +51,7 @@
                                      (.play player)))})}
             common-to-controls/common-options-for-popups-of-controls))
           (map #(word/ui-word % {:segment/ui-reveal-state ui-reveal-state}) words)
-          (ui-popup
+          #_(ui-popup
            (merge
             {:header "Auto pause at end of sentence"
              :content ""
