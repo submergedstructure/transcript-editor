@@ -31,10 +31,10 @@
                  (with-react18)))
 
 
-(comment 
+(comment
   (-> (app/current-state app)
-   :word/id
-   (get "8f62adcc-df04-4adc-a3b3-aa12d702c03a"))
+      :word/id
+      (get "8f62adcc-df04-4adc-a3b3-aa12d702c03a"))
   ;; => nil
 
   (:root/current-transcript (app/current-state app))

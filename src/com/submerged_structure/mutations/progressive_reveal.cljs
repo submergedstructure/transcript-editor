@@ -1,7 +1,12 @@
 (ns com.submerged-structure.mutations.progressive-reveal
   (:require
    [com.fulcrologic.fulcro.mutations :refer [defmutation]]
-   [com.fulcrologic.fulcro.algorithms.denormalize :as fdn]))
+   [com.fulcrologic.fulcro.algorithms.denormalize :as fdn]
+   [com.submerged-structure.progressive-reveal-states :as prs]
+   
+   [com.fulcrologic.fulcro.algorithms.merge :as merge]
+   
+   [com.submerged-structure.components.controls.progressive-reveal-settings :as prs-controls]))
 
 (defn segment-translation-tree [state-deref]
   (fdn/db->tree
@@ -12,15 +17,12 @@
                           {:segment/translations [:translation/id :translation/visible?]}]}]}]
    state-deref state-deref))
 
-
-(def text-reveal-progression ["blurred" "un-blurred" "grammar-highlighted" "grammar-highlighted"])
-(def translation-reveal-progression [false false false true])
-
-(def reveal-progression (map (fn [text-state translation-state] {:text text-state :translations-visible? translation-state}) text-reveal-progression translation-reveal-progression))
-
 (defn segment-reveal-state [{:segment/keys [ui-reveal-state translations]}]
   {:text ui-reveal-state
    :translations-visible? (some? (some :translation/visible? translations))})
+
+(defn reveal-progressions-currently-active-from-state [state-deref]
+  (prs/reveal-progressions-currently-active (vals (get-in state-deref [:progressive-reveal-setting/id]))))
 
 (defn next-reveal-state-and-segments-to-set [state-deref]
   (let [tree-from-state (segment-translation-tree state-deref)
@@ -29,7 +31,7 @@
       (let [segments-tree (get-in tree-from-state [:root/current-transcript :transcript/segments])
             [segment-tree-before-current [current-segment & _]] (split-with #(not= (:segment/id %) current-segment-id) segments-tree)
             current-segment-reveal-state (segment-reveal-state current-segment)
-            [prev-reveal-states [_ next-reveal-state & _]] (split-with (partial not= current-segment-reveal-state) reveal-progression)]
+            [prev-reveal-states [_ next-reveal-state & _]] (split-with (partial not= current-segment-reveal-state) (reveal-progressions-currently-active-from-state state-deref))]
         (when next-reveal-state
           [next-reveal-state (filter (fn [segment]
                                        ((into #{} (conj prev-reveal-states current-segment-reveal-state)) (segment-reveal-state segment)))
@@ -53,11 +55,11 @@
         (get-in (segment-translation-tree @state) [:root/current-transcript :transcript/segments])]
     (doall
      (map (fn [{:segment/keys [id]}]
-            (swap! state assoc-in [:segment/id id :segment/ui-reveal-state] (:text (first reveal-progression))))
+            (swap! state assoc-in [:segment/id id :segment/ui-reveal-state] (:text (first (reveal-progressions-currently-active-from-state @state)))))
           segments-in-current-transcript))
     (doall
      (map (fn [{:translation/keys [id]}]
-            (swap! state assoc-in [:translation/id id :translation/visible?] (:translations-visible? (first reveal-progression))))
+            (swap! state assoc-in [:translation/id id :translation/visible?] (:translations-visible? (first (reveal-progressions-currently-active-from-state @state)))))
           (mapcat :segment/translations segments-in-current-transcript)))))
 
 (defmutation reset-reveal-state-of-all [{}]
@@ -65,8 +67,23 @@
           (reset-reveal-state-of-all! state))
   (remote [_] false))
 
+(defmutation init-reveal-state-controls [{}]
+  (action [{:keys [app state]}]
+          (do (merge/merge-component!
+               app prs-controls/ProgressiveRevealSetting (into [] prs/initial-state-of-local-db)
+               :replace [:progressive-reveal-settings])
+              (reset-reveal-state-of-all! state)))
+  (remote [_] false))
+
+(defmutation toggle-reveal-state-active [{:progressive-reveal-setting/keys [id]}]
+  (action [{:keys [state]}]
+          (swap! state update-in [:progressive-reveal-setting/id id :progressive-reveal-setting/active] not)
+          (reset-reveal-state-of-all! state))
+  (remote [_] false))
+
+
 (comment
-  (let [[reveal-states-lower-than-current _ [next-reveal-state & _]] (partition-by #(= % ::blurred) text-reveal-progression)]
+  (let [[reveal-states-lower-than-current _ [next-reveal-state & _]] (partition-by #(= % ::blurred) prs/text-reveal-progression)]
     (prn reveal-states-lower-than-current next-reveal-state))
   
   (def tree-from-state *1)
@@ -76,5 +93,7 @@
         current-segment-reveal-state {:text (get current-segment :segment/ui-reveal-state)
                                       :translations-visible? (some? (some :translation/visible? (get current-segment :segment/translations)))}]
     {:current-reveal-state current-segment-reveal-state
-     :next-reveal-state (first (drop 1 (drop-while (partial not= current-segment-reveal-state) reveal-progression)))}
-    ))
+     :next-reveal-state (first (drop 1 (drop-while (partial not= current-segment-reveal-state) prs/all-possible-reveal-progressions)))}
+    )
+  
+  )

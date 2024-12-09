@@ -38,6 +38,7 @@
                              :>/keys [progressive-reveal-controls]}]
 
   {:ident :transcript/id
+   :initial-state (fn [_] {:>/progressive-reveal-controls (comp/get-initial-state ProgressiveRevealControls)})
    :query [:transcript/id
            :ui-player/doing
            :ui-player/scroll-to-active

@@ -6,7 +6,8 @@
    "d" "sentence-forward"
    "f" "progressive-reveal-segments-upto-current"
    "w" "autopause-all"
-   "e" "reset-reveal-state-of-all"})
+   "e" "reset-reveal-state-of-all"
+   "r" "progressive-reveal-settings"})
 
 (defn handle-keydown [event]
   (let [key (.-key event)]

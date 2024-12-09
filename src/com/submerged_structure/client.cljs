@@ -96,12 +96,6 @@
               (or (not= (:word/start (first words)) start)
                   (not= (:word/end (last words)) end))) segments-with-words))
 
-  (require '[com.submerged-structure.mutations.progressive-reveal :as progressive-reveal])
-  (com.submerged-structure.mutations.progressive-reveal/segment-translation-tree (app/current-state app))
-  (com.submerged-structure.mutations.progressive-reveal/next-reveal-state-and-segments-to-set (app/current-state app))
-  (get-in (com.submerged-structure.mutations.progressive-reveal/segment-translation-tree (app/current-state app) :segment-keys [:segment/id]) [:root/current-transcript :transcript/segments])
-
-  (comp/transact! app `[(com.submerged-structure.mutations.progressive-reveal/progressive-reveal-segments-upto-current {})])
 
   (require '[com.submerged-structure.mutations.words-and-segments :as mutations])
 

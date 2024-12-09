@@ -6,10 +6,11 @@
             [com.submerged-structure.components.transcript-router :as transcript-router]))
 
 (defsc Root [this {:ui/keys [router]}]
-  {;:query [{:ui/router (comp/get-query MyRouter)}]
-   :query [{:ui/router (comp/get-query transcript-router/TranscriptRouter)}
+  {:query [:progressive-reveal-settings
+           {:ui/router (comp/get-query transcript-router/TranscriptRouter)}
            [::uism/asm-id ::transcript-router/TranscriptRouter]]
-   :initial-state {:ui/router {}}
+   :initial-state {:ui/router {}
+                   :progressive-reveal-settings {}}
    :shouldComponentUpdate (fn [_ _ _] true)}
   (let [router-state (or (uism/get-active-state this ::transcript-router/TranscriptRouter) :initial)]
     (if (= :initial router-state)

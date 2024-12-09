@@ -18,5 +18,5 @@
           (let [next-transcript-ident [:transcript/id id]]
             (swap! state assoc-in [:root/current-transcript] next-transcript-ident)
             (df/load! app next-transcript-ident transcript/TranscriptPage
-                      {:post-mutation 'com.submerged-structure.mutations.progressive-reveal/reset-reveal-state-of-all})))
+                      {:post-mutation 'com.submerged-structure.mutations.progressive-reveal/init-reveal-state-controls})))
   (remote [_] false))
