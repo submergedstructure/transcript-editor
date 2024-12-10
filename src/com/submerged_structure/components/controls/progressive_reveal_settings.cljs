@@ -10,7 +10,9 @@
    [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
    [com.fulcrologic.semantic-ui.elements.icon.ui-icon :refer [ui-icon]]
    [com.fulcrologic.semantic-ui.icons :as i]
-   [com.submerged-structure.progressive-reveal-states :as prs]))
+   [com.submerged-structure.progressive-reveal-states :as prs]
+   
+   [com.submerged-structure.transcript-scroll :as transcript-scroll]))
 
 (defsc ProgressiveRevealSetting [this {:progressive-reveal-setting/keys [id active]}]
   {:ident :progressive-reveal-setting/id
@@ -26,7 +28,8 @@
     (fn [& _args]
       (comp/transact!
        this
-       `[(com.submerged-structure.mutations.progressive-reveal/toggle-reveal-state-active {:progressive-reveal-setting/id ~id})]))}
+       `[(com.submerged-structure.mutations.progressive-reveal/toggle-reveal-state-active {:progressive-reveal-setting/id ~id})])
+      (transcript-scroll/scroll-to-active-element-after-time-out))}
    
    (ui-icon {:name (if active i/check-circle-icon i/times-circle-icon)}) (get prs/description-of-all-possible-reveal-progressions id)))
 

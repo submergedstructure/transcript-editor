@@ -9,27 +9,9 @@
    [com.fulcrologic.semantic-ui.icons :as i]
 
    [com.submerged-structure.components.controls.common :as common-to-controls]
+   [com.submerged-structure.transcript-scroll :as transcript-scroll]
    
    [com.submerged-structure.components.controls.progressive-reveal-settings :refer [ui-progressive-reveal-settings ProgressiveRevealSettings]]))
-
-(defn element-y-in-viewport [element]
-  (.. element
-      (getBoundingClientRect)
-      -top))
-
-(defn save-current-scroll-position-and-after-timeout-scroll-there [dom-element]
-  (let [old-element-y-in-viewport (element-y-in-viewport dom-element)]
-    (js/setTimeout (fn []
-                     (let [scroll-by (- (element-y-in-viewport dom-element) old-element-y-in-viewport)]
-                       (js/window.scrollBy  (clj->js {:left 0
-                                                      :top scroll-by
-                                                      :behavior "smooth"}))
-                       (js/console.log "scrolling by" scroll-by)))
-                   100)))
-
-(comment 
-  (def element (js/document.querySelector ".segment-transcription-and-translation.active")))
-
 
 (defsc ProgressiveRevealControls [this {#_#_:ui-morphological-info-grid-control/keys [any-visible?]
                                         :>/keys [progressive-reveal-settings]}]
@@ -53,8 +35,7 @@
                              (comp/transact!
                               this
                               `[(com.submerged-structure.mutations.progressive-reveal/progressive-reveal-segments-upto-current {})])
-                             (when-let [element (js/document.querySelector ".segment-transcription-and-translation.active")]
-                               (save-current-scroll-position-and-after-timeout-scroll-there element)))
+                             (transcript-scroll/scroll-to-active-element-after-time-out))
                            #_#_:positive any-visible?})}
      common-to-controls/common-options-for-popups-of-controls))
    (ui-popup
@@ -69,7 +50,8 @@
                            (fn [& _args]
                              (comp/transact!
                               this
-                              `[(com.submerged-structure.mutations.progressive-reveal/reset-reveal-state-of-all {})]))
+                              `[(com.submerged-structure.mutations.progressive-reveal/reset-reveal-state-of-all {})])
+                             (transcript-scroll/scroll-to-active-element-after-time-out))
                            #_#_:positive any-visible?})}
      common-to-controls/common-options-for-popups-of-controls))
    (ui-progressive-reveal-settings progressive-reveal-settings)))

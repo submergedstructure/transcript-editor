@@ -22,24 +22,10 @@
             [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
             [com.submerged-structure.player-atom :as player-atom]
 
+            [com.submerged-structure.transcript-scroll :as transcript-scroll]
+
             [clojure.string]))
 
-
-
-(defn scroll-element-to-vertical-middle
-  "Assuming player is a sticky at the top of the screen, scroll element 
-   to the vertical center of the screen below the player."
-  [dom-element]
-  (let [element-y-in-viewport (.. dom-element
-                                  (getBoundingClientRect)
-                                  -top)
-        current-top-of-viewport (.. js/window -pageYOffset)
-        element-y-in-document (+ element-y-in-viewport current-top-of-viewport)
-        scroll-to (- element-y-in-document
-                     (/ (+ (player/player-height) js/window.innerHeight) 2))]
-    (js/window.scrollTo  (clj->js {:left 0
-                                   :top scroll-to
-                                   :behavior "smooth"}))))
 
 (defn update-current-word [this t id]
   (let [props (comp/props this)
@@ -53,12 +39,7 @@
     (comp/transact!! this `[(com.submerged-structure.mutations.words-and-segments/update-transcript-current-time {:transcript/current-time ~t})])
     (js/console.log "update-current-word" this id t)
     (when (:ui-player/scroll-to-active props) 
-      (js/setTimeout
-       (fn []
-         (when-let [active-word (js/document.querySelector ".word.active")]
-           #_(player/player-on-current-word-update (:ui-period/start (comp/props this)) (:ui-period/end (comp/props this)) (get-in (comp/props this) [:transcript/current-word :word/word]))
-           (scroll-element-to-vertical-middle active-word)))
-       0))))
+      (transcript-scroll/scroll-to-active-element-after-time-out {:fallback-to-segment false}))))
 
 (def update-current-word-once-per-frame
   "called when we don't have a start or end time for the current period."
