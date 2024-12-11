@@ -77,7 +77,12 @@
 
 (defmutation toggle-reveal-state-active [{:progressive-reveal-setting/keys [id]}]
   (action [{:keys [state]}]
-          (swap! state update-in [:progressive-reveal-setting/id id :progressive-reveal-setting/active] not)
+          (let [more-than-one-active (< 1 (count (keep (fn [[_ {:progressive-reveal-setting/keys [active]}]] (when active true)) (get @state :progressive-reveal-setting/id))))
+                enabling-reveal-state (= false (get-in @state [:progressive-reveal-setting/id id :progressive-reveal-setting/active]))]
+            (if (or more-than-one-active enabling-reveal-state)
+              (do (swap! state update-in [:progressive-reveal-setting/id id :progressive-reveal-setting/active] not)
+                  (swap! state assoc-in [:component/id :progressive-reveal-settings-control :warning-message-at-least-one-active] false))
+              (swap! state assoc-in [:component/id :progressive-reveal-settings-control :warning-message-at-least-one-active] true)))
           (reset-reveal-state-of-all! state))
   (remote [_] false))
 

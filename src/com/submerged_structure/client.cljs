@@ -101,6 +101,16 @@
 
   (mutations/words-with-unique-time-stamps (mutations/get-current-segment-word-tree-from-state (app/current-state app)))
 
+  (require '[com.submerged-structure.mutations.progressive-reveal
+             :as progressive-reveal-mutations])
+  (let [state-deref (app/current-state app)]
+    (get-in state-deref [:component/id :progressive-reveal-settings-control ]))
+  
+  (let [state-deref (app/current-state app)]
+    (< 1 (count (keep (fn [[_ {:progressive-reveal-setting/keys [active]}]] (when active true)) (get state-deref [:progressive-reveal-setting/id])))))
+  (let [state-deref (app/current-state app)]
+    (= false (get-in state-deref [:progressive-reveal-setting/id 0 :progressive-reveal-setting/active])))
+
   (require '[com.submerged-structure.components.word :as word-with-morphological-features-popup])
   (require '[clojure.walk :as w])
   (w/postwalk

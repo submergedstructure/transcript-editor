@@ -35,9 +35,9 @@
 
 (def ui-progressive-reveal-setting (comp/factory ProgressiveRevealSetting {:keyfn :progressive-reveal-setting/id}))
 
-(defsc ProgressiveRevealSettings [this {:keys [progressive-reveal-settings]}]
+(defsc ProgressiveRevealSettings [this {:keys [progressive-reveal-settings warning-message-at-least-one-active]}]
   {:ident (fn [_] [:component/id :progressive-reveal-settings-control])
-   :query [{[:progressive-reveal-settings '_] (comp/get-query ProgressiveRevealSetting)}]
+   :query [:warning-message-at-least-one-active  {[:progressive-reveal-settings '_] (comp/get-query ProgressiveRevealSetting)}]
    :initial-state {}}
   (let [icons (fragment (ui-icon {:name i/eye-icon})
                         (ui-icon {:name i/cog-icon}))]
@@ -48,8 +48,12 @@
                 {:id "settings"
                  :icon icons})}
      (dom/div :.header icons "Progressive Reveal Settings")
+     
      (dom/div :.content
               (dom/p "The progressive reveal button " (ui-icon {:name i/eye-icon}) (ui-icon {:name i/clock-icon}) " (shortcut key \"f\") progressively reveals more about played sentences, what states should the text go through?")
+              (when warning-message-at-least-one-active
+                (dom/div :.ui.negative.message
+                         (dom/div :.header "At least one setting must be active, you cannot deactivate the last reveal state.")))
               (map ui-progressive-reveal-setting progressive-reveal-settings)
               (dom/p "Keyboard shortcut \"r\" for these settings."))))
   )
