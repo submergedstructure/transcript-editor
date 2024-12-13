@@ -26,4 +26,4 @@
                     (and fallback-to-segment 
                          (js/document.querySelector ".segment-transcription-and-translation.active")))]
        (scroll-element-to-vertical-middle active-element)))
-   0))
+   100))

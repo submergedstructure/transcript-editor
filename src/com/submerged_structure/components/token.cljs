@@ -22,7 +22,6 @@
                              []))
           :onClick (fn [e & args]
                      (. e stopPropagation) ;; necessary to prevent the toggle from happening twice when both onRemove and onClick are called.
-                     (js/console.log "Show morph details:" e args id)
                      (when-not (#{"SYM" "PUNCT"} pos)
                        (comp/transact!
                         this

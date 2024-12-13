@@ -105,7 +105,6 @@
                             {:icon i/reply-icon
                              :id "sentence-back"
                              :onClick (fn [^js e & args]
-                                        (js/console.log "sentence-back" e args)
                                         (.stopPropagation e)
                                         (when-let [player (player-atom/get-player)]
                                           (if (and prev-segment-start

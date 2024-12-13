@@ -32,12 +32,10 @@
         autopause-start (:ui-transcript-autopause/next-period-start props)
         autopause-end (:ui-transcript-autopause/next-period-end props)]
     ; these have been set on a previous call when within a segment with autopause? true
-    (js/console.log "check for autopause " props autopause-start t autopause-end)
     (when (and autopause-start (<= autopause-start t autopause-end))
       (.pause (player-atom/get-player)))
     
     (comp/transact!! this `[(com.submerged-structure.mutations.words-and-segments/update-transcript-current-time {:transcript/current-time ~t})])
-    (js/console.log "update-current-word" this id t)
     (when (:ui-player/scroll-to-active props) 
       (transcript-scroll/scroll-to-active-element-after-time-out {:fallback-to-segment false}))))
 
@@ -52,7 +50,6 @@
     (if (some nil? [start end]);check if either start or end are nil
       (update-current-word-once-per-frame this t id)
       (when-not (< start t end)
-        (js/console.log "throttled according to time period " t start end)
         (update-current-word this t id)))))
 
 
@@ -63,7 +60,6 @@
       (player-controls/player-on-timeupdate ws))))
 
 (defn change-display-type [this id type & js-args]
-  (js/console.log "Menu item clicked" this id type js-args)
   (comp/transact!
      this
      `[(com.submerged-structure.mutations.controls/transcript-display-type-menu
@@ -97,7 +93,6 @@
    :route-segment ["transcript" :transcript/id]
    :will-enter
    (fn [app route-params]
-     (js/console.log "Transcript will-enter" route-params)
      (comp/transact! app `[(com.submerged-structure.mutations.load/load-transcript ~(select-keys route-params [:transcript/id]))])
      (dr/route-immediate
       [:transcript/id

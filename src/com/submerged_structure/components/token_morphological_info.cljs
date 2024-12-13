@@ -122,7 +122,6 @@
           (ui-icon {:name i/close-icon
                     :onClick (fn [e & args]
                                (. e stopPropagation) ;; necessary to prevent the toggle from happening twice when both onRemove and onClick are called.
-                               (js/console.log "Hide morph details:" e args id)
                                (comp/transact!
                                 this
                                 `[(com.submerged-structure.mutations.controls/toggle-visibility-of-morphological-details-for-token {:token/id ~id})]))})})

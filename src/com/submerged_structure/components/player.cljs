@@ -50,10 +50,8 @@
            :transcript/audio-url]
    :shouldComponentUpdate
    (fn [this next-props next-state]
-     (js/setTimeout (js/console.log "shouldComponentUpdate" this next-props next-state) 0)
      (not= (select-keys next-props [:transcript/id])
            (select-keys (comp/props this) [:transcript/id])))}
-  (js/console.log "PlayerComponent" (comp/get-computed this :onTimeupdate) audio-url)
   (ui-wavesurfer-player
    {:url (js/encodeURI audio-url)
     :height 150
@@ -67,7 +65,6 @@
                 (player-atom/set-player! ws))
 
     :onReady (fn [^js player]
-               (js/console.log "onReady" player)
                (.addEventListener js/document "keydown" keyboardshortcuts/handle-keydown)
                (comp/transact! this `[(com.submerged-structure.mutations.controls/update-ui-player-doing {:ui-player/doing :paused})
                                       (com.submerged-structure.mutations.load/update-transcript-duration {:transcript/duration ~(.getDuration player)})
@@ -80,11 +77,9 @@
     :autoCenter false,
 
     :onPause (fn [_]
-               (js/console.log "onPause")
                (comp/transact! this `[(com.submerged-structure.mutations.controls/update-ui-player-doing {:ui-player/doing :paused})]))
 
     :onPlay (fn [_]
-              (js/console.log "onPlay")
               (comp/transact! this `[(com.submerged-structure.mutations.controls/update-ui-player-doing {:ui-player/doing :playing})]))
 
     :plugins [(.create Minimap

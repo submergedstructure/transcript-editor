@@ -152,8 +152,6 @@
                 last-current-segment-id (get-in @state [:transcript/id transcript-id :transcript/current-or-last-segment 1])
                 last-current-word-id (get-in @state [:transcript/id transcript-id :transcript/current-word 1])]
             (do
-              (js/console.log "update-transcript-current-time" current-time last-current-word-id transcript-keys-to-update)
-              
               (doall (map (fn [[k v]] (swap! state assoc-in (conj [:transcript/id transcript-id] k) v)) transcript-keys-to-update))
               ;; deactivate last translations
               (doall

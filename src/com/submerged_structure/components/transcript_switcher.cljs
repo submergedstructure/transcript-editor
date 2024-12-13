@@ -36,7 +36,6 @@
         :options (mapv (fn [{:transcript/keys [id label]}] (ui-dropdown-item {:text label :value id :key id :active (= id (comp/get-computed this :current-transcript))})) all-transcripts)
 
         :onChange (fn [_ev data]
-                    (js/console.log "TranscriptSwitcher onChange" data)
                     (comp/transact! this `[(com.submerged-structure.mutations.load/load-transcript {:transcript/id ~(.-value data)})]))
         :text (:transcript/label (first (filter #(= (:transcript/id %) current-transcript) all-transcripts)))})})))
 
