@@ -214,7 +214,9 @@
                          :offset (+ (player/player-height) 10)}
                         (token-morphological-info/ui-token-morphological-info display-token)))))
                (map segment/ui-segment segments))
-          (div :.ui.placeholder
-               (mapv (fn [_] (div :.line)) (range 20)))))))
+          (div :.ui.segment.basic
+               (div :.ui.placeholder
+               (dom/div :.ui.text.loader.active "Transcript is loading...")
+               (mapv (fn [_] (div :.line)) (range 20))))))))
 
 (def ui-transcript-page (comp/factory TranscriptPage {:keyfn :transcript/id}))
