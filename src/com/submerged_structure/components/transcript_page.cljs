@@ -8,6 +8,8 @@
             [com.fulcrologic.semantic-ui.icons :as i]
             [com.fulcrologic.semantic-ui.elements.divider.ui-divider :refer [ui-divider]]
             [com.fulcrologic.semantic-ui.modules.popup.ui-popup :refer [ui-popup]]
+            [com.fulcrologic.semantic-ui.modules.progress.ui-progress :refer [ui-progress]]
+            [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
 
             [com.submerged-structure.components.player :as player]
             [com.submerged-structure.components.controls.player-controls :as player-controls]
@@ -78,6 +80,7 @@
 
 (defsc TranscriptPage [this {:ui/keys [help-hidden]
                          player-doing :ui-player/doing
+                         player-percent-loaded :ui-player/percent-loaded
                          :transcript/keys [id
                                            display-type
                                            segments
@@ -123,6 +126,7 @@
            :ui-period/end
 
            :ui-player/doing
+           :ui-player/percent-loaded
 
            :ui-transcript-autopause/next-period-start
            :ui-transcript-autopause/next-period-end
@@ -160,12 +164,20 @@
      :context (.. js/document -body (querySelector "#transcript"))
      :styleElement {:backgroundColor "white"}
      :children
-     (fragment
-      {}
+     (ui-segment
+      {:style {:padding "0px"}
+       :basic true}
+      (when (= player-doing :loading)
+        (dom/div :.ui.active.dimmer.inverted
+                 (dom/div :.ui.text.loader "Audio is loading... Awesomeness is on the way!")))
       (player/ui-player
        player
        {:onTimeupdate (transcript-on-timeupdate this id)})
-      (player-controls/ui-player-controls player-controls))})
+      (player-controls/ui-player-controls player-controls)
+      (when (= player-doing :loading)
+        (ui-progress {:percent player-percent-loaded
+                      :attached "bottom"}))
+      )})
    (when-not
     help-hidden
      (ui-message

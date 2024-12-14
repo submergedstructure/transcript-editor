@@ -6,6 +6,8 @@
             #_["wavesurfer.js/dist/plugins/regions.esm.js" :default Regions]
 
             [com.submerged-structure.player-atom :as player-atom]
+
+            [goog.functions :as gf]
             
             [com.submerged-structure.components.controls.keyboardshortcuts :as keyboardshortcuts]))
 
@@ -43,6 +45,14 @@
 
 #_(comment (player-on-current-word-update 5 15 "test"))
 
+(defn update-loading-progress [player-component percent-loaded]
+  (js/console.log "onLoading" percent-loaded)
+  (comp/transact! player-component `[(com.submerged-structure.mutations.controls/update-ui-player-percent-loaded {:ui-player/percent-loaded ~percent-loaded})]))
+
+(def update-loading-progress-throttled
+  "called when we don't have a start or end time for the current period."
+  (gf/rateLimit update-loading-progress (/ 1000 10))) ; 10 frames per second
+
 (defsc PlayerComponent [this {:transcript/keys [audio-url]}]
   {:ident :transcript/id
    :initial-state {}
@@ -60,18 +70,24 @@
     :normalize? true,
     :interact? true,
 
+    :onLoading (fn [^js _ws percent-loaded]
+              (update-loading-progress-throttled this percent-loaded))
 
-    :onDecode (fn [^js ws]
+
+    :onDecode (fn [^js ws & args]
+                (js/console.log "onDecode" ws args)
                 (player-atom/set-player! ws))
 
-    :onReady (fn [^js player]
+    :onReady (fn [^js ws & args]
+               (js/console.log "onReady" ws args)
                (.addEventListener js/document "keydown" keyboardshortcuts/handle-keydown)
                (comp/transact! this `[(com.submerged-structure.mutations.controls/update-ui-player-doing {:ui-player/doing :paused})
-                                      (com.submerged-structure.mutations.load/update-transcript-duration {:transcript/duration ~(.getDuration player)})
-                                      (com.submerged-structure.mutations.words-and-segments/update-transcript-current-time {:transcript/current-time ~(.getCurrentTime player)})]))
+                                      (com.submerged-structure.mutations.load/update-transcript-duration {:transcript/duration ~(.getDuration ws)})
+                                      (com.submerged-structure.mutations.words-and-segments/update-transcript-current-time {:transcript/current-time ~(.getCurrentTime ws)})]))
 
     :onError (fn [^js & args]
                (js/console.log "onError" args))
+    
     :onTimeupdate (comp/get-computed this :onTimeupdate)
     :hideScrollbar true,
     :autoCenter false,

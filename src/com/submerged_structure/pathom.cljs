@@ -56,12 +56,13 @@
 (pco/defresolver transcript-data
   [_ {:keys [transcript/id]}]
   {::pco/input  [:transcript/id]
-   ::pco/output [:transcript/audio-url :transcript/label :transcript/summary :transcript/label-pl :transcript/summary-pl :transcript/url :transcript/segments :transcript/id :transcript/display-type :ui-player/scroll-to-active :ui-player/doing :ui-morph-display/display-token]}
+   ::pco/output [:transcript/audio-url :transcript/label :transcript/summary :transcript/label-pl :transcript/summary-pl :transcript/url :transcript/segments :transcript/id :transcript/display-type :ui-player/scroll-to-active :ui-player/doing :ui-player/percent-loaded :ui-morph-display/display-token]}
   (js/console.log "MOCK SERVER: Simulate loading transcript data" id)
   (->
    (get mock-data/transcripts [:transcript/id id])
    (assoc :ui-player/scroll-to-active true
           :ui-player/doing :loading
+          :ui-player/percent-loaded 0
           :transcript/display-type :grammar
           :ui-translation-controls/languages [{:ui-translation-control/language "en"}]
           :ui-transcript-autopause/next-period-start nil

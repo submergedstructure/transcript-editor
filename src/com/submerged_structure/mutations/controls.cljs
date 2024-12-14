@@ -14,6 +14,10 @@
   (action [{:keys [state]}]
           (swap! state assoc-in [:transcript/id (common/get-current-transcript-id-from-state @state) :ui-player/doing] doing)))
 
+(defmutation update-ui-player-percent-loaded [{:keys [ui-player/percent-loaded]}]
+  (action [{:keys [state]}]
+          (swap! state assoc-in [:transcript/id (common/get-current-transcript-id-from-state @state) :ui-player/percent-loaded] percent-loaded)))
+
 (defmutation transcript-display-type-menu [#:transcript{:keys [id display-type]}]
   (action [{:keys [state]}]
           (swap! state assoc-in [:transcript/id id :transcript/display-type] display-type)))
