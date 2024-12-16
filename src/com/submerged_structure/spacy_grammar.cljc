@@ -509,20 +509,20 @@
   (non-redundant-morphological-features "Animacy=Hum|Aspect=Imp,Perf|Clitic=Yes|Gender=Masc|Mood=Ind|Number=Sing|Person=1|Tense=Past|Variant=Long|VerbForm=Fin|Voice=Act"))
 
 
-(def attribute-names-that-affect-word-ending
+(def attribute-names-that-affect-word-form
   "Only some of the attributes affect word ending, some are properties of the word itself.
    In a sensible order to display. Hopefully good for all word classes.
    Will be followed by human readable part of speech."
-  ["Case" "Person" "Number" "Gender" "Animacy" "Voice" "VerbForm" "Variant" "Tense" "Mood"])
+  ["Degree" "Case" "Person" "Number" "Gender" "Animacy" "Voice" "VerbForm" "Variant" "Tense" "Mood"])
 
 (defn word-attributes-that-are-properties-of-the-word-itself [morph]
   (let [morph-map (non-redundant-morphological-features morph)]
-    (remove (set attribute-names-that-affect-word-ending) (keys morph-map))))
+    (remove (set attribute-names-that-affect-word-form) (keys morph-map))))
 
 
 (defn word-attributes-that-inflect-word [morph]
   (let [morph-map (non-redundant-morphological-features morph)]
-    (filter (set (keys morph-map)) attribute-names-that-affect-word-ending)))
+    (filter (set (keys morph-map)) attribute-names-that-affect-word-form)))
 
 
 (defn human-readable-pos
@@ -538,19 +538,13 @@
 
 (comment (human-readable-pos {"Abbr" "Yes", "Pun" "Yes"} "X"))
 
-(defn lemma-morph-map-of-attributes-that-affect-word-ending [pos morph-map]
-  (for [attribute-name attribute-names-that-affect-word-ending
-        :let [attribute-value (get morph-map attribute-name)]
-        :when attribute-value]
-    [attribute-name attribute-value]))
-
 
 (defn word-form-description [morph-map pos]
   (let [word-class-description
         (clojure.string/join " "
                              (keep (fn [attribute-name]
                                      (when (get morph-map attribute-name) (human-readable-attribute-value-from-morph-map morph-map attribute-name)))
-                                   attribute-names-that-affect-word-ending))]
+                                   attribute-names-that-affect-word-form))]
     (str (when word-class-description
            (str (clojure.string/capitalize word-class-description) " "))
          (clojure.string/upper-case (human-readable-pos morph-map pos)))))
