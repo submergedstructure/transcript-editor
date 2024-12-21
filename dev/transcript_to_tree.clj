@@ -477,18 +477,20 @@
               %
               (str (subs path (count "resources/public")) %)))))
 
+(defn flattened-data []
+  (let [transcripts_and_translations (transcripts_and_translations_all_files)]
+    (-> (for [[filename full-filepath-without-extension] (find-mp3-files-at-path filepath)]
+          (transcript-tree transcripts_and_translations filename full-filepath-without-extension))
+        (flatten-tree-of-maps-into-maps-referenced-by-id))))
 
 
 (defn write-mock-data-cljs-file []
-  (let [transcripts_and_translations (transcripts_and_translations_all_files)]
-    (-> (for [[filename full-filepath-without-extension] (find-mp3-files-at-path filepath)]
-        (transcript-tree transcripts_and_translations filename full-filepath-without-extension))
-      (flatten-tree-of-maps-into-maps-referenced-by-id)
+  (-> flattened-data
       pprint/pprint
       with-out-str
       (str/replace #"^" "  ")
       (#(str/replace (slurp "resources/txt/mock_data_template.txt") "%%%" %))
-      (#(spit "src/com/submerged_structure/mock_data.cljs" %)))))
+      (#(spit "src/com/submerged_structure/mock_data.cljs" %))))
 
 
 (comment (find-mp3-files-at-path filepath))
@@ -514,3 +516,5 @@
 
 
 
+(comment 
+         (spit "dev/normalised_words.clj" (into #{} (keep (fn [[[t _id] v]] (when (= t :token/id) (:token/lemma v))) (flattened-data)))))
