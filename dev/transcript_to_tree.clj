@@ -485,7 +485,7 @@
 
 
 (defn write-mock-data-cljs-file []
-  (-> flattened-data
+  (-> (flattened-data)
       pprint/pprint
       with-out-str
       (str/replace #"^" "  ")
