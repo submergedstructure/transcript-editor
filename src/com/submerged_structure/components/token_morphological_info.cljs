@@ -48,11 +48,8 @@
 (defn ui-dict-links-and-popup
   "More than one link for when word is two space separated lemmas."
   [word]
-  (let [[w1 & [w2]] (clojure.string/split word #" ")]
-    (fragment
-     (ui-dict-link-and-popup w1)
-     (when w2
-       (fragment " " (ui-dict-link-and-popup w2))))))
+  (let [[w1 & _] (clojure.string/split word #" ")]
+    (ui-dict-link-and-popup w1)))
 
 (defn ui-morph-attribute [morph-map attribute-name & {:keys [detail-options]}]
   (when-not ((into #{} (vals spacy-grammar/attributes-that-are-subtypes-of-other-attributes))  attribute-name)
@@ -84,48 +81,23 @@
      (if pos (spacy-grammar/morph-map-for-lemma pos relevant-morph-map) relevant-morph-map))))
 
 
-(defn ui-lemma-and-norm [lemma norm is_morphed morph pos link?]
-  (fragment {}
+(defn ui-lemma-and-norm [lemma norm is_morphed morph pos]
+  (let [first-item-of-lemma (first (clojure.string/split lemma #" "))]
+    (fragment {}
             (when is_morphed
               (fragment {}
                         (span {:classes (concat (morph-html-css-classes morph :pos pos))}
-                              (if link? (ui-dict-links-and-popup lemma) lemma))
+                              first-item-of-lemma)
                         "  "
                          (ui-icon {:name i/arrow-right-icon})
                          " "))
             (span {:classes (concat ["inflected_word"] (morph-html-css-classes morph))}
-                  (span {}
-                        (if link? (ui-dict-links-and-popup norm) norm)))))
+                  norm))))
 
 (defn ui-form [pos morph-map]
   (div {:classes (concat ["ui" "label" "pointing" "big"] (morph-html-css-classes (str "Case=" (get morph-map "Case"))))}
        (spacy-grammar/word-form-description morph-map pos)))
 
-
-(defn ui-condensed-morph-details [this id is_morphed morph pos lemma norm]
-  (div :.item
-   {:classes ["column"] #_(into [] (concat (if-not is_morphed ["two"] [(if (< (count (str lemma norm)) 16) "three" "four")]) [ "wide" "column"]))}
-   (let [{:strs [Case]} (spacy-grammar/morphological-features-str-to-map morph)] 
-     (ui-segment
-      {:className (clojure.string/join
-                   " "
-                   (concat ["grammar_highlighting" "grammar_highlighting_background"]
-                           (morph-html-css-classes (str "Case=" Case))))
-
-
-       :compact true
-       :children
-       (fragment
-        (ui-label
-         {:corner "right"
-          :icon
-          (ui-icon {:name i/close-icon
-                    :onClick (fn [e & args]
-                               (. e stopPropagation) ;; necessary to prevent the toggle from happening twice when both onRemove and onClick are called.
-                               (comp/transact!
-                                this
-                                `[(com.submerged-structure.mutations.controls/toggle-visibility-of-morphological-details-for-token {:token/id ~id})]))})})
-        (h3 (ui-lemma-and-norm lemma norm is_morphed morph pos false)))}))))
 
 (defsc TokenMorphologicalInfo [_this {:token/keys [id morph lemma pos is_morphed norm]}]
   {:ident :token/id
@@ -135,7 +107,6 @@
   (when id
     (case pos
       ("SYM" "PUNCT") (div :.item.column (div :.segment norm))
-      #_(ui-condensed-morph-details this id is_morphed morph pos lemma norm)
       (div
        :.ui.raised.segment
        {#_#_:style {:overflow "auto", :maxHeight "300px"}}
@@ -145,7 +116,7 @@
               lemma-html (ui-dict-links-and-popup lemma)
               morph-map (spacy-grammar/non-redundant-morphological-features morph)]
           (fragment
-           (h3 (ui-lemma-and-norm lemma norm is_morphed morph pos false))
+           (h3 (ui-lemma-and-norm lemma norm is_morphed morph pos))
            (ui-form pos morph-map)
 
            (if (not-empty (spacy-grammar/word-attributes-that-inflect-word morph))
